@@ -1,6 +1,6 @@
-// Metadata navigation của Playground V2. Status phản ánh implementation THỰC TẾ:
-// - completed: đã implement theo Plan V2 và đã verify (offline/live tương ứng).
-// - available: route chạy được nhưng chưa verify đủ hoặc là demo legacy chưa reconcile.
+// Metadata navigation của Workspace (Plan V3). Status phản ánh implementation THỰC TẾ:
+// - completed: đạt Definition of Done của Plan V3 (mục F) và đã verify (live với feature Live).
+// - available: route chạy được nhưng chưa đạt đủ DoD V3 hoặc là demo legacy chưa reconcile.
 // - coming_soon: chưa implement, không có route, không có nút Run.
 export type LessonStatus = "completed" | "available" | "coming_soon";
 
@@ -16,7 +16,7 @@ export type Lesson = {
 export type Module = {
   id: string;
   title: string;
-  outcome: string; // "Kết quả cần đạt" của module (Plan V2, mục 7 / 8).
+  outcome: string; // "Kết quả cần đạt" của module (Plan V3, mục C).
   lessons: Lesson[];
 };
 
@@ -26,69 +26,69 @@ const soon = (id: string, title: string, mode: Lesson["mode"]): Lesson =>
 export const MODULES: Module[] = [
   {
     id: "m1", title: "Runtime Foundation",
-    outcome: "Giải thích độc lập vòng đời request, session, task, SSE, approval và cancel; phân biệt trạng thái hiển thị với dữ liệu đã ghi.",
+    outcome: "Tự giải thích được POST → create_task → emit → queue → SSE → UI, ApprovalBroker và Cancel, với state/file kiểm chứng được trên UI.",
     lessons: [
-      { id: "01", title: "Agent SSE Streaming", mode: "Offline", status: "available", route: "/",
-        note: "Demo legacy, đã smoke test; chưa reconcile đủ UI theo Plan V2." },
+      { id: "01", title: "SSE Streaming", mode: "Offline", status: "available", route: "/",
+        note: "Demo legacy, đã smoke test; chưa chuyển sang Runtime Lab." },
       soon("02", "Session Management", "Offline"),
       soon("03", "Async Task Management", "Offline"),
-      { id: "04", title: "Human-in-the-loop Approval", mode: "Offline", status: "available", route: "/approval",
-        note: "Demo legacy: tool giả lập, chưa ghi file thật theo Plan V2." },
+      { id: "04", title: "Human Approval", mode: "Offline", status: "available", route: "/approval",
+        note: "Demo legacy: tool create_ticket_draft còn mô phỏng; Pass B đổi sang ghi file sandbox thật." },
       { id: "05", title: "Cancel Agent", mode: "Offline", status: "available", route: "/approval",
         note: "Demo legacy (Long Running + Cancel) trong trang /approval." },
     ],
   },
   {
-    id: "m2", title: "Claude API Mechanics",
-    outcome: "Tự gọi Claude, đọc request/response, history, streaming, stop reason, usage, lỗi và cache; chưa cần Agent framework.",
+    id: "m2", title: "Claude API",
+    outcome: "Chạy Claude thật với dữ liệu mình nhập, xem output và request/response; hiểu history, streaming, stop reason, token, caching, retry mà chưa dùng Agent framework.",
     lessons: [
-      { id: "06", title: "Basic Messages API", mode: "Live", status: "available", route: "/lessons/messages-api",
-        note: "Live verification pending." },
+      { id: "06", title: "One-shot Message", mode: "Live", status: "available", route: "/lessons/messages-api",
+        note: "Generate Task Description / Leave Email, Claude thật 1 request." },
       soon("07", "Multi-turn Conversation", "Live"),
       soon("08", "Claude Streaming", "Live"),
       soon("09", "Stop Reason", "Live"),
-      soon("10", "Token Counting & Usage", "Live"),
-      soon("11", "API Errors & Retry", "Hybrid"),
+      soon("10", "Token Counting", "Live"),
+      soon("11", "API Error & Retry", "Hybrid"),
       soon("12", "Prompt Caching", "Live"),
     ],
   },
   {
-    id: "m3", title: "Tool Calling & Implementation",
-    outcome: "Tự định nghĩa, validate và dispatch tool, hiểu tool_use_id, chạy đồng thời, xử lý lỗi và kiểm soát quyền trước side effect.",
-    lessons: [soon("13", "Single Tool Calling", "Live"), soon("14", "Tool Schema & Registry", "Hybrid"),
-      soon("15", "Multiple & Parallel Tools", "Live"), soon("16", "Tool Error & Recovery", "Hybrid"),
+    id: "m3", title: "Tool Playground",
+    outcome: "Tự tạo tool Python có schema, dispatch, permission; chứng minh thành công bằng calculator, file hoặc SQLite thật.",
+    lessons: [soon("13", "Single Tool Calling", "Live"), soon("14", "Schema & Registry", "Hybrid"),
+      soon("15", "Multiple & Parallel Tools", "Live"), soon("16", "Tool Error Recovery", "Hybrid"),
       soon("17", "Tool Policy & Approval", "Hybrid")],
   },
   {
-    id: "m4", title: "Manual Agent Architecture",
-    outcome: "Tự viết vòng lặp hữu hạn, quản lý history/context, biết model quyết định gì và code kiểm soát gì.",
-    lessons: [soon("18", "Basic Manual Agent Loop", "Live"), soon("19", "Agent State & History Rollback", "Hybrid"),
+    id: "m4", title: "Manual Agent",
+    outcome: "Tự xây Agent Loop hữu hạn có tools, SSE, approval, history và context; biết điểm nào model quyết định, điểm nào code quyết định.",
+    lessons: [soon("18", "Basic Agent Loop", "Live"), soon("19", "Agent State/Rollback", "Hybrid"),
       soon("20", "Context Management", "Hybrid")],
   },
   {
-    id: "m5", title: "Structured Output & Validation",
-    outcome: "Biến văn bản tự nhiên thành dữ liệu typed; kiểm tra schema, business rules, evidence và repair có giới hạn.",
-    lessons: [soon("21", "Native Structured Output", "Live"), soon("22", "Schema & Semantic Validation", "Offline"),
-      soon("23", "Evidence Validation & Repair", "Hybrid")],
+    id: "m5", title: "Validation Studio",
+    outcome: "Bảo vệ application khỏi output sai kiểu, vô lý hoặc bịa nguồn; kết quả chưa validated không được tạo task thật.",
+    lessons: [soon("21", "Native Structured Output", "Live"), soon("22", "Schema & Semantic", "Offline"),
+      soon("23", "Evidence & Repair", "Hybrid")],
   },
   {
-    id: "m6", title: "Agent Patterns & Workflows",
-    outcome: "Phân biệt workflow cố định, routing, concurrency, dynamic planning, evaluator loop; chọn pattern theo yêu cầu, cost và latency.",
+    id: "m6", title: "Workflow Lab",
+    outcome: "Phân biệt Agent với fixed workflow, dùng đúng pattern cho Task Manager và giải thích bằng số calls/step và output thật.",
     lessons: [soon("24", "Prompt Chaining", "Live"), soon("25", "Routing", "Live"),
-      soon("26", "Parallelization — Sectioning & Voting", "Live"), soon("27", "Orchestrator–Workers", "Live"),
+      soon("26", "Parallelization", "Live"), soon("27", "Orchestrator–Workers", "Live"),
       soon("28", "Evaluator–Optimizer", "Live")],
   },
   {
-    id: "m7", title: "MCP Development",
-    outcome: "Tự chạy server/client, khám phá primitives, hiểu transport và tích hợp cùng business tools thật.",
-    lessons: [soon("29", "Basic MCP Server & Client", "Offline"), soon("30", "MCP Primitives & Transport", "Offline"),
-      soon("31", "Claude Agent + MCP", "Live")],
+    id: "m7", title: "MCP Explorer",
+    outcome: "Chứng minh MCP server độc lập Claude; Agent gọi MCP thật, mọi write vẫn bị policy/approval server-side kiểm soát.",
+    lessons: [soon("29", "MCP Server & Client", "Offline"), soon("30", "Primitives & Transport", "Offline"),
+      soon("31", "Claude + MCP", "Live")],
   },
   {
-    id: "m8", title: "Claude Agent SDK & Customization",
-    outcome: "Hiểu SDK thay phần loop nào, ứng dụng vẫn kiểm soát state, validation, callback, tools, permissions, skills và subagents.",
-    lessons: [soon("32", "Basic Agent SDK", "Live"), soon("33", "SDK Session & Streaming", "Live"),
-      soon("34", "Hooks & Permissions", "Live"), soon("35", "Agent Skills", "Live"), soon("36", "Subagents", "Live")],
+    id: "m8", title: "SDK Task Agent",
+    outcome: "Tự xây SDK Agent Task Manager có tools, sessions, hooks, approval, skills, subagents; giải thích phần SDK đảm nhận và phần developer kiểm soát.",
+    lessons: [soon("32", "Basic Agent SDK", "Live"), soon("33", "SDK Session/Streaming", "Live"),
+      soon("34", "Hooks/Permissions", "Live"), soon("35", "Skills", "Live"), soon("36", "Subagents", "Live")],
   },
 ];
 

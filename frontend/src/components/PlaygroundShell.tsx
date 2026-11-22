@@ -21,9 +21,9 @@ export default function PlaygroundShell({ children }: { children: React.ReactNod
       <Header>
         <Flex align="center" justify="space-between" style={{ height: "100%" }} gap={16}>
           <Typography.Text strong style={{ color: "#fff", fontSize: 17 }}>
-            ◈ Claude Agent Playground
+            ◈ AI Task Manager Workspace
             <Typography.Text style={{ color: "#AFC0D6", marginInlineStart: 12 }}>
-              AI Task Manager track
+              Claude Agent mechanics, chạy thật
             </Typography.Text>
           </Typography.Text>
           <Space wrap size={4}>

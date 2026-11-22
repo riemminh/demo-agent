@@ -46,6 +46,9 @@ async def run_messages_api(prompt: str, system: str, max_tokens: int) -> dict[st
         "model": config.LLM_MODEL,
         "max_tokens": max_tokens,
         "messages": [{"role": "user", "content": prompt}],
+        # Tắt extended thinking: thinking token tính vào max_tokens, có thể ăn hết trần
+        # và response chỉ còn block "thinking", không có text để làm draft.
+        "thinking": {"type": "disabled"},
     }
     if system:
         # system là tham số top-level, không phải một role trong messages.

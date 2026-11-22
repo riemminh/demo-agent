@@ -1,87 +1,121 @@
 "use client";
 
-import { ArrowRightOutlined, CheckOutlined } from "@ant-design/icons";
-import { Alert, Button, Card, Col, Flex, Row, Statistic, Tag, Typography } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons";
+import { Alert, Button, Card, Col, Descriptions, Flex, Row, Tag, Typography } from "antd";
 import Link from "next/link";
-import LearningOutcome from "@/components/LearningOutcome";
-import { ALL_LESSONS, ENGINEERING_OUTCOME, MODULES, STATUS_TAG, type Lesson } from "@/lib/lessons";
-import { useStudied } from "@/lib/studied";
+import { useEffect, useState } from "react";
+import { getHealth, type Health } from "@/lib/api";
+import { ENGINEERING_OUTCOME, MODULES, STATUS_TAG, type Lesson } from "@/lib/lessons";
 
-const countBy = (status: Lesson["status"]) => ALL_LESSONS.filter((l) => l.status === status).length;
+const { Text, Paragraph } = Typography;
 
-function LessonRow({ lesson, studied }: { lesson: Lesson; studied: boolean }) {
-  const status = STATUS_TAG[lesson.status];
+// Chỉ liệt kê route ĐANG chạy được. Feature chưa implement nằm ở danh sách module bên dưới.
+const RUNNABLE_DEMOS = [
+  {
+    route: "/lessons/messages-api", ids: "06", title: "Generate Task Description",
+    runtime: <Tag color="purple">Claude API thật</Tag>,
+    input: "Task title + requirements (hoặc preset Leave Email) → Generate Description",
+    output: "Draft text Claude trả về, Copy/Edit được; metrics, Request/Response JSON, source Python.",
+  },
+  {
+    route: "/approval", ids: "04 · 05", title: "Agent Approval + Cancel",
+    runtime: <Tag>Offline · legacy</Tag>,
+    input: "Start Approval → Approve / Reject; Start Long Running → Cancel",
+    output: "Approval card từ SSE event, event log, history chỉ commit khi run xong.",
+    note: "Tool create_ticket_draft hiện vẫn mô phỏng; Pass B đổi sang ghi file sandbox thật.",
+  },
+  {
+    route: "/", ids: "01", title: "SSE Streaming",
+    runtime: <Tag>Offline · legacy</Tag>,
+    input: "Nhập câu hỏi → Send",
+    output: "Event stream tăng dần qua Queue → StreamingResponse → browser.",
+  },
+];
+
+function LessonTag({ lesson }: { lesson: Lesson }) {
   const text = `${lesson.id} · ${lesson.title}`;
-  return (
-    <Flex gap={8} align="baseline" wrap>
-      <Tag color={status.color}>{status.label}</Tag>
-      {studied && <Tag icon={<CheckOutlined />} color="green">Studied</Tag>}
-      {lesson.route ? <Link href={lesson.route}>{text}</Link> : <Typography.Text type="secondary">{text}</Typography.Text>}
-      {lesson.note && <Typography.Text type="secondary" style={{ fontSize: 13 }}>{lesson.note}</Typography.Text>}
-    </Flex>
-  );
+  if (!lesson.route) return <Tag title={STATUS_TAG.coming_soon.label}>{text}</Tag>;
+  return <Link href={lesson.route}><Tag color={STATUS_TAG[lesson.status].color}>{text}</Tag></Link>;
 }
 
-export default function PlaygroundHome() {
-  const { studied } = useStudied();
+export default function WorkspaceHome() {
+  const [health, setHealth] = useState<Health | null>(null);
+  const [healthError, setHealthError] = useState<string | null>(null);
+
+  // Chỉ GET /api/health: không gọi Claude khi mở trang.
+  useEffect(() => {
+    getHealth().then(setHealth).catch((e: Error) => setHealthError(e.message));
+  }, []);
+
   return (
     <Flex vertical gap={16}>
       <div>
-        <Typography.Text type="secondary">Learning roadmap · 8 modules · 36 lessons · final SDK project</Typography.Text>
-        <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>
-          From first API call to real AI Task Manager Agent
-        </Typography.Title>
-        <Typography.Paragraph>
-          Học từng cơ chế độc lập bằng code thật. Final app là AI Task Manager dùng Claude Agent SDK,
-          SQLite và filesystem thật. Trang này không gọi Claude.
-        </Typography.Paragraph>
+        <Text type="secondary">Workspace Home</Text>
+        <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>AI Task Manager Workspace</Typography.Title>
+        <Paragraph style={{ marginBottom: 0 }}>
+          Mỗi mục là một tính năng chạy thật: nhập dữ liệu, bấm Run, xem output và state, rồi mở trace/source
+          để hiểu cơ chế Agent phía sau.
+        </Paragraph>
       </div>
 
-      <Alert type="info" showIcon title="Status phản ánh implementation thực tế"
-        description="Completed: đã implement theo Plan V2 và đã verify. Available: chạy được nhưng chưa verify đủ hoặc là demo legacy. Coming Soon: chưa implement, không mở được. Studied là trạng thái học do bạn tự đánh dấu (lưu localStorage), không ảnh hưởng implementation status." />
-
-      <Card size="small">
-        <Flex wrap gap={48} align="center">
-          <Statistic title="Completed" value={countBy("completed")} suffix="/ 36" />
-          <Statistic title="Available" value={countBy("available")} suffix="/ 36" />
-          <Statistic title="Coming Soon" value={countBy("coming_soon")} suffix="/ 36" />
-          <Statistic title="Studied (bạn tự đánh dấu)" value={studied.length} suffix="/ 36" />
-          <Button type="primary" href="/lessons/messages-api" icon={<ArrowRightOutlined />}>
-            Tiếp tục: 06 · Basic Messages API
-          </Button>
-        </Flex>
+      <Card size="small" title="Trạng thái backend">
+        {healthError
+          ? <Alert type="error" showIcon title="Backend offline" description={`${healthError}. Chạy backend ở port 9000 (xem README).`} />
+          : <Descriptions size="small" column={{ xs: 1, md: 3 }} items={[
+              { key: "backend", label: "Backend", children: health ? <Tag color="success">online</Tag> : "đang kiểm tra…" },
+              { key: "llm", label: "Claude API", children: !health ? "—" : health.llm_configured
+                ? <Tag color="blue">đã cấu hình</Tag>
+                : <Tag color="warning">thiếu {health.missing_env.join(", ")}: Live verification pending</Tag> },
+              { key: "model", label: "Model (LLM_MODEL)", children: health?.model ?? "—" },
+            ]} />}
       </Card>
 
+      <Typography.Title level={4} style={{ margin: 0 }}>Chạy được ngay</Typography.Title>
+      <Row gutter={[16, 16]}>
+        {RUNNABLE_DEMOS.map((demo) => (
+          <Col key={demo.route} xs={24} md={12} xl={8}>
+            <Card size="small" style={{ height: "100%" }}
+              title={<>{demo.ids} · {demo.title}</>} extra={demo.runtime}
+              actions={[<Button key="open" type="primary" href={demo.route} icon={<ArrowRightOutlined />}
+                iconPlacement="end">Mở demo</Button>]}>
+              <Paragraph style={{ marginBottom: 6 }}><Text strong>Bạn làm: </Text>{demo.input}</Paragraph>
+              <Paragraph style={{ marginBottom: demo.note ? 6 : 0 }}><Text strong>Bạn thấy: </Text>{demo.output}</Paragraph>
+              {demo.note && <Text type="warning">{demo.note}</Text>}
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      <Typography.Title level={4} style={{ margin: 0 }}>Các module</Typography.Title>
+      <Text type="secondary">
+        Tag màu là feature chạy được (bấm để mở). Tag xám là Coming Soon: chưa implement, chưa có trang.
+      </Text>
       <Row gutter={[16, 16]}>
         {MODULES.map((module, index) => (
           <Col key={module.id} xs={24} xl={12}>
-            <Card size="small" style={{ height: "100%" }}
-              title={`0${index + 1} · ${module.title}`}
-              extra={<Tag>{module.lessons.length} lessons</Tag>}>
-              <Flex vertical gap={6} style={{ marginBottom: 12 }}>
-                {module.lessons.map((lesson) => <LessonRow key={lesson.id} lesson={lesson} studied={studied.includes(lesson.id)} />)}
+            <Card size="small" style={{ height: "100%" }} title={`0${index + 1} · ${module.title}`}>
+              <Flex wrap gap={6} style={{ marginBottom: 10 }}>
+                {module.lessons.map((lesson) => <LessonTag key={lesson.id} lesson={lesson} />)}
               </Flex>
-              <LearningOutcome title="Kết quả cần đạt của module" items={[{ text: module.outcome }]} />
+              <Paragraph type="secondary" style={{ margin: 0 }}>
+                <Text strong>Kết quả cần đạt: </Text>{module.outcome}
+              </Paragraph>
             </Card>
           </Col>
         ))}
         <Col xs={24} xl={12}>
-          <Card size="small" style={{ height: "100%" }} title="09 · Application Design & Engineering"
-            extra={<Tag>xuyên suốt</Tag>}>
-            <Typography.Paragraph type="secondary">
-              Không phải lesson riêng: requirements, separation of concerns, type safety, reliability,
-              security, observability được dạy qua code của từng lesson.
-            </Typography.Paragraph>
-            <LearningOutcome title="Kết quả cần đạt của module" items={[{ text: ENGINEERING_OUTCOME }]} />
+          <Card size="small" style={{ height: "100%" }} title="09 · Engineering (xuyên suốt)">
+            <Paragraph type="secondary" style={{ margin: 0 }}>
+              Không có trang riêng: giải thích qua code của từng feature. <Text strong>Kết quả cần đạt: </Text>{ENGINEERING_OUTCOME}
+            </Paragraph>
           </Card>
         </Col>
         <Col xs={24} xl={12}>
-          <Card size="small" style={{ height: "100%" }} title="★ Final — AI Task Manager Agent"
+          <Card size="small" style={{ height: "100%" }} title="★ Final · AI Task Manager Workspace"
             extra={<Tag>{STATUS_TAG.coming_soon.label}</Tag>}>
-            <Typography.Paragraph>
-              Đọc tài liệu → đề xuất task → approval → lưu SQLite → ghi report Markdown → hỏi tiếp và cập nhật task.
-            </Typography.Paragraph>
-            <Typography.Text type="secondary">Chưa implement. Route /workspace chưa tồn tại.</Typography.Text>
+            <Paragraph type="secondary" style={{ margin: 0 }}>
+              Agent SDK chat + Task Board SQLite + File Explorer + Approval + Cancel. Chưa implement, route /workspace chưa tồn tại.
+            </Paragraph>
           </Card>
         </Col>
       </Row>
