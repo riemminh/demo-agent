@@ -5,13 +5,15 @@ Matches the communication architecture of `riemminh/dev-support-agent`.
 
 ## Backend
 
+Requires [uv](https://docs.astral.sh/uv/).
+
 ```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn api:app --reload --port 9000
+uv sync
+uv run uvicorn api:app --reload --port 9000
 ```
+
+Add a dependency with `uv add <package>`.
 
 ## Frontend
 
