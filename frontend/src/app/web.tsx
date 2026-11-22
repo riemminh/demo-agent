@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 type AgentEvent = {
   type: string;
@@ -100,6 +101,7 @@ export default function Web() {
   return (
     <main style={{ maxWidth: 760, margin: "40px auto", fontFamily: "sans-serif" }}>
       <h1>FastAPI → Queue → SSE → Next.js</h1>
+      <p><Link href="/approval">Open Approval + Cancel demo →</Link></p>
       <p>Session ID: <code>{sessionId || "Creating..."}</code></p>
       <input
         value={draft}
