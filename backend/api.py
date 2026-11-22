@@ -1,12 +1,11 @@
 """FastAPI: SessionStore + Task + Queue + SSE + Approval + Cancel.
 
-Kiến trúc giống app/web/api.py + runner.py trong repo thật, gom một file để học.
+Runtime web của các demo nền tảng (Module 1), gom một file để học.
+Session/SessionStore nằm ở sessions.py.
 """
 import asyncio
 import json
-import uuid
 from collections.abc import AsyncIterator
-from dataclasses import dataclass, field
 from typing import Any
 
 from fastapi import APIRouter, FastAPI, HTTPException
@@ -15,33 +14,8 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from agent import Event, Scenario, run_agent
-from approvals import ApprovalBroker
-
-
-@dataclass
-class Session:
-    id: str
-    history: list[dict[str, str]] = field(default_factory=list)
-    task: asyncio.Task[None] | None = None
-    approvals: ApprovalBroker = field(default_factory=ApprovalBroker)
-
-    @property
-    def busy(self) -> bool:
-        return self.task is not None and not self.task.done()
-
-
-class SessionStore:
-    def __init__(self) -> None:
-        self._sessions: dict[str, Session] = {}
-
-    def create(self) -> Session:
-        session = Session(id=uuid.uuid4().hex[:12])
-        self._sessions[session.id] = session
-        return session
-
-    def get(self, session_id: str) -> Session | None:
-        return self._sessions.get(session_id)
-
+from playground_api import router as playground_router
+from sessions import Session, SessionStore
 
 store = SessionStore()  # Một store trong RAM của process hiện tại.
 router = APIRouter(prefix="/api")
@@ -160,3 +134,4 @@ app.add_middleware(
     allow_methods=["*"], allow_headers=["*"],
 )
 app.include_router(router)
+app.include_router(playground_router)  # Playground V2: /api/health, /api/lessons/...

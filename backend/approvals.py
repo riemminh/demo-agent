@@ -1,4 +1,4 @@
-"""Giống app/core/approvals.py trong repo chính, nhưng rút gọn để dễ học.
+"""ApprovalBroker: chờ quyết định Approve/Reject của người dùng bằng asyncio.Future.
 
 ApprovalBroker không mở HTTP/SSE. Nó CHỈ:
 1. Tạo Future, lưu theo approval_id.

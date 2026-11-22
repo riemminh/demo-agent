@@ -13,8 +13,12 @@ frontend/out/
 # Env / secrets
 .env
 .env.*
+!.env.example
 
 # OS / editor
 .DS_Store
 .idea/
 .vscode/
+
+# Scratch files của agent (script tạm, screenshot)
+.tmp/

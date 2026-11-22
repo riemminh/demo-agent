@@ -102,6 +102,7 @@ export default function Web() {
     <main style={{ maxWidth: 760, margin: "40px auto", fontFamily: "sans-serif" }}>
       <h1>FastAPI → Queue → SSE → Next.js</h1>
       <p><Link href="/approval">Open Approval + Cancel demo →</Link></p>
+      <p><Link href="/playground">Open Claude Agent Playground V2 →</Link></p>
       <p>Session ID: <code>{sessionId || "Creating..."}</code></p>
       <input
         value={draft}

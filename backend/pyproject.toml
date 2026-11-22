@@ -3,6 +3,8 @@ name = "agent-demo-backend"
 version = "0.1.0"
 requires-python = ">=3.15"
 dependencies = [
+    "anthropic>=2.12",
     "fastapi>=0.115",
+    "python-dotenv>=1.2",
     "uvicorn>=0.30",
 ]
