@@ -1,21 +1,23 @@
 """Session + SessionStore trong RAM của process hiện tại.
 
-Mỗi Session giữ history đã commit, Task đang chạy (để biết busy và để cancel)
-và ApprovalBroker riêng. Restart backend là mất hết session.
+Dùng chung bởi Demo 01 và Demo 04: mỗi Session giữ history đã commit, Task đang chạy
+(để biết busy và để cancel) và ApprovalBroker riêng. Restart backend là mất hết session.
 Vì state nằm trong RAM, chỉ chạy MỘT uvicorn worker.
+Mỗi demo có store riêng nên session của demo này không thấy session của demo kia.
 """
 
 import asyncio
 import uuid
 from dataclasses import dataclass, field
+from typing import Any
 
-from .approvals import ApprovalBroker
+from .approval import ApprovalBroker
 
 
 @dataclass
 class Session:
     id: str
-    history: list[dict[str, str]] = field(default_factory=list)
+    history: list[dict[str, Any]] = field(default_factory=list)
     task: asyncio.Task[None] | None = None
     approvals: ApprovalBroker = field(default_factory=ApprovalBroker)
 

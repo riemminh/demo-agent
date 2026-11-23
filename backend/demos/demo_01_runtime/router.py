@@ -11,9 +11,11 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from shared.sessions import Session, SessionStore
+
 from .approval_note import delete_note, read_note
 from .runtime import Event, Scenario, run_turn
-from .sessions import Session, SessionStore
+
 
 router = APIRouter()
 store = SessionStore()  # Một store cho process hiện tại.

@@ -23,18 +23,18 @@ export const DEMOS: Demo[] = [
     scenarios: ["One-shot", "History On/Off", "Streaming"],
   },
   {
-    id: "03", title: "Tools & Registry",
-    mechanism: "Claude đề nghị tool, Python dispatch qua registry và trả tool_result.",
+    id: "03", title: "Tools & Registry", route: "/demos/03-tools",
+    mechanism: "Claude trả tool_use, registry Python thực thi và gửi tool_result; một tool round đầy đủ.",
     scenarios: ["Single Tool", "Registry", "Error"],
   },
   {
-    id: "04", title: "Manual Agent Loop",
-    mechanism: "Tự viết loop messages.create → tool_use → tool_result, có stop condition và rollback history.",
-    scenarios: ["Normal", "Max Turns", "Failure/Rollback"],
+    id: "04", title: "Manual Agent Loop", route: "/demos/04-manual-loop",
+    mechanism: "Loop messages.create → tool_use → tool_result tới end_turn, có MAX_TURNS, approval trước khi ghi SQLite và history chỉ commit khi thành công.",
+    scenarios: ["Normal", "Max Turns", "Tool Failure"],
   },
   {
-    id: "05", title: "Structured Output",
-    mechanism: "JSON có schema, validation nghiệp vụ và repair có giới hạn.",
+    id: "05", title: "Structured Output", route: "/demos/05-structured-output",
+    mechanism: "Native structured output theo JSON Schema, rồi validate hai tầng (schema + nghiệp vụ) và repair một lần có kiểm soát.",
     scenarios: ["Generate", "Validate", "Repair"],
   },
   {

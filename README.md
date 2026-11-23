@@ -6,7 +6,7 @@ Source of truth: `plans/00-START-HERE.md` + `plans/01-SHARED-ARCHITECTURE-UI.md`
 
 Stack: Python + FastAPI (backend, port 9000) · Next.js 16 App Router (Turbopack) + TypeScript + Ant Design v6 (frontend, port 3001).
 
-**Trạng thái hiện tại:** **Demo 01 — Agent Runtime** và **Demo 02 — Claude API** chạy được. Demo 03–08 chỉ nằm ở Roadmap trên Workspace Home (không route, không lên sidebar).
+**Trạng thái hiện tại:** Demo **01 → 05** chạy được (Agent Runtime · Claude API · Tools & Registry · Manual Agent Loop · Structured Output). Demo 06–08 chỉ nằm ở Roadmap trên Workspace Home (không route, không lên sidebar).
 
 ## Setup
 
@@ -30,7 +30,22 @@ uv run uvicorn main:app --reload --port 9000
   # file .cnf: openssl_conf → ssl_conf → system_default: Groups = X25519:P-256:P-384
   OPENSSL_CONF=/path/to/openssl-classic-groups.cnf uv run uvicorn main:app --reload --port 9000
   ```
-  Chỉ là workaround môi trường, không đổi code. Đã dùng đúng cách này khi live-verify Demo 02.
+  Chỉ là workaround môi trường, không đổi code.
+
+### Known limitation của môi trường mạng (đã đo)
+
+Mạng đang dùng để phát triển **reset mọi HTTPS request có body lớn hơn khoảng 1–1,5 KB khi đích là `api.anthropic.com`**. Bằng chứng:
+
+| Thử nghiệm | Kết quả |
+|---|---|
+| body ~352 B và ~952 B → `api.anthropic.com` | OK |
+| body ~1.6 KB trở lên → `api.anthropic.com` | `httpcore2.ReadError` → SDK bọc thành `APIConnectionError("Connection error.")` |
+| `curl` body 6 KB → `api.anthropic.com` | fail (exit 56) |
+| `curl` body 6 KB → một host khác (`postman-echo.com`) | HTTP 200 |
+| HTTP/1.1 và HTTP/2 | fail như nhau → không phải vấn đề protocol |
+| `ping -D` tới 1472 B | OK → không phải MTU blackhole thông thường |
+
+Hệ quả: demo nào gửi request lớn (Demo 04 khi loop sang lượt thứ 3, prompt dài) sẽ nhận `error(kind=connection_error)`. **Không phải bug của code** — chạy qua VPN/proxy hoặc mạng khác (ví dụ 4G hotspot) là hết. Backend tôn trọng biến môi trường `HTTPS_PROXY` của httpx nếu bạn có proxy.
 
 ### Frontend
 
@@ -51,24 +66,39 @@ backend/
 ├── main.py                       # app + CORS + /api/health + include_router
 ├── config.py                     # ANTHROPIC_API_KEY, LLM_MODEL, limits
 ├── data/                         # gitignored: sandbox runtime (file demo ghi ra)
+├── shared/                       # chỉ những gì ≥ 2 demo thật sự dùng chung
+│   ├── claude.py                 # new_client(max_retries=0), answer_text, map lỗi API
+│   ├── approval.py               # ApprovalBroker (asyncio.Future) — demo 01 + 04
+│   ├── sessions.py               # Session + SessionStore (RAM) — demo 01 + 04
+│   └── task_store.py             # sqlite3 tasks, tách theo demo_scope — từ demo 04
 ├── demos/demo_01_runtime/
 │   ├── router.py                 # endpoint /api/demos/01/*
 │   ├── runtime.py                # run_turn() (Task + Queue) + run_agent() ba scenario
-│   ├── approval_note.py          # file sandbox: build/write/read/delete
-│   ├── sessions.py               # Session + SessionStore (RAM)
-│   └── approvals.py              # ApprovalBroker (asyncio.Future)
-└── demos/demo_02_claude_api/
-    ├── router.py                 # endpoint /api/demos/02/*
-    ├── messages.py               # build_request + messages.create + parse content/usage
-    └── streaming.py              # messages.stream -> event text_delta/final
+│   └── approval_note.py          # file sandbox: build/write/read/delete
+├── demos/demo_02_claude_api/
+│   ├── router.py · messages.py   # messages.create + parse content/usage
+│   └── streaming.py              # messages.stream -> event text_delta/final
+├── demos/demo_03_tools/
+│   ├── router.py · tools.py      # 3 hàm Python + TOOL_SCHEMAS gửi cho model
+│   ├── registry.py               # TOOL_REGISTRY + execute(name, input) có validate
+│   └── tool_calling.py           # một tool round: call #1 → execute → call #2
+├── demos/demo_04_manual_loop/
+│   ├── router.py                 # sessions, runs (SSE), approvals, cancel, tasks
+│   ├── agent_loop.py             # loop + working/committed history + MAX_TURNS
+│   └── tasks_tools.py            # list_tasks / create_task (cần approve) / get_task
+└── demos/demo_05_structured_output/
+    ├── router.py · schemas.py    # TaskDraft (Pydantic) dùng cho cả model và app
+    ├── validation.py             # tầng schema + tầng semantic, chạy offline
+    └── generation.py             # messages.parse(output_format=...) + repair 1 lần
 frontend/src/
 ├── components/                   # WorkspaceLayout (Header+Sider+Content), DemoMenu, CodeBlock, LearningOutcome
 ├── lib/demos.ts                  # metadata 8 demo; chỉ demo có `route` lên sidebar
 └── app/(workspace)/
     ├── layout.tsx                # AntdRegistry + Providers + WorkspaceLayout (persistent sidebar)
     ├── workspace/page.tsx        # Workspace Home + Roadmap
-    ├── demos/01-runtime/         # page.tsx, use-run.ts, api.ts, content.ts + 4 component con
-    └── demos/02-claude-api/      # page.tsx, use-claude.ts, api.ts, content.ts + 5 component con
+    └── demos/                    # mỗi demo một folder: page.tsx + api.ts + content.ts + component con
+        ├── 01-runtime/ · 02-claude-api/ · 03-tools/
+        └── 04-manual-loop/ · 05-structured-output/
 ```
 
 Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `demo_XX/` tự sở hữu API, logic và sample data của mình (`plans/00-START-HERE.md`, mục 3).
@@ -80,6 +110,9 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | http://localhost:3001/workspace | **Workspace Home**: trạng thái backend/Claude, demo chạy được, Roadmap 02–08 (chỉ text) |
 | http://localhost:3001/demos/01-runtime | **01 · Agent Runtime**: scenario `SSE` · `Approval` · `Cancel` |
 | http://localhost:3001/demos/02-claude-api | **02 · Claude API**: scenario `One-shot` · `History On/Off` · `Streaming` |
+| http://localhost:3001/demos/03-tools | **03 · Tools & Registry**: scenario `Single Tool` · `Registry` · `Tool Error` |
+| http://localhost:3001/demos/04-manual-loop | **04 · Manual Agent Loop**: scenario `Normal` · `Max Turns` · `Tool Failure` |
+| http://localhost:3001/demos/05-structured-output | **05 · Structured Output**: `Generate` → `Validate` → `Repair` |
 | http://localhost:9000/docs | OpenAPI |
 
 `/` redirect 307 về `/workspace` (`frontend/next.config.ts`). Sidebar chỉ có Workspace Home + demo đã implement (`frontend/src/lib/demos.ts`: demo có `route`).
@@ -99,7 +132,14 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | POST | `/api/demos/02/messages` | Body `{messages: [{role: user\|assistant, content: 1–4000}] (1–10 turn, turn cuối phải là user), system?: ≤2000, max_tokens?: 1–LLM_MAX_TOKENS}`. Response `{status, request, response, answer, request_id, metrics{api_calls, latency_ms, input_tokens, output_tokens}, error{kind, message, upstream_status}}`. |
 | POST | `/api/demos/02/messages/stream` | Cùng body → SSE: `request_sent → text_delta ×n → final → run_finished` (lỗi thì `error` trước `run_finished`). |
 
-HTTP status của Demo 02: `200` thành công · `422` input sai (prompt rỗng, `max_tokens` vượt trần, turn cuối không phải user) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout. Endpoint stream luôn trả `200` rồi báo lỗi bằng event `error`, vì response đã bắt đầu stream.
+| POST | `/api/demos/03/run` | Body `{scenario: single\|registry\|error, prompt: 1–2000, max_tokens?}`. Response `{status, events[], requests[], responses[], answer, tool_calls[], metrics, error}`. |
+| GET | `/api/demos/03/tools` | `{tools: [...]}` — schema đang gửi cho model. |
+| POST | `/api/demos/04/sessions` · `/sessions/{id}/runs` (SSE, body `{prompt, max_turns: 1–6}`) · `/sessions/{id}/approvals/{aid}` · `/sessions/{id}/cancel` | Loop có approval và cancel; `GET /sessions/{id}` trả `{history_messages, busy}`. |
+| GET / DELETE | `/api/demos/04/tasks` (`?confirm=true` để xóa) | Đọc/xóa task trong SQLite, chỉ `demo_scope = manual_loop`. |
+| POST | `/api/demos/05/generate` · `/validate` · `/repair` | `generate`/`repair` gọi Claude (native structured output); `validate` chỉ chạy Python. Response `{stage, status, raw, accepted, schema_errors[], semantic_errors[], metrics, events}`. |
+| GET | `/api/demos/05/schema` | JSON Schema sinh từ Pydantic `TaskDraft`. |
+
+HTTP status chung cho các demo gọi Claude: `200` thành công · `422` input sai (prompt rỗng, `max_tokens` vượt trần, turn cuối không phải user, `max_turns` ngoài 1–6) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout · `409` session đang chạy · `400` thiếu `confirm` khi xóa dữ liệu. Endpoint stream luôn trả `200` rồi báo lỗi bằng event `error`, vì response đã bắt đầu stream.
 
 ## 01 · Agent Runtime — SSE · Approval · Cancel
 
@@ -145,12 +185,58 @@ Breakpoints: `messages.py` `build_request()` (body thật, không có key) · `m
 
 Giới hạn: tối đa 10 turn/request, `content` ≤ 4000 ký tự, `system` ≤ 2000, `max_tokens` ≤ `LLM_MAX_TOKENS`. Chưa có Cancel cho streaming: browser đóng stream **không** đồng nghĩa backend hủy request, nên UI không hiển thị nút Cancel.
 
+## 03 · Tools & Registry — Single Tool · Registry · Tool Error
+
+Một **tool round** đầy đủ: Claude #1 trả block `tool_use`, Python tra `TOOL_REGISTRY` và chạy hàm thật, gửi `tool_result` (kèm `tool_use_id` khớp), rồi Claude #2 mới cho câu trả lời cuối. Chưa có loop nhiều lượt — đó là Demo 04.
+
+| Scenario | tools gửi model | tool_choice | Kết quả đã đo |
+|---|---|---|---|
+| Single Tool | `sum_numbers` | ép `{"type":"tool","name":"sum_numbers"}` | model trả `input={"numbers":[120000,85000,45000]}`, Python tính `250000.0`, answer “Tổng … là **250.000**” |
+| Registry | cả 3 tool | `auto` (quyết định thật của model) | “đếm số từ…” → `count_words` (7 từ); “tính tổng…” → `sum_numbers`. Model không gọi tool thì UI báo `no_tool_use`, không dựng tool giả |
+| Tool Error | `divide_numbers` | ép | `ZeroDivisionError: division by zero` → `tool_result(is_error=true)` → Claude giải thích lỗi; HTTP vẫn 200 |
+
+An toàn: không `eval`/`exec`, không dynamic import; tool lạ → `Unknown tool`; input validate bằng Pydantic (`{"numbers": "abc"}` → lỗi validation); lỗi tool chỉ trả tên lỗi + message, không trả traceback.
+
+## 04 · Manual Agent Loop — Normal · Max Turns · Tool Failure
+
+Python giữ vòng lặp (`for turn in range(1, max_turns + 1)`), model quyết định `stop_reason`. `working_messages` là `deepcopy` của history đã commit; chỉ nhánh `end_turn` + có text mới gán lại vào `session.history`. Tool `create_task` ghi SQLite nên phải được Approve trước (fail closed).
+
+| Scenario | Kết quả đã đo |
+|---|---|
+| Normal | `create_task` → `approval_required` → Approve → INSERT thật → `end_turn` → `history_committed`; `turns_used=2`, `messages_in_request` = `[1, 3]`; task đọc lại từ DB: `{id:1, title:"Login", priority:"high", status:"todo"}` |
+| Run lại cùng session | `history_before=4` (nhớ hội thoại trước), không tạo task trùng |
+| Max Turns = 1 | `tool_use` ở lượt 1 → hết lượt → `max_turns_reached`, **không** có `final`, `history_messages` vẫn 0 |
+| Tool Failure | `get_task(999999)` → `tool_result(is_error=true, "TaskNotFound…")` → model giải thích → `run_finished` |
+| Reject | `tool_result` ghi “Người dùng không phê duyệt…”, DB vẫn trống |
+| Cancel khi đang chờ approval | `error(kind=cancelled)` → `run_finished`, history không commit, DB không có task mới |
+| Fail giữa loop (mạng cắt lượt 3) | history **không** commit nhưng `created_ids=[1]` vẫn còn trong DB → UI cảnh báo “rollback history ≠ rollback side effect” |
+
+SQLite: `backend/data/tasks.sqlite3` (gitignored), bảng `tasks(id, title, priority, status, demo_scope)`, parameterized query, `Reset data` chỉ xóa `demo_scope = manual_loop` và có confirm.
+
+## 05 · Structured Output — Generate · Validate · Repair
+
+`client.messages.parse(output_format=TaskDraft)`: SDK sinh JSON Schema từ Pydantic và gửi trong `output_config.format` — ràng buộc schema thật, không phải “nhờ prompt trả JSON”. Cùng một model `TaskDraft` dùng cho cả model và cho việc validate, nên hai bên không lệch nhau.
+
+| Bước | Gọi Claude? | Kết quả đã đo |
+|---|---|---|
+| Generate | có (1 request) | “Làm login UI ưu tiên cao, khoảng 4 giờ” → `{"title":"Làm login UI","priority":"high","estimated_hours":4.0}`, accepted |
+| Validate — lỗi schema | không | `priority:"urgent"` → `priority: Input should be 'low', 'medium' or 'high'`; thiếu field → `Field required`; `"bốn giờ"` → lỗi kiểu. Fail tầng 1 thì **không** chạy tầng 2 |
+| Validate — lỗi nghiệp vụ | không | `estimated_hours=-4` qua schema nhưng fail semantic; `title="TODO"` fail; `priority=high` + 40 giờ fail rule “high ≤ 16 giờ” |
+| Repair | có (1 request) | `-4` → `4.0`, validate lại rồi mới `accepted`; repair chỉ chạy một lần khi bấm, và có thể vẫn fail |
+
+Rule nghiệp vụ nằm ở `validation.py`: `0 < estimated_hours ≤ 80`, `priority=high` thì `≤ 16`, `title ≥ 5` ký tự và không phải placeholder. Demo này **không** ghi DB.
+
 ## Implementation status (thực tế)
 
 | # | Demo | Status | Ghi chú |
 |---|---|---|---|
 | 01 | Agent Runtime | Xong | Smoke test API pass: SSE tăng dần, Approve ghi file thật, Reject không ghi, Cancel lúc sleep và lúc chờ approval, double start → 409, cancel ngay sau start không treo stream, `DELETE /file` thiếu confirm → 400. Frontend: `npm run build` + `typecheck` pass, `/demos/01-runtime` render 200. |
 | 02 | Claude API | Xong — **live verified** | 21/21 check pass với model `claude-haiku-5-5` thật: one-shot `stop_reason=end_turn` (34 in / 115 out tokens), History OFF 1 turn vs ON 3 turn (input_tokens 23 → 105, câu trả lời đổi hẳn), streaming nhiều `text_delta` trước `final` và text ghép khớp `final.answer`, `max_tokens=16` → `stop_reason=max_tokens`, 4 case validate → 422. Frontend build/typecheck pass, `/demos/02-claude-api` render 200. |
-| 03–08 | Tools & Registry, Manual Loop, Structured Output, Workflows, MCP, Agent SDK | Chưa triển khai | Chỉ ở Roadmap trên Workspace Home. |
+| 03 | Tools & Registry | Xong — **live verified** | 23/23 check pass: 3 scenario với Claude thật + unit check registry (tool lạ, input sai kiểu, thiếu field, happy path) + 3 case validate 422. |
+| 04 | Manual Agent Loop | Xong — **live verified** | 25/25 check pass: approve → INSERT thật, reject, cancel, max_turns, tool failure, run lại giữ history, và case fail-giữa-loop chứng minh history không commit nhưng task đã ghi vẫn còn. Loop 3+ lượt bị giới hạn mạng (xem Known limitation). |
+| 05 | Structured Output | Xong — **live verified** | 26/26 check pass: native structured output, 4 loại lỗi schema, 3 loại lỗi semantic, repair 1 lần (−4 → 4.0), 3 case validate 422. |
+| 06–08 | Workflows, MCP, Agent SDK | Chưa triển khai | Chỉ ở Roadmap trên Workspace Home. |
+
+Refactor kèm theo ở lượt này: `ApprovalBroker` và `Session/SessionStore` được trích từ `demos/demo_01_runtime/` ra `backend/shared/` (demo 01 + 04 cùng dùng); thêm `shared/claude.py` cho phần hạ tầng gọi API. Demo 01 đã chạy lại smoke test (15/15 pass) sau refactor; Demo 02 giữ `messages.py` tự chứa vì nó là demo dạy chính cách gọi API.
 
 Đã bỏ ở lượt rebuild Demo 01: `backend/api.py`, `agent.py`, `sessions.py`, `approvals.py` ở gốc (chuyển vào `demos/demo_01_runtime/`), `backend/playground_api.py` + `backend/lessons/` và page `app/(workspace)/claude-api/` của bản Claude API cũ (viết lại trong `demos/demo_02_claude_api/`), `PlaygroundShell` (đổi tên `WorkspaceLayout`), các redirect URL legacy `/playground`, `/approval`, `/lessons/messages-api`.

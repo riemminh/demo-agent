@@ -1,5 +1,7 @@
 """ApprovalBroker: chờ quyết định Approve/Reject của người dùng bằng asyncio.Future.
 
+Dùng chung bởi Demo 01 (ghi file sandbox) và Demo 04 (ghi task vào SQLite).
+
 Broker không mở HTTP/SSE. Nó CHỈ:
 1. Tạo Future, lưu theo approval_id.
 2. Emit event yêu cầu người dùng phê duyệt.

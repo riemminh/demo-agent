@@ -10,6 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import config
 from demos.demo_01_runtime.router import router as demo_01_router
 from demos.demo_02_claude_api.router import router as demo_02_router
+from demos.demo_03_tools.router import router as demo_03_router
+from demos.demo_04_manual_loop.router import router as demo_04_router
+from demos.demo_05_structured_output.router import router as demo_05_router
 
 app = FastAPI(title="AI Agent Demo Workspace")
 
@@ -40,4 +43,7 @@ async def health() -> dict[str, object]:
 
 app.include_router(demo_01_router, prefix="/api/demos/01", tags=["demo-01-runtime"])
 app.include_router(demo_02_router, prefix="/api/demos/02", tags=["demo-02-claude-api"])
+app.include_router(demo_03_router, prefix="/api/demos/03", tags=["demo-03-tools"])
+app.include_router(demo_04_router, prefix="/api/demos/04", tags=["demo-04-manual-loop"])
+app.include_router(demo_05_router, prefix="/api/demos/05", tags=["demo-05-structured-output"])
 # Thêm router demo mới SAU KHI demo đó có code thật.

@@ -13,8 +13,9 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from typing import Any, Literal
 
+from shared.sessions import Session
+
 from .approval_note import NOTE_NAME, build_note, write_note
-from .sessions import Session
 
 Event = dict[str, Any]
 EventSink = Callable[[Event], None]

@@ -52,7 +52,7 @@ export const BREAKPOINTS = [
     why: "Producer: mỗi event agent emit đi vào Queue của đúng run đó, rồi mới thành khung `data: {...}` của SSE.",
   },
   {
-    file: "backend/demos/demo_01_runtime/approvals.py", fn: "ApprovalBroker.request()",
+    file: "backend/shared/approval.py", fn: "ApprovalBroker.request()",
     code: "approved = await asyncio.wait_for(future, timeout=self.timeout_seconds)",
     why: "Agent dừng tại đây tới khi `resolve()` gọi `future.set_result(approved)` từ request POST /approvals, hoặc hết 120s thì fail closed (reject).",
   },
