@@ -57,11 +57,6 @@ export default function WorkspaceHome() {
                 <Text strong>Scenario: </Text>
                 {demo.scenarios.map((name) => <Tag key={name} color="blue">{name}</Tag>)}
               </Flex>
-              {demo.plannedScenarios && (
-                <Paragraph type="secondary" style={{ margin: "6px 0 0" }}>
-                  Chưa triển khai: {demo.plannedScenarios.join(" · ")}
-                </Paragraph>
-              )}
             </Card>
           </Col>
         ))}

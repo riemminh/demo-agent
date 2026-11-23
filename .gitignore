@@ -22,3 +22,6 @@ frontend/out/
 
 # Scratch files của agent (script tạm, screenshot)
 .tmp/
+
+# Sandbox runtime của các demo (file do agent ghi sau approval, SQLite từ demo 04)
+backend/data/
