@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Layout, Space, Tag, Typography } from "antd";
+import { Flex, Layout, Space, Tag, Typography, theme } from "antd";
 import { useEffect, useState } from "react";
 import DemoMenu from "@/components/DemoMenu";
 import { getHealth, type Health } from "@/lib/api";
@@ -12,6 +12,7 @@ const { Header, Sider, Content } = Layout;
 export default function PlaygroundShell({ children }: { children: React.ReactNode }) {
   const [health, setHealth] = useState<Health | null>(null);
   const [healthError, setHealthError] = useState(false);
+  const { token } = theme.useToken();
 
   useEffect(() => {
     getHealth().then(setHealth).catch(() => setHealthError(true));
@@ -19,11 +20,11 @@ export default function PlaygroundShell({ children }: { children: React.ReactNod
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Header>
+      <Header style={{ borderBottom: `1px solid ${token.colorBorderSecondary}` }}>
         <Flex align="center" justify="space-between" style={{ height: "100%" }} gap={16}>
-          <Typography.Text strong style={{ color: "#fff", fontSize: 17 }}>
+          <Typography.Text strong style={{ fontSize: 17 }}>
             ◈ AI Agent Demo Workspace
-            <Typography.Text style={{ color: "#AFC0D6", marginInlineStart: 12 }}>
+            <Typography.Text type="secondary" style={{ marginInlineStart: 12 }}>
               Claude Agent mechanics, chạy thật
             </Typography.Text>
           </Typography.Text>
@@ -39,7 +40,7 @@ export default function PlaygroundShell({ children }: { children: React.ReactNod
       </Header>
       <Layout>
         <Sider width={260} breakpoint="lg" collapsedWidth={0}
-          style={{ borderInlineEnd: "1px solid #DCE3EC" }}>
+          style={{ borderInlineEnd: `1px solid ${token.colorBorderSecondary}` }}>
           <DemoMenu />
         </Sider>
         <Content style={{ padding: 24, minWidth: 0 }}>

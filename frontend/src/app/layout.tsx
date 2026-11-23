@@ -11,8 +11,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
-      <body style={{ margin: 0 }}>{children}</body>
+    // colorScheme dark: scrollbar, autofill và nền canvas của browser cũng tối, không lóe trắng khi overscroll.
+    <html lang="vi" style={{ colorScheme: "dark" }}>
+      <body style={{ margin: 0, background: "#000" }}>{children}</body>
     </html>
   );
 }

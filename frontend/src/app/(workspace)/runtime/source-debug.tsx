@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Flex, Tag, Typography } from "antd";
+import { Card, Flex, Tag, Typography, theme } from "antd";
 import { BREAKPOINTS } from "./content";
 
 const { Text } = Typography;
@@ -12,6 +12,7 @@ function withCode(text: string) {
 
 // Breakpoint ghi bằng đoạn code có thật trong file: mở file, Ctrl+F đoạn code rồi đặt breakpoint.
 export default function SourceDebug() {
+  const { token } = theme.useToken();
   return (
     <Card size="small" title="Source Code & Breakpoints">
       <Flex vertical gap={10}>
@@ -19,7 +20,7 @@ export default function SourceDebug() {
           <div key={bp.code}>
             <Tag color="red">BP{i + 1}</Tag>
             <Text code>{bp.file}</Text> → <Text code>{bp.fn}</Text>
-            <pre style={{ margin: "6px 0", padding: "6px 10px", background: "#F6F8FB", borderRadius: 6,
+            <pre style={{ margin: "6px 0", padding: "6px 10px", background: token.colorFillTertiary, borderRadius: 6,
               whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{bp.code}</pre>
             <Text type="secondary">{withCode(bp.why)}</Text>
           </div>
