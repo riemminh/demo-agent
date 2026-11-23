@@ -42,7 +42,7 @@ export default function ClaudeApiDemo() {
   // Lúc load page chỉ gọi health + source (không gọi Claude).
   useEffect(() => {
     getHealth().then(setHealth).catch((e: Error) => setHealthError(e.message));
-    fetch(`${API_URL}/api/lessons/messages-api/source`)
+    fetch(`${API_URL}/api/claude-api/one-shot/source`)
       .then(async (r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         setSource((await r.json()) as SourceFile);
@@ -59,7 +59,7 @@ export default function ClaudeApiDemo() {
     const sentAt = new Date();
     const started = performance.now();
     try {
-      const response = await fetch(`${API_URL}/api/lessons/messages-api`, {
+      const response = await fetch(`${API_URL}/api/claude-api/one-shot`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),

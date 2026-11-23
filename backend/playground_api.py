@@ -42,7 +42,7 @@ class MessagesApiInput(BaseModel):
     max_tokens: int = Field(default=512, ge=1)
 
 
-@router.post("/lessons/messages-api")
+@router.post("/claude-api/one-shot")
 async def post_messages_api(body: MessagesApiInput) -> JSONResponse:
     if body.max_tokens > config.LLM_MAX_TOKENS:
         return JSONResponse(status_code=422, content={
@@ -56,7 +56,7 @@ async def post_messages_api(body: MessagesApiInput) -> JSONResponse:
     return JSONResponse(status_code=status, content=result)
 
 
-@router.get("/lessons/messages-api/source")
+@router.get("/claude-api/one-shot/source")
 async def get_messages_api_source() -> dict[str, str]:
     # Đọc đúng file đang chạy để UI hiển thị code thật, có số dòng để đặt breakpoint.
     return {"path": f"backend/{MESSAGES_API_SOURCE}",

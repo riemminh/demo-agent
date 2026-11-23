@@ -17,7 +17,7 @@ function TraceTimeline({ run }: { run: RunRecord }) {
   const { result } = run;
   const items: TimelineItem[] = [
     { color: "blue", title: clock(run.sentAt),
-      content: <>Browser gửi <Text code>POST /api/lessons/messages-api</Text></> },
+      content: <>Browser gửi <Text code>POST /api/claude-api/one-shot</Text></> },
   ];
 
   if (run.httpStatus === null) {

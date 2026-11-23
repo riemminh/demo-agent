@@ -71,8 +71,8 @@ Sidebar chỉ có Workspace Home + demo đã implement (`frontend/src/lib/demos.
 | HTTP | Endpoint | Body / Response |
 |---|---|---|
 | GET | `/api/health` | `{ok, llm_configured, missing_env[], model, max_tokens_cap, timeout_seconds}`. Không gọi Claude, không trả key. |
-| POST | `/api/lessons/messages-api` | Body `{prompt: str 1–4000, system?: str ≤2000, max_tokens?: int 1–LLM_MAX_TOKENS}`. Response `{status, request, response, answer, request_id, metrics{api_calls, latency_ms, input_tokens, output_tokens}, error{kind, message, upstream_status}}`. |
-| GET | `/api/lessons/messages-api/source` | `{path, code}` của `backend/lessons/messages_api.py` (path cố định). |
+| POST | `/api/claude-api/one-shot` | Body `{prompt: str 1–4000, system?: str ≤2000, max_tokens?: int 1–LLM_MAX_TOKENS}`. Response `{status, request, response, answer, request_id, metrics{api_calls, latency_ms, input_tokens, output_tokens}, error{kind, message, upstream_status}}`. |
+| GET | `/api/claude-api/one-shot/source` | `{path, code}` của `backend/lessons/messages_api.py` (path cố định). |
 | POST | `/api/sessions`, `/api/sessions/{id}/messages` (body `{text, scenario: sse\|approval\|long}`, SSE), `/approvals/{id}` (body `{approved}`), `/cancel` | Dùng bởi demo 01 · Agent Runtime, không đổi. |
 
 HTTP status của Claude API (One-shot): `200` thành công · `422` input sai (prompt rỗng, max_tokens vượt trần) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout.
@@ -81,7 +81,7 @@ HTTP status của Claude API (One-shot): `200` thành công · `422` input sai (
 
 Màn hình: **Input** (preset `Task Description` | `Leave Email`, 2 ô nhập, Tùy chọn nâng cao: system/max_tokens/model) bên trái → **Generated Draft** (Actual Result) bên phải (text thật từ Claude, sửa trực tiếp, `Copy`, `Restore`, status `idle/running/succeeded/failed`) → Metrics → **Execution Events** (trace của lần Run) → **Source Code & Debug** (Request JSON / Response JSON / Source & Debug) → How it works (Collapse) → Kết quả cần đạt. Không có quiz.
 
-Flow: `claude-api/demo-form.tsx` `submit()` ghép prompt bằng `PRESETS[key].buildPrompt` (`content.ts`) → `page.tsx` `runDemo()` → `POST /api/lessons/messages-api` → `playground_api.py` `post_messages_api()` (Pydantic validate) → `lessons/messages_api.py` `run_messages_api()` → `client.messages.create(**request_body)` (1 HTTP request, `max_retries=0`, `thinking: disabled`) → JSON → Draft = ghép các block `text`.
+Flow: `claude-api/demo-form.tsx` `submit()` ghép prompt bằng `PRESETS[key].buildPrompt` (`content.ts`) → `page.tsx` `runDemo()` → `POST /api/claude-api/one-shot` → `playground_api.py` `post_messages_api()` (Pydantic validate) → `lessons/messages_api.py` `run_messages_api()` → `client.messages.create(**request_body)` (1 HTTP request, `max_retries=0`, `thinking: disabled`) → JSON → Draft = ghép các block `text`.
 
 `thinking: {"type": "disabled"}`: với model đang cấu hình, extended thinking bật mặc định và thinking token tính vào `max_tokens`; đã quan sát một response 512 token chỉ có block `thinking`, không có text. Tắt đi để draft luôn là text.
 
