@@ -38,8 +38,8 @@ export const DEMOS: Demo[] = [
     scenarios: ["Generate", "Validate", "Repair"],
   },
   {
-    id: "06", title: "Agent Workflows",
-    mechanism: "So sánh fixed workflow và dynamic workflow qua năm pattern.",
+    id: "06", title: "Agent Workflows", route: "/demos/06-workflows",
+    mechanism: "Năm pattern viết bằng Python + Claude API, có trace thời gian thật và budget call cho từng pattern.",
     scenarios: ["Chaining", "Routing", "Parallel", "Orchestrator", "Evaluator"],
   },
   {

@@ -6,7 +6,7 @@ Source of truth: `plans/00-START-HERE.md` + `plans/01-SHARED-ARCHITECTURE-UI.md`
 
 Stack: Python + FastAPI (backend, port 9000) · Next.js 16 App Router (Turbopack) + TypeScript + Ant Design v6 (frontend, port 3001).
 
-**Trạng thái hiện tại:** Demo **01 → 05** chạy được (Agent Runtime · Claude API · Tools & Registry · Manual Agent Loop · Structured Output). Demo 06–08 chỉ nằm ở Roadmap trên Workspace Home (không route, không lên sidebar).
+**Trạng thái hiện tại:** Demo **01 → 06** chạy được (Agent Runtime · Claude API · Tools & Registry · Manual Agent Loop · Structured Output · Agent Workflows). Demo 07–08 chỉ nằm ở Roadmap trên Workspace Home (không route, không lên sidebar).
 
 ## Setup
 
@@ -86,10 +86,14 @@ backend/
 │   ├── router.py                 # sessions, runs (SSE), approvals, cancel, tasks
 │   ├── agent_loop.py             # loop + working/committed history + MAX_TURNS
 │   └── tasks_tools.py            # list_tasks / create_task (cần approve) / get_task
-└── demos/demo_05_structured_output/
-    ├── router.py · schemas.py    # TaskDraft (Pydantic) dùng cho cả model và app
-    ├── validation.py             # tầng schema + tầng semantic, chạy offline
-    └── generation.py             # messages.parse(output_format=...) + repair 1 lần
+├── demos/demo_05_structured_output/
+│   ├── router.py · schemas.py    # TaskDraft (Pydantic) dùng cho cả model và app
+│   ├── validation.py             # tầng schema + tầng semantic, chạy offline
+│   └── generation.py             # messages.parse(output_format=...) + repair 1 lần
+└── demos/demo_06_workflows/
+    ├── router.py                 # POST /run, GET /caps
+    ├── patterns.py               # 5 async function: chaining/routing/parallel/orchestrator/evaluator
+    └── runner.py                 # Trace: đếm call, enforce budget, ghi start_ms/end_ms
 frontend/src/
 ├── components/                   # WorkspaceLayout (Header+Sider+Content), DemoMenu, CodeBlock, LearningOutcome
 ├── lib/demos.ts                  # metadata 8 demo; chỉ demo có `route` lên sidebar
@@ -98,7 +102,7 @@ frontend/src/
     ├── workspace/page.tsx        # Workspace Home + Roadmap
     └── demos/                    # mỗi demo một folder: page.tsx + api.ts + content.ts + component con
         ├── 01-runtime/ · 02-claude-api/ · 03-tools/
-        └── 04-manual-loop/ · 05-structured-output/
+        └── 04-manual-loop/ · 05-structured-output/ · 06-workflows/
 ```
 
 Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `demo_XX/` tự sở hữu API, logic và sample data của mình (`plans/00-START-HERE.md`, mục 3).
@@ -113,6 +117,7 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | http://localhost:3001/demos/03-tools | **03 · Tools & Registry**: scenario `Single Tool` · `Registry` · `Tool Error` |
 | http://localhost:3001/demos/04-manual-loop | **04 · Manual Agent Loop**: scenario `Normal` · `Max Turns` · `Tool Failure` |
 | http://localhost:3001/demos/05-structured-output | **05 · Structured Output**: `Generate` → `Validate` → `Repair` |
+| http://localhost:3001/demos/06-workflows | **06 · Agent Workflows**: `Chaining` · `Routing` · `Parallel` · `Orchestrator` · `Evaluator` |
 | http://localhost:9000/docs | OpenAPI |
 
 `/` redirect 307 về `/workspace` (`frontend/next.config.ts`). Sidebar chỉ có Workspace Home + demo đã implement (`frontend/src/lib/demos.ts`: demo có `route`).
@@ -138,6 +143,8 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | GET / DELETE | `/api/demos/04/tasks` (`?confirm=true` để xóa) | Đọc/xóa task trong SQLite, chỉ `demo_scope = manual_loop`. |
 | POST | `/api/demos/05/generate` · `/validate` · `/repair` | `generate`/`repair` gọi Claude (native structured output); `validate` chỉ chạy Python. Response `{stage, status, raw, accepted, schema_errors[], semantic_errors[], metrics, events}`. |
 | GET | `/api/demos/05/schema` | JSON Schema sinh từ Pydantic `TaskDraft`. |
+| POST | `/api/demos/06/run` | Body `{scenario: chaining\|routing\|parallel\|orchestrator\|evaluator, input: 1–1000}`. Response `{status, answer, steps[] (kind llm/code, start_ms, end_ms, prompt, output, usage), metrics{api_calls, budget, latency_ms, tokens}, error}`. Vượt budget → **409** kèm trace. |
+| GET | `/api/demos/06/caps` | `{budgets, max_workers, max_revisions}` — UI hiển thị, backend enforce. |
 
 HTTP status chung cho các demo gọi Claude: `200` thành công · `422` input sai (prompt rỗng, `max_tokens` vượt trần, turn cuối không phải user, `max_turns` ngoài 1–6) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout · `409` session đang chạy · `400` thiếu `confirm` khi xóa dữ liệu. Endpoint stream luôn trả `200` rồi báo lỗi bằng event `error`, vì response đã bắt đầu stream.
 
@@ -226,6 +233,20 @@ SQLite: `backend/data/tasks.sqlite3` (gitignored), bảng `tasks(id, title, prio
 
 Rule nghiệp vụ nằm ở `validation.py`: `0 < estimated_hours ≤ 80`, `priority=high` thì `≤ 16`, `title ≥ 5` ký tự và không phải placeholder. Demo này **không** ghi DB.
 
+## 06 · Agent Workflows — Chaining · Routing · Parallel · Orchestrator · Evaluator
+
+Năm pattern chỉ bằng Python + Claude API, không framework. Thông điệp của demo: **code giữ cấu trúc** (thứ tự, nhánh, song song, cap), **model lo nội dung** và những quyết định được hỏi tường minh. Mỗi step trong trace ghi `kind` (`llm` = một request thật, `code` = quyết định của Python) kèm `start_ms`/`end_ms` do backend đo.
+
+| Pattern | Budget | Kết quả đã đo |
+|---|---|---|
+| Chaining | 2 call | `draft` → `code:pipe` → `improve`; `start_ms` của call 2 = `end_ms` của call 1 (tuần tự), output bước 1 nằm trong prompt bước 2 |
+| Routing | 2 call | “Dịch câu này…” → classifier trả `translate` → `handler:translate`; “Tóm tắt…” → `summarize`. Nhãn ngoài danh sách → fallback, **không** gọi handler (kiểm bằng stub) |
+| Parallel | 2 call | `asyncio.gather()`: hai call overlap ~1476 ms, latency 1608 ms so với tổng thời gian hai call 3085 ms |
+| Orchestrator | 3 call | planner đề xuất 7–8 subtask, `code:cap` chỉ chạy 2 (`MAX_WORKERS=2`), rồi `code:combine` gộp kết quả |
+| Evaluator | 4 call | `generate` → `evaluate #1` → verdict thật; ACCEPT thì dừng, REVISE thì dùng đúng một lần `revise`. Hết lượt mà vẫn REVISE thì trả bản cuối **kèm feedback chưa xử lý**, không giả vờ đã accept |
+
+Budget là giới hạn thật: `Trace.call()` raise `BudgetExceeded` trước khi gọi API (đã kiểm với `budget=0`), router trả 409 và vẫn kèm trace để thấy nó dừng ở bước nào. Demo này không ghi DB, `max_tokens` mỗi call là 220.
+
 ## Implementation status (thực tế)
 
 | # | Demo | Status | Ghi chú |
@@ -235,7 +256,8 @@ Rule nghiệp vụ nằm ở `validation.py`: `0 < estimated_hours ≤ 80`, `pri
 | 03 | Tools & Registry | Xong — **live verified** | 23/23 check pass: 3 scenario với Claude thật + unit check registry (tool lạ, input sai kiểu, thiếu field, happy path) + 3 case validate 422. |
 | 04 | Manual Agent Loop | Xong — **live verified** | 25/25 check pass: approve → INSERT thật, reject, cancel, max_turns, tool failure, run lại giữ history, và case fail-giữa-loop chứng minh history không commit nhưng task đã ghi vẫn còn. Loop 3+ lượt bị giới hạn mạng (xem Known limitation). |
 | 05 | Structured Output | Xong — **live verified** | 26/26 check pass: native structured output, 4 loại lỗi schema, 3 loại lỗi semantic, repair 1 lần (−4 → 4.0), 3 case validate 422. |
-| 06–08 | Workflows, MCP, Agent SDK | Chưa triển khai | Chỉ ở Roadmap trên Workspace Home. |
+| 06 | Agent Workflows | Xong — **live verified** | 26/26 check pass: 5 pattern với Claude thật (chaining tuần tự, parallel overlap đo được, routing branch theo nhãn thật, orchestrator cap 2 worker, evaluator verdict thật) + 2 check offline chứng minh budget raise và routing fallback + 2 case 422. |
+| 07–08 | MCP, Agent SDK | Chưa triển khai | Chỉ ở Roadmap trên Workspace Home. |
 
 Refactor kèm theo ở lượt này: `ApprovalBroker` và `Session/SessionStore` được trích từ `demos/demo_01_runtime/` ra `backend/shared/` (demo 01 + 04 cùng dùng); thêm `shared/claude.py` cho phần hạ tầng gọi API. Demo 01 đã chạy lại smoke test (15/15 pass) sau refactor; Demo 02 giữ `messages.py` tự chứa vì nó là demo dạy chính cách gọi API.
 

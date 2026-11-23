@@ -13,6 +13,7 @@ from demos.demo_02_claude_api.router import router as demo_02_router
 from demos.demo_03_tools.router import router as demo_03_router
 from demos.demo_04_manual_loop.router import router as demo_04_router
 from demos.demo_05_structured_output.router import router as demo_05_router
+from demos.demo_06_workflows.router import router as demo_06_router
 
 app = FastAPI(title="AI Agent Demo Workspace")
 
@@ -46,4 +47,5 @@ app.include_router(demo_02_router, prefix="/api/demos/02", tags=["demo-02-claude
 app.include_router(demo_03_router, prefix="/api/demos/03", tags=["demo-03-tools"])
 app.include_router(demo_04_router, prefix="/api/demos/04", tags=["demo-04-manual-loop"])
 app.include_router(demo_05_router, prefix="/api/demos/05", tags=["demo-05-structured-output"])
+app.include_router(demo_06_router, prefix="/api/demos/06", tags=["demo-06-workflows"])
 # Thêm router demo mới SAU KHI demo đó có code thật.
