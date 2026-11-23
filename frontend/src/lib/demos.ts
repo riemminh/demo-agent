@@ -48,9 +48,9 @@ export const DEMOS: Demo[] = [
     scenarios: ["Connect & Discover", "Call Tool", "Resources & Prompts"],
   },
   {
-    id: "08", title: "Claude Agent SDK",
-    mechanism: "SDK quản lý Agent Loop; app vẫn kiểm soát permissions, hooks, skills, subagents.",
-    scenarios: ["Basic", "Permissions/Hooks", "Skills", "Subagents"],
+    id: "08", title: "Claude Agent SDK", route: "/demos/08-agent-sdk",
+    mechanism: "SDK (qua Claude Code CLI) chạy agent loop; app vẫn giữ can_use_tool, hooks, skills, subagents và mọi cận trên.",
+    scenarios: ["Basic", "Permissions & Hooks", "Skills", "Subagents"],
   },
 ];
 
