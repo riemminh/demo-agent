@@ -43,9 +43,9 @@ export const DEMOS: Demo[] = [
     scenarios: ["Chaining", "Routing", "Parallel", "Orchestrator", "Evaluator"],
   },
   {
-    id: "07", title: "MCP",
-    mechanism: "MCP server/client thật: discover tool, call tool, resource/prompt.",
-    scenarios: ["Discover", "Call Tool", "Resource/Prompt"],
+    id: "07", title: "MCP", route: "/demos/07-mcp",
+    mechanism: "MCP server riêng chạy qua stdio; client initialize, tools/list, tools/call, resources và prompts thật.",
+    scenarios: ["Connect & Discover", "Call Tool", "Resources & Prompts"],
   },
   {
     id: "08", title: "Claude Agent SDK",

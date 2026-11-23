@@ -6,7 +6,7 @@ Source of truth: `plans/00-START-HERE.md` + `plans/01-SHARED-ARCHITECTURE-UI.md`
 
 Stack: Python + FastAPI (backend, port 9000) · Next.js 16 App Router (Turbopack) + TypeScript + Ant Design v6 (frontend, port 3001).
 
-**Trạng thái hiện tại:** Demo **01 → 06** chạy được (Agent Runtime · Claude API · Tools & Registry · Manual Agent Loop · Structured Output · Agent Workflows). Demo 07–08 chỉ nằm ở Roadmap trên Workspace Home (không route, không lên sidebar).
+**Trạng thái hiện tại:** Demo **01 → 07** chạy được (Agent Runtime · Claude API · Tools & Registry · Manual Agent Loop · Structured Output · Agent Workflows · MCP). Demo 08 chỉ nằm ở Roadmap trên Workspace Home (không route, không lên sidebar).
 
 ## Setup
 
@@ -90,10 +90,14 @@ backend/
 │   ├── router.py · schemas.py    # TaskDraft (Pydantic) dùng cho cả model và app
 │   ├── validation.py             # tầng schema + tầng semantic, chạy offline
 │   └── generation.py             # messages.parse(output_format=...) + repair 1 lần
-└── demos/demo_06_workflows/
-    ├── router.py                 # POST /run, GET /caps
-    ├── patterns.py               # 5 async function: chaining/routing/parallel/orchestrator/evaluator
-    └── runner.py                 # Trace: đếm call, enforce budget, ghi start_ms/end_ms
+├── demos/demo_06_workflows/
+│   ├── router.py                 # POST /run, GET /caps
+│   ├── patterns.py               # 5 async function: chaining/routing/parallel/orchestrator/evaluator
+│   └── runner.py                 # Trace: đếm call, enforce budget, ghi start_ms/end_ms
+└── demos/demo_07_mcp/
+    ├── mcp_server.py             # MCP server thật (stdio), 2 tool + 1 resource + 1 prompt
+    ├── mcp_client.py             # Client: spawn, initialize, tools/list, tools/call, resources, prompts
+    └── router.py                 # Bridge FastAPI -> client; seed/reset dữ liệu scope mcp
 frontend/src/
 ├── components/                   # WorkspaceLayout (Header+Sider+Content), DemoMenu, CodeBlock, LearningOutcome
 ├── lib/demos.ts                  # metadata 8 demo; chỉ demo có `route` lên sidebar
@@ -102,7 +106,7 @@ frontend/src/
     ├── workspace/page.tsx        # Workspace Home + Roadmap
     └── demos/                    # mỗi demo một folder: page.tsx + api.ts + content.ts + component con
         ├── 01-runtime/ · 02-claude-api/ · 03-tools/
-        └── 04-manual-loop/ · 05-structured-output/ · 06-workflows/
+        └── 04-manual-loop/ · 05-structured-output/ · 06-workflows/ · 07-mcp/
 ```
 
 Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `demo_XX/` tự sở hữu API, logic và sample data của mình (`plans/00-START-HERE.md`, mục 3).
@@ -118,6 +122,7 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | http://localhost:3001/demos/04-manual-loop | **04 · Manual Agent Loop**: scenario `Normal` · `Max Turns` · `Tool Failure` |
 | http://localhost:3001/demos/05-structured-output | **05 · Structured Output**: `Generate` → `Validate` → `Repair` |
 | http://localhost:3001/demos/06-workflows | **06 · Agent Workflows**: `Chaining` · `Routing` · `Parallel` · `Orchestrator` · `Evaluator` |
+| http://localhost:3001/demos/07-mcp | **07 · MCP**: `Connect & Discover` · `Call Tool` · `Resources & Prompts` (không cần Claude key) |
 | http://localhost:9000/docs | OpenAPI |
 
 `/` redirect 307 về `/workspace` (`frontend/next.config.ts`). Sidebar chỉ có Workspace Home + demo đã implement (`frontend/src/lib/demos.ts`: demo có `route`).
@@ -145,6 +150,10 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | GET | `/api/demos/05/schema` | JSON Schema sinh từ Pydantic `TaskDraft`. |
 | POST | `/api/demos/06/run` | Body `{scenario: chaining\|routing\|parallel\|orchestrator\|evaluator, input: 1–1000}`. Response `{status, answer, steps[] (kind llm/code, start_ms, end_ms, prompt, output, usage), metrics{api_calls, budget, latency_ms, tokens}, error}`. Vượt budget → **409** kèm trace. |
 | GET | `/api/demos/06/caps` | `{budgets, max_workers, max_revisions}` — UI hiển thị, backend enforce. |
+| POST | `/api/demos/07/discover` | Spawn MCP server (stdio) → initialize → `tools/list`. Response `{connected, session{server_name, protocol_version, capabilities}, tools[{name, description, input_schema}], events[]}`. |
+| POST | `/api/demos/07/call-tool` | Body `{name: list_tasks\|get_task, task_id?}` → `tools/call`. Response thêm `result{is_error, text, structured}`, `schema`, `db_tasks` (đọc thẳng SQLite để đối chiếu). |
+| POST | `/api/demos/07/resources-prompts` | Body `{goal}` → `resources/list` + `resources/read` + `prompts/list` + `prompts/get`. |
+| POST / GET / DELETE | `/api/demos/07/seed` · `/tasks` · `/tasks?confirm=true` | Dữ liệu sandbox scope `mcp`; Seed là Python ghi trực tiếp (có nhãn **seed dữ liệu**), không phải tool của server. |
 
 HTTP status chung cho các demo gọi Claude: `200` thành công · `422` input sai (prompt rỗng, `max_tokens` vượt trần, turn cuối không phải user, `max_turns` ngoài 1–6) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout · `409` session đang chạy · `400` thiếu `confirm` khi xóa dữ liệu. Endpoint stream luôn trả `200` rồi báo lỗi bằng event `error`, vì response đã bắt đầu stream.
 
@@ -247,6 +256,29 @@ Năm pattern chỉ bằng Python + Claude API, không framework. Thông điệp 
 
 Budget là giới hạn thật: `Trace.call()` raise `BudgetExceeded` trước khi gọi API (đã kiểm với `budget=0`), router trả 409 và vẫn kèm trace để thấy nó dừng ở bước nào. Demo này không ghi DB, `max_tokens` mỗi call là 220.
 
+## 07 · MCP — Connect & Discover · Call Tool · Resources & Prompts
+
+MCP server **thật** (MCP Python SDK 2.x, `MCPServer`) chạy trong process riêng, nói JSON-RPC trên **stdio**. Client thật `initialize` rồi mới `tools/list` / `tools/call`. Khác Demo 03: ở đó tool là hàm Python trong cùng process; ở đây tool sống độc lập và chạy được với bất kỳ MCP client nào. **Không cần Claude key.**
+
+```text
+Browser → FastAPI bridge → MCP Client ──stdio──> MCP Server ──> SQLite (scope mcp, chỉ đọc)
+                                     initialize · tools/list · tools/call
+                                     resources/list · resources/read
+                                     prompts/list · prompts/get
+```
+
+| Scenario | Kết quả đã đo |
+|---|---|
+| Connect & Discover | `server_name=agent-demo-task-server`, `protocol_version=2026-07-28`, capabilities `tools/resources/prompts`; server công bố 2 tool kèm `input_schema` do SDK sinh từ type hint (`get_task` yêu cầu `task_id: integer`) |
+| Call Tool | `list_tasks` trả `structured_content` **khớp đúng** 3 row đọc thẳng từ SQLite; `get_task(id)` trả task; `get_task(999999)` → `is_error=true` với message `TaskNotFound: …` |
+| Resources & Prompts | `workspace://tasks/summary` (text/markdown) sinh từ DB thật (“Tổng: 3 task”); `plan_task` nhận `goal` và trả message có nhúng cả goal lẫn các task đang có |
+
+An toàn và dọn dẹp: tham số server là hằng số trong `mcp_client.py` (UI không gửi command → không có command injection); tên tool được allowlist ở router và client chỉ gọi tool mà server công bố; mỗi operation nằm trong `async with Client(...)` nên subprocess được đóng sau request (đã đo: 3 lần connect liên tiếp không để lại process nào). Server chạy standalone được:
+
+```bash
+cd backend && uv run python -m demos.demo_07_mcp.mcp_server   # stdio: đừng print() ra stdout
+```
+
 ## Implementation status (thực tế)
 
 | # | Demo | Status | Ghi chú |
@@ -257,7 +289,10 @@ Budget là giới hạn thật: `Trace.call()` raise `BudgetExceeded` trước k
 | 04 | Manual Agent Loop | Xong — **live verified** | 25/25 check pass: approve → INSERT thật, reject, cancel, max_turns, tool failure, run lại giữ history, và case fail-giữa-loop chứng minh history không commit nhưng task đã ghi vẫn còn. Loop 3+ lượt bị giới hạn mạng (xem Known limitation). |
 | 05 | Structured Output | Xong — **live verified** | 26/26 check pass: native structured output, 4 loại lỗi schema, 3 loại lỗi semantic, repair 1 lần (−4 → 4.0), 3 case validate 422. |
 | 06 | Agent Workflows | Xong — **live verified** | 26/26 check pass: 5 pattern với Claude thật (chaining tuần tự, parallel overlap đo được, routing branch theo nhãn thật, orchestrator cap 2 worker, evaluator verdict thật) + 2 check offline chứng minh budget raise và routing fallback + 2 case 422. |
-| 07–08 | MCP, Agent SDK | Chưa triển khai | Chỉ ở Roadmap trên Workspace Home. |
+| 07 | MCP | Xong — **verified** (không cần key) | 24/24 check pass: discover/initialize thật, `list_tasks` khớp SQLite, tool error `TaskNotFound`, resource Markdown sinh từ DB, prompt template có argument, server chạy standalone, 3 lần connect không rò rỉ subprocess, 5 case 422/400. |
+| 08 | Claude Agent SDK | Chưa triển khai | Chỉ ở Roadmap trên Workspace Home; sẽ cần thêm dependency SDK. |
+
+Dependency thêm ở lượt này: `mcp==2.3.0` (`uv add mcp`). Lưu ý SDK 2.x đã đổi tên `FastMCP` → `MCPServer` và dùng field snake_case (`input_schema`, `is_error`, `structured_content`), khác tài liệu v1.
 
 Refactor kèm theo ở lượt này: `ApprovalBroker` và `Session/SessionStore` được trích từ `demos/demo_01_runtime/` ra `backend/shared/` (demo 01 + 04 cùng dùng); thêm `shared/claude.py` cho phần hạ tầng gọi API. Demo 01 đã chạy lại smoke test (15/15 pass) sau refactor; Demo 02 giữ `messages.py` tự chứa vì nó là demo dạy chính cách gọi API.
 
