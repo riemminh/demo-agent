@@ -1,7 +1,12 @@
 # AI Agent Demo Workspace — Claude Agent mechanics, chạy thật
 
-Workspace gồm **8 demo tương tác** (mục tiêu cuối), mỗi demo có vài scenario: chọn scenario, bấm Run, xem Actual Result, Execution Events, Source Code ở breakpoint, rồi đọc Kết quả cần đạt. Source of truth: `refactor-plan-8-demos.md` (thay cách chia 36 lesson của `plan-v2.md` / `plan-v3-feature-first.md`). Hiện đã xong **Phase A — Navigation & Shared Layout**.
+Workspace gồm **8 demo tương tác** (mục tiêu Phase 1). Mỗi demo có vài scenario: chọn scenario, bấm Run, xem **Actual Result** → **Execution Events** → **Source & Debug** → **Kết quả cần đạt**. Không quiz, không lesson progress.
+
+Source of truth: `plans/00-START-HERE.md` + `plans/01-SHARED-ARCHITECTURE-UI.md` + một plan cho mỗi demo (`plans/02-…` → `plans/09-…`). Mỗi lượt chỉ làm một plan rồi dừng để review.
+
 Stack: Python + FastAPI (backend, port 9000) · Next.js 16 App Router (Turbopack) + TypeScript + Ant Design v6 (frontend, port 3001).
+
+**Trạng thái hiện tại:** đủ **8/8 demo** có code chạy được. Demo 08 (Agent SDK) cần thêm prerequisite (Claude Code CLI) và lượt model của nó hiện bị giới hạn mạng — xem Known limitation.
 
 ## Setup
 
@@ -12,25 +17,35 @@ Cần [uv](https://docs.astral.sh/uv/).
 ```bash
 cd backend
 uv sync
-cp .env.example .env   # nếu đã có backend/.env.example; nếu chưa, tạo .env theo mẫu dưới
-# backend/.env (không commit) gồm:
-#   ANTHROPIC_API_KEY=<key của bạn>
-#   LLM_MODEL=<model ID, xem https://docs.claude.com/en/docs/about-claude/models>
-#   LLM_MAX_TOKENS=1024        # trần max_tokens UI được gửi (tùy chọn)
-#   LLM_TIMEOUT_SECONDS=30     # timeout gọi Claude (tùy chọn)
-uv run uvicorn api:app --reload --port 9000
+cp .env.example .env      # Demo 01 KHÔNG cần key; từ Demo 02 mới cần
+uv run uvicorn main:app --reload --port 9000
 ```
 
-- `config.py` gọi `load_dotenv(backend/.env)` tường minh; uvicorn không tự đọc `.env`.
-- Sửa `.env` xong phải **restart** backend (`--reload` chỉ theo dõi file `.py`).
-- Không có key thì Agent Runtime vẫn chạy; Claude API hiện hướng dẫn cấu hình và không gọi Claude.
+- Entry point là `backend/main.py` (`main:app`), không còn `api:app`.
+- `config.py` gọi `load_dotenv(backend/.env)` tường minh; uvicorn không tự đọc `.env`. Sửa `.env` xong phải **restart** (`--reload` chỉ theo dõi file `.py`).
+- Session/Future của Demo 01 nằm trong RAM process, nên chạy **một** worker.
 - Thêm dependency: `uv add <package>`.
-- **Lỗi `connection_error` dù curl ra được `api.anthropic.com`?** OpenSSL mới của Python gửi key share post-quantum (`X25519MLKEM768`); một số mạng/proxy reset handshake này. Chạy backend với OpenSSL config chỉ dùng group cổ điển:
+- **Lỗi `connection_error` dù `curl https://api.anthropic.com` vẫn ra?** OpenSSL của Python (4.1.0 trên máy này) gửi key share post-quantum `X25519MLKEM768`; một số mạng/proxy reset handshake đó. Chạy backend với một OpenSSL config chỉ dùng group cổ điển:
   ```bash
   # file .cnf: openssl_conf → ssl_conf → system_default: Groups = X25519:P-256:P-384
-  OPENSSL_CONF=/path/to/openssl-classic-groups.cnf uv run uvicorn api:app --reload --port 9000
+  OPENSSL_CONF=/path/to/openssl-classic-groups.cnf uv run uvicorn main:app --reload --port 9000
   ```
   Chỉ là workaround môi trường, không đổi code.
+
+### Known limitation của môi trường mạng (đã đo)
+
+Mạng đang dùng để phát triển **reset mọi HTTPS request có body lớn hơn khoảng 1–1,5 KB khi đích là `api.anthropic.com`**. Bằng chứng:
+
+| Thử nghiệm | Kết quả |
+|---|---|
+| body ~352 B và ~952 B → `api.anthropic.com` | OK |
+| body ~1.6 KB trở lên → `api.anthropic.com` | `httpcore2.ReadError` → SDK bọc thành `APIConnectionError("Connection error.")` |
+| `curl` body 6 KB → `api.anthropic.com` | fail (exit 56) |
+| `curl` body 6 KB → một host khác (`postman-echo.com`) | HTTP 200 |
+| HTTP/1.1 và HTTP/2 | fail như nhau → không phải vấn đề protocol |
+| `ping -D` tới 1472 B | OK → không phải MTU blackhole thông thường |
+
+Hệ quả: demo nào gửi request lớn sẽ nhận `error(kind=connection_error)` — Demo 04 khi loop sang lượt thứ 3, và **Demo 08** vì Claude Code CLI luôn gửi system prompt lớn (CLI tự retry rồi báo `ECONNRESET`; cả HTTP/1.1 và HTTP/2 đều vậy). **Không phải bug của code** — chạy qua VPN/proxy hoặc mạng khác (ví dụ 4G hotspot) là hết. Backend tôn trọng `HTTPS_PROXY` của httpx nếu bạn có proxy.
 
 ### Frontend
 
@@ -38,98 +53,279 @@ uv run uvicorn api:app --reload --port 9000
 cd frontend
 npm install
 npm run dev          # http://localhost:3001
-npm run typecheck    # tsc --noEmit (Next 16 đã bỏ `next lint`; project chưa dùng ESLint)
+npm run typecheck    # tsc --noEmit (project chưa dùng ESLint)
 npm run build
 ```
 
-Backend URL mặc định `http://localhost:9000`. Đổi bằng `frontend/.env.local`: `NEXT_PUBLIC_API_URL=http://...`.
+Backend URL mặc định `http://localhost:9000`; đổi bằng `frontend/.env.local`: `NEXT_PUBLIC_API_URL=http://...`.
+
+## Cấu trúc
+
+```text
+backend/
+├── main.py                       # app + CORS + /api/health + include_router
+├── config.py                     # ANTHROPIC_API_KEY, LLM_MODEL, limits
+├── data/                         # gitignored: sandbox runtime (file demo ghi ra)
+├── shared/                       # chỉ những gì ≥ 2 demo thật sự dùng chung
+│   ├── claude.py                 # new_client(max_retries=0), answer_text, map lỗi API
+│   ├── approval.py               # ApprovalBroker (asyncio.Future) — demo 01 + 04
+│   ├── sessions.py               # Session + SessionStore (RAM) — demo 01 + 04
+│   └── task_store.py             # sqlite3 tasks, tách theo demo_scope — từ demo 04
+├── demos/demo_01_runtime/
+│   ├── router.py                 # endpoint /api/demos/01/*
+│   ├── runtime.py                # run_turn() (Task + Queue) + run_agent() ba scenario
+│   └── approval_note.py          # file sandbox: build/write/read/delete
+├── demos/demo_02_claude_api/
+│   ├── router.py · messages.py   # messages.create + parse content/usage
+│   └── streaming.py              # messages.stream -> event text_delta/final
+├── demos/demo_03_tools/
+│   ├── router.py · tools.py      # 3 hàm Python + TOOL_SCHEMAS gửi cho model
+│   ├── registry.py               # TOOL_REGISTRY + execute(name, input) có validate
+│   └── tool_calling.py           # một tool round: call #1 → execute → call #2
+├── demos/demo_04_manual_loop/
+│   ├── router.py                 # sessions, runs (SSE), approvals, cancel, tasks
+│   ├── agent_loop.py             # loop + working/committed history + MAX_TURNS
+│   └── tasks_tools.py            # list_tasks / create_task (cần approve) / get_task
+├── demos/demo_05_structured_output/
+│   ├── router.py · schemas.py    # TaskDraft (Pydantic) dùng cho cả model và app
+│   ├── validation.py             # tầng schema + tầng semantic, chạy offline
+│   └── generation.py             # messages.parse(output_format=...) + repair 1 lần
+├── demos/demo_06_workflows/
+│   ├── router.py                 # POST /run, GET /caps
+│   ├── patterns.py               # 5 async function: chaining/routing/parallel/orchestrator/evaluator
+│   └── runner.py                 # Trace: đếm call, enforce budget, ghi start_ms/end_ms
+├── demos/demo_07_mcp/
+│   ├── mcp_server.py             # MCP server thật (stdio), 2 tool + 1 resource + 1 prompt
+│   ├── mcp_client.py             # Client: spawn, initialize, tools/list, tools/call, resources, prompts
+│   └── router.py                 # Bridge FastAPI -> client; seed/reset dữ liệu scope mcp
+└── demos/demo_08_agent_sdk/
+    ├── sdk_agent.py              # run_turn + run_query (dịch SDK message) + inspect_session
+    ├── customization.py          # can_use_tool, hooks, skills, subagents, build_options
+    ├── sdk_tools.py              # tool in-process qua create_sdk_mcp_server
+    ├── environment.py            # báo prerequisites (SDK, CLI, key, cap)
+    ├── router.py                 # sessions, runs (SSE), approvals, cancel, inspect, tasks
+    └── sandbox/                  # cwd của agent: requirements.md + .claude/skills/task-planning/
+frontend/src/
+├── components/                   # WorkspaceLayout (Header+Sider+Content), DemoMenu, CodeBlock, LearningOutcome
+├── lib/demos.ts                  # metadata 8 demo; chỉ demo có `route` lên sidebar
+└── app/(workspace)/
+    ├── layout.tsx                # AntdRegistry + Providers + WorkspaceLayout (persistent sidebar)
+    ├── workspace/page.tsx        # Workspace Home + Roadmap
+    └── demos/                    # mỗi demo một folder: page.tsx + api.ts + content.ts + component con
+        ├── 01-runtime/ · 02-claude-api/ · 03-tools/
+        ├── 04-manual-loop/ · 05-structured-output/ · 06-workflows/
+        └── 07-mcp/ · 08-agent-sdk/
+```
+
+Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `demo_XX/` tự sở hữu API, logic và sample data của mình (`plans/00-START-HERE.md`, mục 3).
 
 ## Routes
 
-Mọi page nằm trong route group `frontend/src/app/(workspace)/` nên dùng chung một layout (`layout.tsx` → `PlaygroundShell`): chuyển menu chỉ đổi Main Content, Header + Sidebar không unmount.
-
-| URL | Nội dung | Trạng thái |
-|---|---|---|
-| http://localhost:3001/workspace | **Workspace Home**: trạng thái backend/Claude, demo chạy được, Roadmap 03–08 (chỉ text, không có nút) | Phase A |
-| http://localhost:3001/runtime | **01 · Agent Runtime**: scenario `SSE` · `Approval / Reject` · `Cancel` (`?scenario=sse\|approval\|cancel`) | Phase A, smoke test pass |
-| http://localhost:3001/claude-api | **02 · Claude API**: scenario One-shot (Generate Task Description / Leave Email) | Phase A; live đã verify ở lượt trước, lượt này không gọi lại |
-| http://localhost:9000/docs | OpenAPI | |
-
-URL cũ được redirect (HTTP 307, `frontend/next.config.ts` → `redirects()`):
-
-| URL cũ | Đích |
+| URL | Nội dung |
 |---|---|
-| `/` | `/workspace` |
-| `/playground` | `/workspace` |
-| `/approval` | `/runtime?scenario=approval` |
-| `/lessons/messages-api` | `/claude-api` |
+| http://localhost:3001/workspace | **Workspace Home**: trạng thái backend/Claude, demo chạy được, Roadmap 02–08 (chỉ text) |
+| http://localhost:3001/demos/01-runtime | **01 · Agent Runtime**: scenario `SSE` · `Approval` · `Cancel` |
+| http://localhost:3001/demos/02-claude-api | **02 · Claude API**: scenario `One-shot` · `History On/Off` · `Streaming` |
+| http://localhost:3001/demos/03-tools | **03 · Tools & Registry**: scenario `Single Tool` · `Registry` · `Tool Error` |
+| http://localhost:3001/demos/04-manual-loop | **04 · Manual Agent Loop**: scenario `Normal` · `Max Turns` · `Tool Failure` |
+| http://localhost:3001/demos/05-structured-output | **05 · Structured Output**: `Generate` → `Validate` → `Repair` |
+| http://localhost:3001/demos/06-workflows | **06 · Agent Workflows**: `Chaining` · `Routing` · `Parallel` · `Orchestrator` · `Evaluator` |
+| http://localhost:3001/demos/07-mcp | **07 · MCP**: `Connect & Discover` · `Call Tool` · `Resources & Prompts` (không cần Claude key) |
+| http://localhost:3001/demos/08-agent-sdk | **08 · Claude Agent SDK**: `Basic` · `Permissions & Hooks` · `Skills` · `Subagents` |
+| http://localhost:9000/docs | OpenAPI |
 
-Sidebar chỉ có Workspace Home + demo đã implement (`frontend/src/lib/demos.ts`, `implemented: true`). Demo 03–08 chưa có route; mở `/tools`... trả 404.
+`/` redirect 307 về `/workspace` (`frontend/next.config.ts`). Sidebar chỉ có Workspace Home + demo đã implement (`frontend/src/lib/demos.ts`: demo có `route`).
 
 ## Backend API
 
 | HTTP | Endpoint | Body / Response |
 |---|---|---|
 | GET | `/api/health` | `{ok, llm_configured, missing_env[], model, max_tokens_cap, timeout_seconds}`. Không gọi Claude, không trả key. |
-| POST | `/api/claude-api/one-shot` | Body `{prompt: str 1–4000, system?: str ≤2000, max_tokens?: int 1–LLM_MAX_TOKENS}`. Response `{status, request, response, answer, request_id, metrics{api_calls, latency_ms, input_tokens, output_tokens}, error{kind, message, upstream_status}}`. |
-| GET | `/api/claude-api/one-shot/source` | `{path, code}` của `backend/lessons/messages_api.py` (path cố định). |
-| POST | `/api/sessions`, `/api/sessions/{id}/messages` (body `{text, scenario: sse\|approval\|long}`, SSE), `/approvals/{id}` (body `{approved}`), `/cancel` | Dùng bởi demo 01 · Agent Runtime, không đổi. |
+| POST | `/api/demos/01/sessions` | `{id}` — session trong RAM. |
+| GET | `/api/demos/01/sessions/{id}` | `{id, history, busy}`. |
+| POST | `/api/demos/01/sessions/{id}/runs` | Body `{text: 1–500 ký tự, scenario: sse\|approval\|long}` → SSE `data: {type, ...}`. Session đang chạy: **409**. |
+| POST | `/api/demos/01/sessions/{id}/approvals/{approval_id}` | Body `{approved: bool}` → `{resolved: true}`; approval không còn chờ: **404**. |
+| POST | `/api/demos/01/sessions/{id}/cancel` | `{cancelled: bool}` — gọi `Task.cancel()` ở backend. |
+| GET | `/api/demos/01/file` | Đọc lại file sandbox từ disk: `{path, exists, content, size_bytes, modified_at}`. |
+| DELETE | `/api/demos/01/file?confirm=true` | Xóa file sandbox của riêng demo 01; thiếu `confirm`: **400**. |
+| POST | `/api/demos/02/messages` | Body `{messages: [{role: user\|assistant, content: 1–4000}] (1–10 turn, turn cuối phải là user), system?: ≤2000, max_tokens?: 1–LLM_MAX_TOKENS}`. Response `{status, request, response, answer, request_id, metrics{api_calls, latency_ms, input_tokens, output_tokens}, error{kind, message, upstream_status}}`. |
+| POST | `/api/demos/02/messages/stream` | Cùng body → SSE: `request_sent → text_delta ×n → final → run_finished` (lỗi thì `error` trước `run_finished`). |
 
-HTTP status của Claude API (One-shot): `200` thành công · `422` input sai (prompt rỗng, max_tokens vượt trần) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout.
+| POST | `/api/demos/03/run` | Body `{scenario: single\|registry\|error, prompt: 1–2000, max_tokens?}`. Response `{status, events[], requests[], responses[], answer, tool_calls[], metrics, error}`. |
+| GET | `/api/demos/03/tools` | `{tools: [...]}` — schema đang gửi cho model. |
+| POST | `/api/demos/04/sessions` · `/sessions/{id}/runs` (SSE, body `{prompt, max_turns: 1–6}`) · `/sessions/{id}/approvals/{aid}` · `/sessions/{id}/cancel` | Loop có approval và cancel; `GET /sessions/{id}` trả `{history_messages, busy}`. |
+| GET / DELETE | `/api/demos/04/tasks` (`?confirm=true` để xóa) | Đọc/xóa task trong SQLite, chỉ `demo_scope = manual_loop`. |
+| POST | `/api/demos/05/generate` · `/validate` · `/repair` | `generate`/`repair` gọi Claude (native structured output); `validate` chỉ chạy Python. Response `{stage, status, raw, accepted, schema_errors[], semantic_errors[], metrics, events}`. |
+| GET | `/api/demos/05/schema` | JSON Schema sinh từ Pydantic `TaskDraft`. |
+| POST | `/api/demos/06/run` | Body `{scenario: chaining\|routing\|parallel\|orchestrator\|evaluator, input: 1–1000}`. Response `{status, answer, steps[] (kind llm/code, start_ms, end_ms, prompt, output, usage), metrics{api_calls, budget, latency_ms, tokens}, error}`. Vượt budget → **409** kèm trace. |
+| GET | `/api/demos/06/caps` | `{budgets, max_workers, max_revisions}` — UI hiển thị, backend enforce. |
+| POST | `/api/demos/07/discover` | Spawn MCP server (stdio) → initialize → `tools/list`. Response `{connected, session{server_name, protocol_version, capabilities}, tools[{name, description, input_schema}], events[]}`. |
+| POST | `/api/demos/07/call-tool` | Body `{name: list_tasks\|get_task, task_id?}` → `tools/call`. Response thêm `result{is_error, text, structured}`, `schema`, `db_tasks` (đọc thẳng SQLite để đối chiếu). |
+| POST | `/api/demos/07/resources-prompts` | Body `{goal}` → `resources/list` + `resources/read` + `prompts/list` + `prompts/get`. |
+| POST / GET / DELETE | `/api/demos/07/seed` · `/tasks` · `/tasks?confirm=true` | Dữ liệu sandbox scope `mcp`; Seed là Python ghi trực tiếp (có nhãn **seed dữ liệu**), không phải tool của server. |
+| GET | `/api/demos/08/env` | Prerequisites: `{sdk_version, cli_found, cli_path, api_key_configured, model, sandbox_dir, max_turns, max_budget_usd, scenarios}`. |
+| POST | `/api/demos/08/inspect` | Body `{scenario}` → spawn CLI + initialize, **không gọi model**: `{cli_version, pid, permission_mode, allowed_tools, skills, subagents_declared, subagents_registered, cwd, connect_ms}`. |
+| POST | `/api/demos/08/sessions` · `/sessions/{id}/runs` (SSE, body `{scenario, prompt}`) · `/sessions/{id}/approvals/{aid}` · `/sessions/{id}/cancel` | Run agent qua SDK; event là SDK message thật. Run có cận trên 45s ở backend. |
+| GET / DELETE | `/api/demos/08/tasks` (`?confirm=true` để xóa) | Task scope `agent_sdk`. |
 
-## 02 · Claude API — One-shot: Generate Task Description
+HTTP status chung cho các demo gọi Claude: `200` thành công · `422` input sai (prompt rỗng, `max_tokens` vượt trần, turn cuối không phải user, `max_turns` ngoài 1–6) · `503` thiếu `ANTHROPIC_API_KEY`/`LLM_MODEL` (không gọi Claude, `api_calls = 0`) · `502` Anthropic trả 4xx/5xx hoặc không kết nối được · `504` timeout · `409` session đang chạy · `400` thiếu `confirm` khi xóa dữ liệu. Endpoint stream luôn trả `200` rồi báo lỗi bằng event `error`, vì response đã bắt đầu stream.
 
-Màn hình: **Input** (preset `Task Description` | `Leave Email`, 2 ô nhập, Tùy chọn nâng cao: system/max_tokens/model) bên trái → **Generated Draft** (Actual Result) bên phải (text thật từ Claude, sửa trực tiếp, `Copy`, `Restore`, status `idle/running/succeeded/failed`) → Metrics → **Execution Events** (trace của lần Run) → **Source Code & Debug** (Request JSON / Response JSON / Source & Debug) → How it works (Collapse) → Kết quả cần đạt. Không có quiz.
+## 01 · Agent Runtime — SSE · Approval · Cancel
 
-Flow: `claude-api/demo-form.tsx` `submit()` ghép prompt bằng `PRESETS[key].buildPrompt` (`content.ts`) → `page.tsx` `runDemo()` → `POST /api/claude-api/one-shot` → `playground_api.py` `post_messages_api()` (Pydantic validate) → `lessons/messages_api.py` `run_messages_api()` → `client.messages.create(**request_body)` (1 HTTP request, `max_retries=0`, `thinking: disabled`) → JSON → Draft = ghép các block `text`.
-
-`thinking: {"type": "disabled"}`: với model đang cấu hình, extended thinking bật mặc định và thinking token tính vào `max_tokens`; đã quan sát một response 512 token chỉ có block `thinking`, không có text. Tắt đi để draft luôn là text.
-
-Breakpoints (dòng thật, UI tab Source Code tự tính lại từ comment `BREAKPOINT n`):
-
-| # | Vị trí | Quan sát |
-|---|---|---|
-| BP1 | `backend/lessons/messages_api.py:45` `request_body = {...}` | body gửi Claude (không có key) |
-| BP2 | `backend/lessons/messages_api.py:66` `await client.messages.create(...)` | Step Over = request HTTP thật; lỗi nhảy vào `except` |
-| BP3 | `backend/lessons/messages_api.py:81` `answer = ...` | `message.content`, `message.stop_reason`, `message.usage` |
-| Route | `backend/playground_api.py` `post_messages_api()` | body đã validate, chọn HTTP status |
-| FE | `frontend/src/app/(workspace)/claude-api/demo-form.tsx:39` `onRun({ prompt: ... })` | prompt thật được ghép từ 2 ô input |
-| FE | `frontend/src/app/(workspace)/claude-api/page.tsx:62` `await fetch(...)` | DevTools Sources + Network |
-
-Kỳ vọng quan sát được: một lần Run tạo đúng 1 request (`api_calls = 1`); Response có `content` là list block `text`, `stop_reason` (`end_turn` hoặc `max_tokens` nếu đặt trần thấp), `usage`; Metrics hiển thị token và latency đo thật, `n/a` khi chưa có số đo.
-
-## 01 · Agent Runtime — SSE · Approval / Reject · Cancel
-
-Agent trong `backend/agent.py` là **kịch bản có kiểm soát** (không gọi Claude, timing bằng `asyncio.sleep`); cơ chế Task/Queue/SSE/Future/Cancel là thật. Mở trang chỉ `POST /api/sessions`, không tự chạy agent, kể cả khi reload URL.
+Agent trong `demos/demo_01_runtime/runtime.py` là **kịch bản có kiểm soát**: không gọi Claude, thời gian mô phỏng bằng `asyncio.sleep`. Cơ chế Task / Queue / SSE / Future / Cancel và file ghi ra là **thật**. Mở trang chỉ `POST /sessions`, không tự chạy agent.
 
 | Scenario | Bấm | Kết quả mong đợi (event thật) |
 |---|---|---|
 | SSE | Start SSE | `run_started → tool_call → tool_result → text_delta ×4 → final → run_finished`, đến từng đợt trong ~3 s |
-| Approval / Reject | Start Approval → Approve hoặc Reject | `approval_required` → nút Approve/Reject hiện ra → `approval_decision → permission(allow\|deny) → tool_result → final → run_finished` |
+| Approval → Approve | Start Approval → Approve | `approval_required → approval_decision → permission(allow) → tool_result → final`; backend ghi `backend/data/workspace/approval-note.md`, card File sandbox đọc lại từ disk (exists, size, nội dung) |
+| Approval → Reject | Start Approval → Reject | `permission(deny)` + `tool_result(is_error)`; read-back cho thấy file **không** được tạo. Không trả lời trong 120 s thì broker fail closed (reject) |
 | Approval → Cancel | Start Approval → Cancel Agent khi đang chờ | `approval_required → error(kind=cancelled) → run_finished` |
-| Cancel | Start Long Running → Cancel Agent | `progress ×n → error(kind=cancelled) → run_finished`, không có `final`, history không đổi |
+| Cancel | Start Long Running → Cancel Agent | `progress ×n → error(kind=cancelled) → run_finished`, không có `final`, `history` vẫn rỗng |
 
-Giới hạn hiện tại: tool `create_ticket_draft` vẫn **mô phỏng**, Approve chưa ghi dữ liệu thật (Phase B đổi sang task SQLite/file sandbox có read-back). Rời trang lúc đang chạy chỉ đóng stream; Task backend vẫn chạy tới khi xong hoặc bị Cancel (approval đang chờ tự reject sau 120 s).
+Flow: `page.tsx` `start()` → `use-run.ts` → `api.ts` `startRun()` → `POST /api/demos/01/sessions/{id}/runs` → `router.py` `start_run()` gọi `asyncio.create_task(run_turn(...))` → `runtime.py` `run_agent()` gọi `emit()` → `queue.put_nowait()` → `stream()` `await queue.get()` → `yield "data: ...\n\n"` → browser `reader.read()` → `handleEvent()` cập nhật React state. Approve/Reject: `decide()` → `POST /approvals/{id}` → `ApprovalBroker.resolve()` → `future.set_result()` → agent chạy tiếp và ghi file. Cancel: `POST /cancel` → `session.task.cancel()`.
 
-Flow: `runtime-demo.tsx` `start()` → `runtime-api.ts` `streamMessage()` → `POST /api/sessions/{id}/messages` → `api.py` `send_message()` tạo `asyncio.create_task(run_turn(...))` → `agent.py` `run_agent()` gọi `emit()` → `queue.put_nowait()` → `stream()` `await queue.get()` → `yield "data: ...\n\n"` → browser `reader.read()` → `onEvent` → `handleEvent()` cập nhật React state. Approve/Reject: `decide()` → `POST /approvals/{id}` → `ApprovalBroker.resolve()` → `future.set_result()`. Cancel: `cancel()` → `POST /cancel` → `session.task.cancel()`.
-
-Breakpoints (Ctrl+F đúng đoạn code; UI hiện cùng danh sách):
+Breakpoints (Ctrl+F đúng đoạn code; UI hiện cùng danh sách ở Source & Debug):
 
 | # | Vị trí | Quan sát |
 |---|---|---|
-| BP1 | `backend/api.py:88` `session.task = asyncio.create_task(` (và `:94` `event = await queue.get()`) | handler trả StreamingResponse ngay, Agent chạy trong Task |
-| BP2 | `backend/approvals.py:35` `approved = await asyncio.wait_for(future, ...)` | Agent dừng tới khi `/approvals` resolve Future |
-| BP3 | `backend/api.py:122` `session.task.cancel()` | `run_turn()` vào nhánh `except asyncio.CancelledError`, không commit history |
-| BP4 | `frontend/src/app/(workspace)/runtime/runtime-api.ts:48` `await reader.read()` | chunk SSE → tách khung → `onEvent` |
+| BP1 | `demo_01_runtime/router.py` `task = asyncio.create_task(run_turn(...))` (và `await asyncio.wait_for(queue.get(), ...)`) | handler trả StreamingResponse ngay, agent chạy trong Task riêng |
+| BP2 | `demo_01_runtime/runtime.py` `queue.put_nowait(event)` | producer: mỗi event vào Queue của đúng run đó |
+| BP3 | `demo_01_runtime/approvals.py` `approved = await asyncio.wait_for(future, ...)` | agent dừng tới khi `/approvals` resolve Future, hoặc timeout 120 s |
+| BP4 | `demo_01_runtime/router.py` `session.task.cancel()` | `run_turn()` vào `except asyncio.CancelledError`, không commit history |
+| BP5 | `demos/01-runtime/api.ts` `await reader.read()` | chunk SSE → tách khung `data:` → `onEvent` |
 
-`Session`/`SessionStore` nằm ở `backend/sessions.py`; session sống trong RAM của process Python, một `asyncio.Queue` mỗi message; không có persistence hay authentication.
+Giới hạn: không persistence, không auth; rời trang lúc đang chạy chỉ đóng stream ở browser, Task backend vẫn chạy tới khi xong hoặc bị Cancel. File sandbox dùng **path cố định** (`backend/data/workspace/approval-note.md`), browser không gửi path nào vào backend.
+
+## 02 · Claude API — One-shot · History On/Off · Streaming
+
+Gọi **Claude Messages API thật** bằng key ở `backend/.env`; không tool call, không Agent Loop, không SQLite. Mỗi lần Send là đúng **một** HTTP request (`max_retries=0`). `thinking: {"type": "disabled"}` vì model đang cấu hình bật extended thinking mặc định và thinking token ăn vào `max_tokens`, có thể làm response không còn block `text`.
+
+| Scenario | Bấm | Kết quả mong đợi |
+|---|---|---|
+| One-shot | chọn preset → `Send` | answer text thật + `stop_reason`, `input/output_tokens`, latency đo thật; Request/Response JSON trong Source & Debug |
+| History On/Off | Send câu 1 ("Tôi đang học Python") → Send câu 2 ("Tôi vừa nói mình đang học gì?") với công tắc history ON và OFF | OFF: `messages[]` chỉ 1 turn, Claude nói không biết. ON: `messages[]` 3 turn, Claude trả lời đúng, `input_tokens` tăng (đo thật: 105 vs 23) |
+| Streaming | `Start Streaming` | text hiện dần theo từng `text_delta`; `final` mang `usage` + `stop_reason`; text ghép từ delta khớp `final.answer` |
+
+Đặt `max_tokens = 16` trong Advanced để thấy `stop_reason = max_tokens` thật (không hardcode). Output của model có thể khác nhau mỗi lần; cái cần so sánh là **input** (`messages[]`) và các field của response.
+
+Flow: `page.tsx` `send()` ghép `messages[]` → `use-claude.ts` → `api.ts` `sendMessages()` / `streamMessages()` → `router.py` validate (Pydantic + trần `LLM_MAX_TOKENS`) → `messages.py` `build_request()` → `client.messages.create()` → `answer_text()` ghép block `text`. Streaming: `streaming.py` `stream_events()` lặp `stream.text_stream` rồi `get_final_message()` → `router.py` đóng khung `data: {...}` → browser `reader.read()`.
+
+Breakpoints: `messages.py` `build_request()` (body thật, không có key) · `messages.py` `await client.messages.create(...)` (điểm duy nhất gọi API) · `messages.py` `answer_text()` (`content` là list block; xem `stop_reason`, `usage`) · `streaming.py` `async for text in stream.text_stream` (tầng Claude→Python, khác tầng Python→browser).
+
+Giới hạn: tối đa 10 turn/request, `content` ≤ 4000 ký tự, `system` ≤ 2000, `max_tokens` ≤ `LLM_MAX_TOKENS`. Chưa có Cancel cho streaming: browser đóng stream **không** đồng nghĩa backend hủy request, nên UI không hiển thị nút Cancel.
+
+## 03 · Tools & Registry — Single Tool · Registry · Tool Error
+
+Một **tool round** đầy đủ: Claude #1 trả block `tool_use`, Python tra `TOOL_REGISTRY` và chạy hàm thật, gửi `tool_result` (kèm `tool_use_id` khớp), rồi Claude #2 mới cho câu trả lời cuối. Chưa có loop nhiều lượt — đó là Demo 04.
+
+| Scenario | tools gửi model | tool_choice | Kết quả đã đo |
+|---|---|---|---|
+| Single Tool | `sum_numbers` | ép `{"type":"tool","name":"sum_numbers"}` | model trả `input={"numbers":[120000,85000,45000]}`, Python tính `250000.0`, answer “Tổng … là **250.000**” |
+| Registry | cả 3 tool | `auto` (quyết định thật của model) | “đếm số từ…” → `count_words` (7 từ); “tính tổng…” → `sum_numbers`. Model không gọi tool thì UI báo `no_tool_use`, không dựng tool giả |
+| Tool Error | `divide_numbers` | ép | `ZeroDivisionError: division by zero` → `tool_result(is_error=true)` → Claude giải thích lỗi; HTTP vẫn 200 |
+
+An toàn: không `eval`/`exec`, không dynamic import; tool lạ → `Unknown tool`; input validate bằng Pydantic (`{"numbers": "abc"}` → lỗi validation); lỗi tool chỉ trả tên lỗi + message, không trả traceback.
+
+## 04 · Manual Agent Loop — Normal · Max Turns · Tool Failure
+
+Python giữ vòng lặp (`for turn in range(1, max_turns + 1)`), model quyết định `stop_reason`. `working_messages` là `deepcopy` của history đã commit; chỉ nhánh `end_turn` + có text mới gán lại vào `session.history`. Tool `create_task` ghi SQLite nên phải được Approve trước (fail closed).
+
+| Scenario | Kết quả đã đo |
+|---|---|
+| Normal | `create_task` → `approval_required` → Approve → INSERT thật → `end_turn` → `history_committed`; `turns_used=2`, `messages_in_request` = `[1, 3]`; task đọc lại từ DB: `{id:1, title:"Login", priority:"high", status:"todo"}` |
+| Run lại cùng session | `history_before=4` (nhớ hội thoại trước), không tạo task trùng |
+| Max Turns = 1 | `tool_use` ở lượt 1 → hết lượt → `max_turns_reached`, **không** có `final`, `history_messages` vẫn 0 |
+| Tool Failure | `get_task(999999)` → `tool_result(is_error=true, "TaskNotFound…")` → model giải thích → `run_finished` |
+| Reject | `tool_result` ghi “Người dùng không phê duyệt…”, DB vẫn trống |
+| Cancel khi đang chờ approval | `error(kind=cancelled)` → `run_finished`, history không commit, DB không có task mới |
+| Fail giữa loop (mạng cắt lượt 3) | history **không** commit nhưng `created_ids=[1]` vẫn còn trong DB → UI cảnh báo “rollback history ≠ rollback side effect” |
+
+SQLite: `backend/data/tasks.sqlite3` (gitignored), bảng `tasks(id, title, priority, status, demo_scope)`, parameterized query, `Reset data` chỉ xóa `demo_scope = manual_loop` và có confirm.
+
+## 05 · Structured Output — Generate · Validate · Repair
+
+`client.messages.parse(output_format=TaskDraft)`: SDK sinh JSON Schema từ Pydantic và gửi trong `output_config.format` — ràng buộc schema thật, không phải “nhờ prompt trả JSON”. Cùng một model `TaskDraft` dùng cho cả model và cho việc validate, nên hai bên không lệch nhau.
+
+| Bước | Gọi Claude? | Kết quả đã đo |
+|---|---|---|
+| Generate | có (1 request) | “Làm login UI ưu tiên cao, khoảng 4 giờ” → `{"title":"Làm login UI","priority":"high","estimated_hours":4.0}`, accepted |
+| Validate — lỗi schema | không | `priority:"urgent"` → `priority: Input should be 'low', 'medium' or 'high'`; thiếu field → `Field required`; `"bốn giờ"` → lỗi kiểu. Fail tầng 1 thì **không** chạy tầng 2 |
+| Validate — lỗi nghiệp vụ | không | `estimated_hours=-4` qua schema nhưng fail semantic; `title="TODO"` fail; `priority=high` + 40 giờ fail rule “high ≤ 16 giờ” |
+| Repair | có (1 request) | `-4` → `4.0`, validate lại rồi mới `accepted`; repair chỉ chạy một lần khi bấm, và có thể vẫn fail |
+
+Rule nghiệp vụ nằm ở `validation.py`: `0 < estimated_hours ≤ 80`, `priority=high` thì `≤ 16`, `title ≥ 5` ký tự và không phải placeholder. Demo này **không** ghi DB.
+
+## 06 · Agent Workflows — Chaining · Routing · Parallel · Orchestrator · Evaluator
+
+Năm pattern chỉ bằng Python + Claude API, không framework. Thông điệp của demo: **code giữ cấu trúc** (thứ tự, nhánh, song song, cap), **model lo nội dung** và những quyết định được hỏi tường minh. Mỗi step trong trace ghi `kind` (`llm` = một request thật, `code` = quyết định của Python) kèm `start_ms`/`end_ms` do backend đo.
+
+| Pattern | Budget | Kết quả đã đo |
+|---|---|---|
+| Chaining | 2 call | `draft` → `code:pipe` → `improve`; `start_ms` của call 2 = `end_ms` của call 1 (tuần tự), output bước 1 nằm trong prompt bước 2 |
+| Routing | 2 call | “Dịch câu này…” → classifier trả `translate` → `handler:translate`; “Tóm tắt…” → `summarize`. Nhãn ngoài danh sách → fallback, **không** gọi handler (kiểm bằng stub) |
+| Parallel | 2 call | `asyncio.gather()`: hai call overlap ~1476 ms, latency 1608 ms so với tổng thời gian hai call 3085 ms |
+| Orchestrator | 3 call | planner đề xuất 7–8 subtask, `code:cap` chỉ chạy 2 (`MAX_WORKERS=2`), rồi `code:combine` gộp kết quả |
+| Evaluator | 4 call | `generate` → `evaluate #1` → verdict thật; ACCEPT thì dừng, REVISE thì dùng đúng một lần `revise`. Hết lượt mà vẫn REVISE thì trả bản cuối **kèm feedback chưa xử lý**, không giả vờ đã accept |
+
+Budget là giới hạn thật: `Trace.call()` raise `BudgetExceeded` trước khi gọi API (đã kiểm với `budget=0`), router trả 409 và vẫn kèm trace để thấy nó dừng ở bước nào. Demo này không ghi DB, `max_tokens` mỗi call là 220.
+
+## 07 · MCP — Connect & Discover · Call Tool · Resources & Prompts
+
+MCP server **thật** (MCP Python SDK 2.x, `MCPServer`) chạy trong process riêng, nói JSON-RPC trên **stdio**. Client thật `initialize` rồi mới `tools/list` / `tools/call`. Khác Demo 03: ở đó tool là hàm Python trong cùng process; ở đây tool sống độc lập và chạy được với bất kỳ MCP client nào. **Không cần Claude key.**
+
+```text
+Browser → FastAPI bridge → MCP Client ──stdio──> MCP Server ──> SQLite (scope mcp, chỉ đọc)
+                                     initialize · tools/list · tools/call
+                                     resources/list · resources/read
+                                     prompts/list · prompts/get
+```
+
+| Scenario | Kết quả đã đo |
+|---|---|
+| Connect & Discover | `server_name=agent-demo-task-server`, `protocol_version=2026-07-28`, capabilities `tools/resources/prompts`; server công bố 2 tool kèm `input_schema` do SDK sinh từ type hint (`get_task` yêu cầu `task_id: integer`) |
+| Call Tool | `list_tasks` trả `structured_content` **khớp đúng** 3 row đọc thẳng từ SQLite; `get_task(id)` trả task; `get_task(999999)` → `is_error=true` với message `TaskNotFound: …` |
+| Resources & Prompts | `workspace://tasks/summary` (text/markdown) sinh từ DB thật (“Tổng: 3 task”); `plan_task` nhận `goal` và trả message có nhúng cả goal lẫn các task đang có |
+
+An toàn và dọn dẹp: tham số server là hằng số trong `mcp_client.py` (UI không gửi command → không có command injection); tên tool được allowlist ở router và client chỉ gọi tool mà server công bố; mỗi operation nằm trong `async with Client(...)` nên subprocess được đóng sau request (đã đo: 3 lần connect liên tiếp không để lại process nào). Server chạy standalone được:
+
+```bash
+cd backend && uv run python -m demos.demo_07_mcp.mcp_server   # stdio: đừng print() ra stdout
+```
+
+## 08 · Claude Agent SDK — Basic · Permissions & Hooks · Skills · Subagents
+
+Dùng **claude-agent-sdk 0.2.187** thật; SDK chạy agent loop thông qua **Claude Code CLI**. Khác Demo 04: ở đó vòng lặp là code mình viết; ở đây mình chỉ cấp `ClaudeAgentOptions`, nhận SDK message và giữ quyền quyết định. Không bọc thêm loop nào lên SDK.
+
+**Prerequisites:** Node.js + Claude Code CLI trong PATH (đã kiểm: `claude` 2.1.330) và `ANTHROPIC_API_KEY` trong `backend/.env` (SDK nhận qua `options.env`; CLI không cần `/login`). `GET /env` báo thiếu thứ gì.
+
+Bốn điểm ứng dụng vẫn kiểm soát:
+
+| Điểm | Cơ chế | Đã kiểm chứng |
+|---|---|---|
+| Permissions | `can_use_tool` được SDK gọi **trước** khi chạy tool | tool đọc → `PermissionResultAllow` tự động; tool ghi + Approve → Allow; tool ghi + Reject → `PermissionResultDeny` (SDK không chạy tool, DB không có row) |
+| Hooks | `HookMatcher` cho `UserPromptSubmit`, `PreToolUse`, `include_hook_events=True` | hook `UserPromptSubmit` **được SDK gọi thật** ở +2.8s với payload thật (`prompt`, `session_id`) |
+| Skills | `sandbox/.claude/skills/task-planning/SKILL.md` + `options.skills` + tool `Skill` | Inspect cho thấy `skills=['task-planning']` và tool `Skill` được bật. Việc skill có kích hoạt hay không **chỉ kết luận được khi có lượt model** → chưa claim |
+| Subagents | hai `AgentDefinition` + tool `Task` | CLI **đăng ký đúng 2 subagent** (`requirements-analyst`, `task-planner`); scenario khác thì danh sách rỗng. Delegation thật cần lượt model → chưa claim |
+
+Tool của agent là **MCP in-process** (`create_sdk_mcp_server`), khác Demo 07 vốn spawn server riêng: `list_tasks` (đọc) và `create_task` (ghi, phải qua approval). Cận trên do app đặt: `max_turns=4`, `max_budget_usd=0.10`, timeout run 45s, `cwd` là sandbox của demo, và `setting_sources=[]` để **không nạp skill/plugin cá nhân** của máy đang chạy (lần đầu chưa set thì CLI nạp cả `skill-creator` và plugin Postman của máy).
+
+Nút **Inspect SDK session** spawn CLI + initialize mà không gọi model (2–20s): đây là đường duy nhất xem được cấu hình thật khi mạng chặn lượt model.
 
 ## Implementation status (thực tế)
 
 | # | Demo | Status | Ghi chú |
 |---|---|---|---|
-| 01 | Agent Runtime | Phase A xong | SSE / Approve / Reject / Cancel smoke test pass (curl + Chrome headless). Tool approval còn mô phỏng → Phase B. |
-| 02 | Claude API | Phase A xong (One-shot) | Live verified ở lượt trước (model `claude-haiku-5-5`); Phase A chỉ chuyển route/layout, không gọi lại Claude. History / Streaming / API Behavior chưa triển khai. |
-| 03–08 | Tools, Manual Loop, Structured Output, Workflows, MCP, Agent SDK | Chưa triển khai | Chỉ có trong Roadmap ở Workspace Home; không có route, không lên sidebar. |
+| 01 | Agent Runtime | Xong | Smoke test API pass: SSE tăng dần, Approve ghi file thật, Reject không ghi, Cancel lúc sleep và lúc chờ approval, double start → 409, cancel ngay sau start không treo stream, `DELETE /file` thiếu confirm → 400. Frontend: `npm run build` + `typecheck` pass, `/demos/01-runtime` render 200. |
+| 02 | Claude API | Xong — **live verified** | 21/21 check pass với model `claude-haiku-5-5` thật: one-shot `stop_reason=end_turn` (34 in / 115 out tokens), History OFF 1 turn vs ON 3 turn (input_tokens 23 → 105, câu trả lời đổi hẳn), streaming nhiều `text_delta` trước `final` và text ghép khớp `final.answer`, `max_tokens=16` → `stop_reason=max_tokens`, 4 case validate → 422. Frontend build/typecheck pass, `/demos/02-claude-api` render 200. |
+| 03 | Tools & Registry | Xong — **live verified** | 23/23 check pass: 3 scenario với Claude thật + unit check registry (tool lạ, input sai kiểu, thiếu field, happy path) + 3 case validate 422. |
+| 04 | Manual Agent Loop | Xong — **live verified** | 25/25 check pass: approve → INSERT thật, reject, cancel, max_turns, tool failure, run lại giữ history, và case fail-giữa-loop chứng minh history không commit nhưng task đã ghi vẫn còn. Loop 3+ lượt bị giới hạn mạng (xem Known limitation). |
+| 05 | Structured Output | Xong — **live verified** | 26/26 check pass: native structured output, 4 loại lỗi schema, 3 loại lỗi semantic, repair 1 lần (−4 → 4.0), 3 case validate 422. |
+| 06 | Agent Workflows | Xong — **live verified** | 26/26 check pass: 5 pattern với Claude thật (chaining tuần tự, parallel overlap đo được, routing branch theo nhãn thật, orchestrator cap 2 worker, evaluator verdict thật) + 2 check offline chứng minh budget raise và routing fallback + 2 case 422. |
+| 07 | MCP | Xong — **verified** (không cần key) | 24/24 check pass: discover/initialize thật, `list_tasks` khớp SQLite, tool error `TaskNotFound`, resource Markdown sinh từ DB, prompt template có argument, server chạy standalone, 3 lần connect không rò rỉ subprocess, 5 case 422/400. |
+| 08 | Claude Agent SDK | Xong — **một phần live**; lượt model **LIVE PENDING** | 28/28 check pass: SDK spawn CLI 2.1.330 thật, options/tool/skill tới CLI, 2 subagent được CLI đăng ký, hook `UserPromptSubmit` được gọi thật, permission Allow/Deny đúng, tool in-process ghi/đọc SQLite, run có cận trên 45s, 4 case 422/404/400. **Chưa verify**: lượt model, tool_use thật, skill activation, subagent delegation — CLI nhận `ECONNRESET` (7 lần `api_retry`) do giới hạn mạng bên dưới. UI hiện đúng trạng thái LIVE PENDING, không bịa output. |
 
-Đã bỏ: navigation 36 lesson, menu disabled, ô tìm lesson, Previous/Next theo lesson ID, quiz/Studied/progress.
+Dependency thêm: `mcp==2.3.0` và `claude-agent-sdk==0.2.187`. Lưu ý MCP SDK 2.x đã đổi `FastMCP` → `MCPServer` và dùng field snake_case (`input_schema`, `is_error`, `structured_content`), khác tài liệu v1.
+
+Refactor kèm theo ở lượt này: `ApprovalBroker` và `Session/SessionStore` được trích từ `demos/demo_01_runtime/` ra `backend/shared/` (demo 01 + 04 cùng dùng); thêm `shared/claude.py` cho phần hạ tầng gọi API. Demo 01 đã chạy lại smoke test (15/15 pass) sau refactor; Demo 02 giữ `messages.py` tự chứa vì nó là demo dạy chính cách gọi API.
+
+Đã bỏ ở lượt rebuild Demo 01: `backend/api.py`, `agent.py`, `sessions.py`, `approvals.py` ở gốc (chuyển vào `demos/demo_01_runtime/`), `backend/playground_api.py` + `backend/lessons/` và page `app/(workspace)/claude-api/` của bản Claude API cũ (viết lại trong `demos/demo_02_claude_api/`), `PlaygroundShell` (đổi tên `WorkspaceLayout`), các redirect URL legacy `/playground`, `/approval`, `/lessons/messages-api`.

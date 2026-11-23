@@ -1,11 +1,11 @@
 import { theme, type ThemeConfig } from "antd";
 
-// Design tokens tập trung (Plan V2 mục 5.1). Sửa màu/font ở đây, không rải CSS trong page.
+// Design tokens tập trung (plans/01-SHARED-ARCHITECTURE-UI.md). Sửa màu/font ở đây, không rải CSS trong page.
 export const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 // Dark theme: darkAlgorithm tự sinh nền, chữ, border, *Bg/*Border từ seed color.
 // Chỉ khai báo seed (màu thương hiệu); không ghi đè colorText/colorBg* để tránh lệch với nền tối.
-export const playgroundTheme: ThemeConfig = {
+export const workspaceTheme: ThemeConfig = {
   algorithm: theme.darkAlgorithm,
   token: {
     colorPrimary: "#3B7DD8",
