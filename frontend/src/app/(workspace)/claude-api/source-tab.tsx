@@ -38,10 +38,10 @@ export default function SourceTab({ source, error }: { source: SourceFile | null
             <Tag>Route</Tag><Text code>backend/playground_api.py</Text> → <Text code>post_messages_api()</Text> — body đã qua Pydantic; xem cách chọn HTTP status.
           </Text>
           <Text>
-            <Tag>Frontend</Tag><Text code>lessons/messages-api/demo-form.tsx</Text> → <Text code>submit()</Text> — prompt được ghép từ 2 ô input bằng <Text code>PRESETS[key].buildPrompt</Text> (<Text code>content.ts</Text>).
+            <Tag>Frontend</Tag><Text code>claude-api/demo-form.tsx</Text> → <Text code>submit()</Text> — prompt được ghép từ 2 ô input bằng <Text code>PRESETS[key].buildPrompt</Text> (<Text code>content.ts</Text>).
           </Text>
           <Text>
-            <Tag>Frontend</Tag><Text code>lessons/messages-api/page.tsx</Text> → <Text code>runDemo()</Text> — đặt breakpoint ở <Text code>await fetch(...)</Text> trong DevTools, đối chiếu tab Network.
+            <Tag>Frontend</Tag><Text code>claude-api/page.tsx</Text> → <Text code>runDemo()</Text> — đặt breakpoint ở <Text code>await fetch(...)</Text> trong DevTools, đối chiếu tab Network.
           </Text>
         </Flex>
       </div>

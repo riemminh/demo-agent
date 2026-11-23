@@ -1,4 +1,4 @@
-// Nội dung của feature 06 (Plan V3, mục D2). Tách khỏi UI để dễ sửa câu chữ.
+// Nội dung của demo 02 · Claude API, scenario One-shot. Tách khỏi UI để dễ sửa câu chữ.
 import type { OutcomeItem } from "@/components/LearningOutcome";
 
 export type PresetKey = "task" | "leave_email";

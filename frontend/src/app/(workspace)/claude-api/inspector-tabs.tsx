@@ -2,7 +2,6 @@
 
 import { Card, Empty, Spin, Tabs, Typography } from "antd";
 import CodeBlock from "@/components/CodeBlock";
-import ExecutionTrace from "./execution-trace";
 import SourceTab, { type SourceFile } from "./source-tab";
 import type { RunRecord } from "./types";
 
@@ -41,14 +40,13 @@ export default function InspectorTabs({ run, running, source, sourceError }: Pro
     return <Empty description={run?.clientError ?? "Không có response."} />;
   });
 
-  // Draft (kết quả chính) nằm ở DraftResult; Inspector chỉ để soi dữ liệu thô của cùng lần Run.
+  // Draft (kết quả chính) nằm ở DraftResult, trace ở ExecutionTrace; đây chỉ để soi dữ liệu thô của cùng lần Run.
   return (
-    <Card title="Inspect (tùy chọn)" size="small">
+    <Card title="Source Code & Debug" size="small">
       <Tabs
         items={[
           { key: "request", label: "Request JSON", children: requestTab },
           { key: "response", label: "Response JSON", children: responseTab },
-          { key: "trace", label: "Trace", children: runGate(() => <ExecutionTrace run={run!} />) },
           { key: "source", label: "Source & Debug", children: <SourceTab source={source} error={sourceError} /> },
         ]}
       />

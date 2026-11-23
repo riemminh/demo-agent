@@ -1,4 +1,5 @@
 // Contract JSON của POST /api/lessons/messages-api (backend/lessons/messages_api.py).
+// Endpoint backend giữ nguyên tên cũ để không đổi backend trong Phase A.
 
 export type ContentBlock = { type: string; text?: string; [key: string]: unknown };
 

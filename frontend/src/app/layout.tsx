@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Agent SSE Demo",
-  description: "FastAPI Queue SSE Next.js demo",
+  title: "AI Agent Demo Workspace",
+  description: "8 interactive Claude Agent demos: FastAPI + Next.js + Ant Design",
 };
 
 export default function RootLayout({

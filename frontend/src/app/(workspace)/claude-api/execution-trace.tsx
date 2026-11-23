@@ -1,6 +1,6 @@
 "use client";
 
-import { Timeline, Typography } from "antd";
+import { Card, Empty, Spin, Timeline, Typography } from "antd";
 import type { TimelineProps } from "antd";
 import type { RunRecord } from "./types";
 
@@ -13,7 +13,7 @@ function clock(date: Date) {
 
 // Trace dựng hoàn toàn từ dữ liệu runtime của lần Run này: thời điểm browser gửi,
 // HTTP status, latency backend đo, request_id/usage Claude trả. Không có bước nào bịa thêm.
-export default function ExecutionTrace({ run }: { run: RunRecord }) {
+function TraceTimeline({ run }: { run: RunRecord }) {
   const { result } = run;
   const items: TimelineItem[] = [
     { color: "blue", title: clock(run.sentAt),
@@ -49,10 +49,21 @@ export default function ExecutionTrace({ run }: { run: RunRecord }) {
   return (
     <>
       <Typography.Paragraph type="secondary">
-        Lesson 06 chỉ có một lần gọi Claude nên trace ngắn. Cột trái: thời điểm gửi, latency của
+        One-shot chỉ có một lần gọi Claude nên trace ngắn. Cột trái: thời điểm gửi, latency của
         lần gọi Claude (đo ở backend) và round trip (đo ở browser).
       </Typography.Paragraph>
       <Timeline mode="start" titleSpan={4} items={items} />
     </>
+  );
+}
+
+// Khối "Execution Events": chưa Run thì không có bước nào, không hiện trace giả.
+export default function ExecutionTrace({ run, running }: { run: RunRecord | null; running: boolean }) {
+  return (
+    <Card title="Execution Events" size="small">
+      {running
+        ? <Spin description="Đang chờ Claude trả lời…"><div style={{ height: 120 }} /></Spin>
+        : run ? <TraceTimeline run={run} /> : <Empty description="Chưa chạy demo. Bấm Run để gửi request thật." />}
+    </Card>
   );
 }

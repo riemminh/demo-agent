@@ -3,12 +3,12 @@
 import { Col, Flex, Row, Space, Tag, Typography } from "antd";
 import { useEffect, useRef, useState } from "react";
 import LearningOutcome from "@/components/LearningOutcome";
-import LessonNav from "@/components/LessonNav";
 import { API_URL, getHealth, type Health } from "@/lib/api";
 import ConceptSection from "./concept-section";
 import { OUTCOMES } from "./content";
 import DemoForm from "./demo-form";
 import DraftResult from "./draft-result";
+import ExecutionTrace from "./execution-trace";
 import InspectorTabs from "./inspector-tabs";
 import MetricsSection from "./metrics-section";
 import type { SourceFile } from "./source-tab";
@@ -29,7 +29,7 @@ function isLessonResult(body: unknown): body is MessagesApiResult {
   return typeof body === "object" && body !== null && "status" in body && "metrics" in body;
 }
 
-export default function MessagesApiLesson() {
+export default function ClaudeApiDemo() {
   const [health, setHealth] = useState<Health | null>(null);
   const [healthError, setHealthError] = useState<string | null>(null);
   const [source, setSource] = useState<SourceFile | null>(null);
@@ -92,7 +92,7 @@ export default function MessagesApiLesson() {
   return (
     <Flex vertical gap={16}>
       <div>
-        <Typography.Text type="secondary">Claude API Lab · 06 One-shot Message</Typography.Text>
+        <Typography.Text type="secondary">02 · Claude API · Scenario: One-shot</Typography.Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>Generate Task Description</Typography.Title>
         <Typography.Paragraph style={{ marginBottom: 8 }}>
           Nhập task title và requirements, bấm Generate: backend gọi Claude đúng 1 request và trả về bản
@@ -117,10 +117,10 @@ export default function MessagesApiLesson() {
       </Row>
 
       <MetricsSection run={run} />
+      <ExecutionTrace run={run} running={running} />
       <InspectorTabs run={run} running={running} source={source} sourceError={sourceError} />
       <ConceptSection />
       <LearningOutcome items={OUTCOMES} />
-      <LessonNav lessonId="06" />
     </Flex>
   );
 }
