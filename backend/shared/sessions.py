@@ -20,6 +20,9 @@ class Session:
     history: list[dict[str, Any]] = field(default_factory=list)
     task: asyncio.Task[None] | None = None
     approvals: ApprovalBroker = field(default_factory=ApprovalBroker)
+    # Demo 08: resume SDK session, cancel qua interrupt (demo 01/04 không dùng).
+    sdk_session_id: str | None = None
+    cancel_event: asyncio.Event = field(default_factory=asyncio.Event)
 
     @property
     def busy(self) -> bool:

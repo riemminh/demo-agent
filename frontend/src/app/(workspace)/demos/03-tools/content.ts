@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 03: scenario, prompt mẫu, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 import type { ScenarioName } from "./api";
 
 export type Scenario = {
@@ -60,10 +59,4 @@ export const BREAKPOINTS = [
     code: '"type": "tool_result", "tool_use_id": block.id,',
     why: "Request #2 phải gồm nguyên văn block `tool_use` của assistant, rồi `tool_result` của user với `tool_use_id` khớp. Lỗi tool đi kèm `is_error=true`.",
   },
-];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Phân biệt rõ hai việc: Claude CHỌN tool (trả block tool_use kèm input), Python THỰC THI tool (registry gọi hàm thật)." },
-  { text: "Đọc được protocol một tool round: tools schema → tool_use(id, name, input) → tool_result(tool_use_id, is_error) → lần gọi Claude thứ hai mới có câu trả lời cuối." },
-  { text: "Tool error khác Claude API error: tool lỗi vẫn là HTTP 200, lỗi được trả vào hội thoại như dữ liệu để model giải thích, không lộ traceback." },
 ];

@@ -81,10 +81,23 @@ def failed(error: dict[str, Any], request: dict[str, Any] | None,
 
 
 def succeeded(request: dict[str, Any], message: Message, latency_ms: float) -> dict[str, Any]:
+    if message.stop_reason != "end_turn":
+        return failed(
+            {"kind": "incomplete_response", "upstream_status": None,
+             "message": f"stop_reason={message.stop_reason!r} không phải end_turn"},
+            request, 1, latency_ms,
+        )
+    answer = answer_text(message).strip()
+    if not answer:
+        return failed(
+            {"kind": "incomplete_response", "upstream_status": None,
+             "message": "end_turn nhưng không có block text."},
+            request, 1, latency_ms,
+        )
     return {
         "status": "succeeded", "request": request,
-        "response": message.to_dict(),  # Field API thực sự trả về.
-        "answer": answer_text(message), "request_id": message._request_id, "error": None,
+        "response": message.to_dict(),
+        "answer": answer, "request_id": message._request_id, "error": None,
         "metrics": {"api_calls": 1, "latency_ms": latency_ms,
                     "input_tokens": message.usage.input_tokens,
                     "output_tokens": message.usage.output_tokens},
@@ -92,8 +105,11 @@ def succeeded(request: dict[str, Any], message: Message, latency_ms: float) -> d
 
 
 async def run_messages(messages: list[Turn], system: str, max_tokens: int) -> dict[str, Any]:
-    if config.missing_llm_settings():
-        return failed(config_error(), None, 0)  # Thiếu config thì KHÔNG gọi API.
+    from shared.llm_preflight import preflight_llm_error
+
+    blocked = preflight_llm_error()
+    if blocked:
+        return failed(blocked, None, 0)
     request_body = build_request(messages, system, max_tokens)
     async with new_client() as client:
         started = time.perf_counter()

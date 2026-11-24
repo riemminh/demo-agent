@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 02: scenario, preset prompt, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 
 export type ScenarioKey = "one-shot" | "history" | "streaming";
 
@@ -62,10 +61,4 @@ export const BREAKPOINTS = [
     code: "async for text in stream.text_stream:",
     why: "Hai tầng stream: Claude → Python ở đây, rồi Python → browser bằng SSE ở `router.py`. `await stream.get_final_message()` sau vòng lặp mới có `usage` và `stop_reason` đúng.",
   },
-];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Chỉ ra được từng phần của request/response: system, messages + roles, max_tokens, content blocks, stop_reason, usage." },
-  { text: "Giải thích Messages API là stateless — bật/tắt history đổi hẳn câu trả lời và input_tokens, vì ứng dụng mới là chỗ giữ lịch sử." },
-  { text: "Phân biệt streaming Claude→Python (messages.stream, text_delta) với SSE Python→Browser, và vì sao usage chỉ có ở final message." },
 ];

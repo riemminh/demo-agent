@@ -59,7 +59,8 @@ export default function ScenarioInput(props: Props) {
           <Button disabled={running} onClick={props.onReset}>Reset view</Button>
         </Space>
         <Typography.Text type="secondary">
-          Run có cận trên 45 giây ở backend; Cancel hủy task nên SDK đóng CLI.
+          Run timeout {env?.run_timeout_seconds ?? 45}s · Approval timeout {env?.approval_timeout_seconds ?? 120}s
+          (backend). Cancel hủy task và đóng CLI.
         </Typography.Text>
       </Flex>
     </Card>

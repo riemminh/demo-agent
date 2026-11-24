@@ -1,12 +1,11 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
 import {
   callTool, discover, getTasks, resetTasks, resourcesPrompts, seedTasks,
   type DiscoverResult, type McpEvent, type ResourcesPromptsResult, type Task, type ToolCallResult,
 } from "./api";
-import { OUTCOMES, type ScenarioKey } from "./content";
+import { type ScenarioKey } from "./content";
 import EventLog from "./event-log";
 import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
@@ -115,7 +114,6 @@ export default function McpDemoPage() {
         onReset={() => void loadTasks(resetTasks)} />
       <EventLog events={events} running={running} />
       <SourceDebug />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

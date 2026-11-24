@@ -92,6 +92,14 @@ export function useClaude() {
       }
       log(event.type);
     });
+    if (!built) {
+      built = {
+        status: "failed", request, response: null, answer: null, request_id: null,
+        metrics: { ...EMPTY_METRICS, latency_ms: null },
+        error: { kind: "incomplete_stream", message: "Stream kết thúc mà không có final/run_finished hợp lệ.",
+                 upstream_status: null },
+      };
+    }
     setResult(built);
     return built;
   }

@@ -14,6 +14,7 @@ import config
 from shared.claude import (
     answer_text, api_error, config_error, elapsed_ms, new_client, usage_totals,
 )
+from shared.llm_response import incomplete_reason
 
 from .registry import TOOL_REGISTRY, execute
 from .tools import schemas_for
@@ -36,8 +37,11 @@ def _result(status: str, events: list[dict[str, Any]], requests: list[dict[str, 
 async def run_tool_round(
     prompt: str, tool_names: list[str], forced_tool: str | None, max_tokens: int
 ) -> dict[str, Any]:
-    if config.missing_llm_settings():
-        return _result("failed", [], [], [], 0, None, error=config_error())
+    from shared.llm_preflight import preflight_llm_error
+
+    blocked = preflight_llm_error()
+    if blocked:
+        return _result("failed", [], [], [], 0, None, error=blocked)
 
     tools = schemas_for(tool_names)
     messages: list[dict[str, Any]] = [{"role": "user", "content": prompt}]
@@ -69,8 +73,20 @@ async def run_tool_round(
         tool_uses = [block for block in first.content if block.type == "tool_use"]
         if not tool_uses:
             log("no_tool_use", message="Claude trả text luôn, không yêu cầu tool nào.")
-            return _result("succeeded", events, [request_1], [first], 1, started,
-                           answer=answer_text(first))
+            if forced_tool:
+                log("error", kind="expected_tool_use",
+                    message="Scenario ép tool nhưng model không trả tool_use.")
+                return _result("failed", events, [request_1], [first], 1, started,
+                               error={"kind": "expected_tool_use",
+                                      "message": "Model không gọi tool khi bị ép tool_choice."})
+            incomplete = incomplete_reason(first)
+            status = "failed" if incomplete else "succeeded"
+            if incomplete:
+                log("error", kind="incomplete_response", message=incomplete)
+            return _result(status, events, [request_1], [first], 1, started,
+                           answer=answer_text(first) if status == "succeeded" else None,
+                           error=None if status == "succeeded" else
+                           {"kind": "incomplete_response", "message": incomplete})
 
         tool_calls, result_blocks = [], []
         for block in tool_uses:  # Xử lý MỌI tool_use block, không bỏ sót block nào.
@@ -106,6 +122,12 @@ async def run_tool_round(
                            tool_calls=tool_calls, error=api_error(error))
         log("response_received", call=2, stop_reason=second.stop_reason,
             blocks=[block.type for block in second.content])
+        incomplete = incomplete_reason(second)
+        if incomplete:
+            log("error", kind="incomplete_response", message=incomplete)
+            return _result("failed", events, [request_1, request_2], [first, second], 2, started,
+                           tool_calls=tool_calls,
+                           error={"kind": "incomplete_response", "message": incomplete})
         answer = answer_text(second)
         log("final", answer=answer)
         return _result("succeeded", events, [request_1, request_2], [first, second], 2, started,

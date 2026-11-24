@@ -1,9 +1,9 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
+import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { getCaps, runWorkflow, type Caps, type PatternName, type WorkflowResult } from "./api";
-import { OUTCOMES, PATTERNS } from "./content";
+import { PATTERNS } from "./content";
 import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
 import SourceDebug from "./source-debug";
@@ -51,6 +51,7 @@ export default function WorkflowsDemoPage() {
 
   return (
     <Flex vertical gap={16}>
+      <LlmNetworkAlert />
       <div>
         <Text type="secondary">06 · Agent Workflows</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>
@@ -65,7 +66,7 @@ export default function WorkflowsDemoPage() {
           <Tag color="geekblue">Claude API thật</Tag>
           <Tag>Budget call cho từng pattern</Tag>
           <Tag>Không framework, không DB</Tag>
-          <Tag>max_tokens 220 mỗi call</Tag>
+          <Tag>max_tokens theo LLM_OUTPUT_MAX_TOKENS</Tag>
         </Space>
       </div>
       <ScenarioInput pattern={pattern} input={input} running={running} caps={caps}
@@ -73,7 +74,6 @@ export default function WorkflowsDemoPage() {
       <ResultCard result={result} running={running} transportError={transportError} />
       <StepTrace steps={result?.steps ?? []} totalMs={totalMs} running={running} />
       <SourceDebug pattern={pattern} />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

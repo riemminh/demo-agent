@@ -25,7 +25,7 @@ ERROR_STATUS = {"config_missing": 503, "timeout": 504, "connection_error": 502}
 
 class GenerateRequest(BaseModel):
     prompt: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=1000)]
-    max_tokens: int = Field(default=256, ge=1)
+    max_tokens: int = Field(default=2048, ge=1)
 
 
 class ValidateRequest(BaseModel):
@@ -36,7 +36,7 @@ class ValidateRequest(BaseModel):
 class RepairRequest(BaseModel):
     draft: Any
     errors: list[str] = Field(min_length=1, max_length=20)
-    max_tokens: int = Field(default=256, ge=1)
+    max_tokens: int = Field(default=2048, ge=1)
 
 
 def _check_max_tokens(max_tokens: int) -> None:
@@ -47,7 +47,11 @@ def _check_max_tokens(max_tokens: int) -> None:
 def _respond(result: dict[str, Any]) -> JSONResponse:
     if result["status"] == "succeeded":
         return JSONResponse(result)
-    return JSONResponse(status_code=ERROR_STATUS.get(result["error"]["kind"], 502), content=result)
+    error = result.get("error") or {}
+    kind = error.get("kind")
+    if kind is None:
+        return JSONResponse(status_code=200, content=result)
+    return JSONResponse(status_code=ERROR_STATUS.get(kind, 502), content=result)
 
 
 @router.get("/schema")

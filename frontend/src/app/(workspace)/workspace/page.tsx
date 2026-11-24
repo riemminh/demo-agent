@@ -25,7 +25,7 @@ export default function WorkspaceHome() {
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>AI Agent Demo Workspace</Typography.Title>
         <Paragraph style={{ marginBottom: 0 }}>
           Mỗi menu là một demo tương tác: chọn scenario, bấm Run, xem Actual Result và Execution Events,
-          mở Source Code ở breakpoint rồi đọc Kết quả cần đạt.
+          mở Source Code ở breakpoint để theo dõi luồng thực thi.
         </Paragraph>
       </div>
 
@@ -38,6 +38,12 @@ export default function WorkspaceHome() {
                 ? <Tag color="blue">đã cấu hình</Tag>
                 : <Tag color="warning">thiếu {health.missing_env.join(", ")}: Live verification pending</Tag> },
               { key: "model", label: "Model (LLM_MODEL)", children: health?.model ?? "—" },
+              { key: "reach", label: "Messages API (probe)",
+                children: !health?.messages_api_reachable
+                  ? <Tag color="warning">chưa kiểm tra / lỗi</Tag>
+                  : <Tag color="success">reachable</Tag> },
+              { key: "proxy", label: "HTTPS_PROXY",
+                children: health?.https_proxy_configured ? <Tag color="blue">có</Tag> : <Tag>không</Tag> },
             ]} />}
       </Card>
 

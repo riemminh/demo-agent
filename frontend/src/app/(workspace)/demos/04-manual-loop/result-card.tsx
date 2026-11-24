@@ -25,6 +25,9 @@ export default function ResultCard(props: Props) {
   const errorEvent = find(events, "error");
   const started = find(events, "run_started");
   const committed = find(events, "history_committed");
+  const rulesLoaded = find(events, "rules_loaded");
+  const skillsDiscovered = find(events, "skills_discovered");
+  const subagents = find(events, "subagents_registered");
   // created_ids xuất hiện ở event cuối: dù run fail, task đã INSERT vẫn còn trong DB.
   const createdIds = final?.created_ids ?? maxTurns?.created_ids ?? errorEvent?.created_ids ?? [];
   const status = running ? (pendingApproval ? "waiting approval" : "running")
@@ -54,6 +57,26 @@ export default function ResultCard(props: Props) {
                   onClick={() => props.onDecide(false)}>Reject</Button>
               </Space>
             </Flex>} />
+        )}
+        {rulesLoaded && (
+          <Alert type="info" showIcon title="Rules & System prompt"
+            description={<Flex vertical gap={8}>
+              <span>
+                Files: {(rulesLoaded.loaded_files ?? rulesLoaded.files?.map((p) => ({ path: p })) ?? [])
+                  .map((f) => (typeof f === "string" ? f : f.path)).join(", ")}
+              </span>
+              {rulesLoaded.system_prompt && (
+                <CodeBlock title="system prompt (đoạn đầu)" code={String(rulesLoaded.system_prompt).slice(0, 1200)} />
+              )}
+            </Flex>} />
+        )}
+        {skillsDiscovered?.skills && (
+          <Alert type="info" showIcon title="Skills discovered"
+            description={skillsDiscovered.skills.map((s) => `${s.name}: ${s.description}`).join(" · ")} />
+        )}
+        {subagents?.agents && (
+          <Alert type="info" showIcon title="Subagents"
+            description={subagents.agents.map((a) => a.name).join(", ")} />
         )}
         {final?.answer && (
           <div>

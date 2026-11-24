@@ -9,8 +9,10 @@ import shutil
 from typing import Any
 
 import config
+from shared.approval import APPROVAL_TIMEOUT_SECONDS
 
 from .customization import MAX_BUDGET_USD, MAX_TURNS, SANDBOX_DIR, SCENARIOS
+from .transport import env_network_hints
 
 
 def env_summary() -> dict[str, Any]:
@@ -24,6 +26,9 @@ def env_summary() -> dict[str, Any]:
         "sandbox_dir": str(SANDBOX_DIR),
         "max_turns": MAX_TURNS,
         "max_budget_usd": MAX_BUDGET_USD,
+        "run_timeout_seconds": float(config.SDK_RUN_TIMEOUT_SECONDS),
+        "approval_timeout_seconds": APPROVAL_TIMEOUT_SECONDS,
+        **env_network_hints(),
         "scenarios": {
             key: {"label": value["label"], "prompt": value["prompt"], "tools": value["tools"],
                   "skills": value["skills"], "subagents": value["agents"]}

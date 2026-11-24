@@ -35,7 +35,7 @@ async function post(path: string, body: object): Promise<DraftResult> {
 
 // Gọi Claude với native structured output (output_format=TaskDraft).
 export function generateDraft(prompt: string): Promise<DraftResult> {
-  return post("/generate", { prompt, max_tokens: 256 });
+  return post("/generate", { prompt, max_tokens: 2048 });
 }
 
 // KHÔNG gọi Claude: chỉ Pydantic + semantic check trong Python.
@@ -45,7 +45,7 @@ export function validateDraft(draft: unknown): Promise<DraftResult> {
 
 // Một lần repair duy nhất, kèm đúng những lỗi đã phát hiện.
 export function repairDraft(draft: unknown, errors: string[]): Promise<DraftResult> {
-  return post("/repair", { draft, errors, max_tokens: 256 });
+  return post("/repair", { draft, errors, max_tokens: 2048 });
 }
 
 export async function getSchema(): Promise<Record<string, unknown>> {

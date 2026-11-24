@@ -13,11 +13,21 @@ from anthropic import AsyncAnthropic
 import config
 from shared.claude import api_error, config_error, new_client
 
-from .runner import BudgetExceeded, Trace
+from .runner import BudgetExceeded, IncompleteResponse, Trace
 
 MAX_WORKERS = 2
 MAX_REVISIONS = 1
 INTENTS = ("draft_task", "summarize", "translate")
+
+
+def _intent_from_label(label: str) -> str | None:
+    token = label.strip().lower().splitlines()[0].strip().strip("\"'")
+    return token if token in INTENTS else None
+
+
+def _evaluator_accept(verdict: str) -> bool:
+    first = verdict.strip().splitlines()[0].strip().upper().lstrip("*# ").strip("\"'")
+    return first == "ACCEPT"
 
 # Budget thật cho từng scenario (số API call tối đa).
 BUDGETS = {"chaining": 2, "routing": 2, "parallel": 2, "orchestrator": 3, "evaluator": 4}
@@ -41,7 +51,7 @@ async def routing(client: AsyncAnthropic, trace: Trace, text: str) -> str:
         "Phân loại yêu cầu sau vào đúng một nhãn: draft_task, summarize, translate. "
         f"Chỉ trả về nhãn, không giải thích.\nYêu cầu: {text}",
     )
-    intent = next((name for name in INTENTS if name in label.lower()), None)
+    intent = _intent_from_label(label)
     trace.note("route", f"classifier trả {label!r} -> intent={intent or 'không xác định'}")
     if intent is None:
         return ("Không xác định được intent nên không chạy handler nào (fallback an toàn). "
@@ -99,7 +109,7 @@ async def evaluator(client: AsyncAnthropic, trace: Trace, text: str) -> str:
             'Nếu chưa, trả "REVISE: <lý do ngắn>".\n'
             f"Mô tả: {draft}",
         )
-        if verdict.upper().lstrip("*# ").startswith("ACCEPT"):
+        if _evaluator_accept(verdict):
             trace.note("decision", f"evaluator ACCEPT ở lần {revision + 1} -> dừng")
             return draft
         if revision == MAX_REVISIONS:
@@ -119,9 +129,12 @@ PATTERNS = {"chaining": chaining, "routing": routing, "parallel": parallel,
 
 
 async def run_workflow(scenario: str, text: str) -> dict[str, Any]:
-    if config.missing_llm_settings():
+    from shared.llm_preflight import preflight_llm_error
+
+    blocked = preflight_llm_error()
+    if blocked:
         return {"status": "failed", "scenario": scenario, "answer": None,
-                "steps": [], "metrics": None, "error": config_error()}
+                "steps": [], "metrics": None, "error": blocked}
     trace = Trace(budget=BUDGETS[scenario])
     error: dict[str, Any] | None = None
     answer: str | None = None
@@ -130,6 +143,8 @@ async def run_workflow(scenario: str, text: str) -> dict[str, Any]:
             answer = await PATTERNS[scenario](client, trace, text)
         except BudgetExceeded as exceeded:
             error = {"kind": "budget_exceeded", "message": str(exceeded), "upstream_status": None}
+        except IncompleteResponse as incomplete:
+            error = {"kind": "incomplete_response", "message": str(incomplete), "upstream_status": None}
         except anthropic.APIError as api:
             error = api_error(api)
     return {"status": "failed" if error else "succeeded", "scenario": scenario,

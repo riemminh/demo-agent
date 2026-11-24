@@ -45,6 +45,8 @@ Mạng đang dùng để phát triển **reset mọi HTTPS request có body lớ
 | HTTP/1.1 và HTTP/2 | fail như nhau → không phải vấn đề protocol |
 | `ping -D` tới 1472 B | OK → không phải MTU blackhole thông thường |
 
+Đo lại 2026-11-24: TLS post-quantum (`X25519MLKEM768`) bị reset ngay cả với body 50 B; ép nhóm cổ điển thì body ≤ 800 B qua, ≥ 1,5 KB vẫn reset; giảm TCP MSS xuống 536 không đổi kết quả → **không phải MTU**, mà là thiết bị mạng chủ động cắt upload lớn tới `api.anthropic.com`. CLI bundle 2.1.330 (Bun) luôn `ECONNRESET`. Demo 08 vì vậy đặt `CLAUDE_CODE_MAX_RETRIES=2` và `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`: run fail trong ~3 s với `error(kind=sdk_api_error)` thay vì retry tới timeout.
+
 Hệ quả: demo nào gửi request lớn sẽ nhận `error(kind=connection_error)` — Demo 04 khi loop sang lượt thứ 3, và **Demo 08** vì Claude Code CLI luôn gửi system prompt lớn (CLI tự retry rồi báo `ECONNRESET`; cả HTTP/1.1 và HTTP/2 đều vậy). **Không phải bug của code** — chạy qua VPN/proxy hoặc mạng khác (ví dụ 4G hotspot) là hết. Backend tôn trọng `HTTPS_PROXY` của httpx nếu bạn có proxy.
 
 ### Frontend
@@ -83,9 +85,9 @@ backend/
 │   ├── registry.py               # TOOL_REGISTRY + execute(name, input) có validate
 │   └── tool_calling.py           # một tool round: call #1 → execute → call #2
 ├── demos/demo_04_manual_loop/
-│   ├── router.py                 # sessions, runs (SSE), approvals, cancel, tasks
-│   ├── agent_loop.py             # loop + working/committed history + MAX_TURNS
-│   └── tasks_tools.py            # list_tasks / create_task (cần approve) / get_task
+│   ├── router.py · agent_loop.py · scenarios.py
+│   ├── rules.py · skills.py · permissions.py · subagents.py
+│   ├── tool_dispatch.py · tasks_tools.py · sandbox/
 ├── demos/demo_05_structured_output/
 │   ├── router.py · schemas.py    # TaskDraft (Pydantic) dùng cho cả model và app
 │   ├── validation.py             # tầng schema + tầng semantic, chạy offline
@@ -127,7 +129,7 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | http://localhost:3001/demos/01-runtime | **01 · Agent Runtime**: scenario `SSE` · `Approval` · `Cancel` |
 | http://localhost:3001/demos/02-claude-api | **02 · Claude API**: scenario `One-shot` · `History On/Off` · `Streaming` |
 | http://localhost:3001/demos/03-tools | **03 · Tools & Registry**: scenario `Single Tool` · `Registry` · `Tool Error` |
-| http://localhost:3001/demos/04-manual-loop | **04 · Manual Agent Loop**: scenario `Normal` · `Max Turns` · `Tool Failure` |
+| http://localhost:3001/demos/04-manual-loop | **04 · Manual Agent Loop**: scenario `Normal` · `Max Turns` · `Tool Failure` · `Loop + Structured` |
 | http://localhost:3001/demos/05-structured-output | **05 · Structured Output**: `Generate` → `Validate` → `Repair` |
 | http://localhost:3001/demos/06-workflows | **06 · Agent Workflows**: `Chaining` · `Routing` · `Parallel` · `Orchestrator` · `Evaluator` |
 | http://localhost:3001/demos/07-mcp | **07 · MCP**: `Connect & Discover` · `Call Tool` · `Resources & Prompts` (không cần Claude key) |
@@ -153,7 +155,7 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 
 | POST | `/api/demos/03/run` | Body `{scenario: single\|registry\|error, prompt: 1–2000, max_tokens?}`. Response `{status, events[], requests[], responses[], answer, tool_calls[], metrics, error}`. |
 | GET | `/api/demos/03/tools` | `{tools: [...]}` — schema đang gửi cho model. |
-| POST | `/api/demos/04/sessions` · `/sessions/{id}/runs` (SSE, body `{prompt, max_turns: 1–6}`) · `/sessions/{id}/approvals/{aid}` · `/sessions/{id}/cancel` | Loop có approval và cancel; `GET /sessions/{id}` trả `{history_messages, busy}`. |
+| POST | `/api/demos/04/sessions` · `/sessions/{id}/runs` (SSE, body `{prompt, max_turns: 1–6, structured_finish?}`) · `/sessions/{id}/approvals/{aid}` · `/sessions/{id}/cancel` | Loop có approval và cancel; `structured_finish=true` thì chỉ commit history khi câu trả lời cuối pass TaskDraft (Demo 05). |
 | GET / DELETE | `/api/demos/04/tasks` (`?confirm=true` để xóa) | Đọc/xóa task trong SQLite, chỉ `demo_scope = manual_loop`. |
 | POST | `/api/demos/05/generate` · `/validate` · `/repair` | `generate`/`repair` gọi Claude (native structured output); `validate` chỉ chạy Python. Response `{stage, status, raw, accepted, schema_errors[], semantic_errors[], metrics, events}`. |
 | GET | `/api/demos/05/schema` | JSON Schema sinh từ Pydantic `TaskDraft`. |
@@ -163,7 +165,7 @@ Quy tắc: `main.py` chỉ import router của demo **đã có code**; mỗi `de
 | POST | `/api/demos/07/call-tool` | Body `{name: list_tasks\|get_task, task_id?}` → `tools/call`. Response thêm `result{is_error, text, structured}`, `schema`, `db_tasks` (đọc thẳng SQLite để đối chiếu). |
 | POST | `/api/demos/07/resources-prompts` | Body `{goal}` → `resources/list` + `resources/read` + `prompts/list` + `prompts/get`. |
 | POST / GET / DELETE | `/api/demos/07/seed` · `/tasks` · `/tasks?confirm=true` | Dữ liệu sandbox scope `mcp`; Seed là Python ghi trực tiếp (có nhãn **seed dữ liệu**), không phải tool của server. |
-| GET | `/api/demos/08/env` | Prerequisites: `{sdk_version, cli_found, cli_path, api_key_configured, model, sandbox_dir, max_turns, max_budget_usd, scenarios}`. |
+| GET | `/api/demos/08/env` | Prerequisites: `run_timeout_seconds` mặc định **180** (`SDK_RUN_TIMEOUT_SECONDS`), `approval_timeout_seconds` 120. |
 | POST | `/api/demos/08/inspect` | Body `{scenario}` → spawn CLI + initialize, **không gọi model**: `{cli_version, pid, permission_mode, allowed_tools, skills, subagents_declared, subagents_registered, cwd, connect_ms}`. |
 | POST | `/api/demos/08/sessions` · `/sessions/{id}/runs` (SSE, body `{scenario, prompt}`) · `/sessions/{id}/approvals/{aid}` · `/sessions/{id}/cancel` | Run agent qua SDK; event là SDK message thật. Run có cận trên 45s ở backend. |
 | GET / DELETE | `/api/demos/08/tasks` (`?confirm=true` để xóa) | Task scope `agent_sdk`. |
@@ -226,21 +228,26 @@ Một **tool round** đầy đủ: Claude #1 trả block `tool_use`, Python tra 
 
 An toàn: không `eval`/`exec`, không dynamic import; tool lạ → `Unknown tool`; input validate bằng Pydantic (`{"numbers": "abc"}` → lỗi validation); lỗi tool chỉ trả tên lỗi + message, không trả traceback.
 
-## 04 · Manual Agent Loop — Normal · Max Turns · Tool Failure
+## 04 · Manual Agent Loop — Loop cơ bản · Rules · Skills · Permissions · Subagents
 
-Python giữ vòng lặp (`for turn in range(1, max_turns + 1)`), model quyết định `stop_reason`. `working_messages` là `deepcopy` của history đã commit; chỉ nhánh `end_turn` + có text mới gán lại vào `session.history`. Tool `create_task` ghi SQLite nên phải được Approve trước (fail closed).
+Python giữ vòng lặp (`for turn in range(1, max_turns + 1)`), model quyết định `stop_reason`. `working_messages` là `deepcopy` của history đã commit; chỉ nhánh `end_turn` + có text mới gán lại vào `session.history`. Bốn scenario mới minh họa **cùng ý tưởng với Demo 08** nhưng tự triển khai bằng Messages API (không Agent SDK):
 
-| Scenario | Kết quả đã đo |
+| Scenario | Python làm gì |
 |---|---|
-| Normal | `create_task` → `approval_required` → Approve → INSERT thật → `end_turn` → `history_committed`; `turns_used=2`, `messages_in_request` = `[1, 3]`; task đọc lại từ DB: `{id:1, title:"Login", priority:"high", status:"todo"}` |
-| Run lại cùng session | `history_before=4` (nhớ hội thoại trước), không tạo task trùng |
-| Max Turns = 1 | `tool_use` ở lượt 1 → hết lượt → `max_turns_reached`, **không** có `final`, `history_messages` vẫn 0 |
-| Tool Failure | `get_task(999999)` → `tool_result(is_error=true, "TaskNotFound…")` → model giải thích → `run_finished` |
-| Reject | `tool_result` ghi “Người dùng không phê duyệt…”, DB vẫn trống |
-| Cancel khi đang chờ approval | `error(kind=cancelled)` → `run_finished`, history không commit, DB không có task mới |
-| Fail giữa loop (mạng cắt lượt 3) | history **không** commit nhưng `created_ids=[1]` vẫn còn trong DB → UI cảnh báo “rollback history ≠ rollback side effect” |
+| Normal / Max Turns / Tool Failure / Structured | Loop + SQLite task như trước; `create_task` cần Approve |
+| Rules Loading | `rules.py` đọc `sandbox/CLAUDE.md` + `.claude/rules/` → `system` của `messages.create` |
+| Skills | `skills.py` discover metadata + tool `load_skill` → Progressive disclosure |
+| Permissions | `permissions.py` `check_tool_permission` trước `execute` (read auto / write HITL / unknown deny) |
+| Subagents | `delegate_task` → `subagent_loop.py` (context tách, không delegation đệ quy) |
 
-SQLite: `backend/data/tasks.sqlite3` (gitignored), bảng `tasks(id, title, priority, status, demo_scope)`, parameterized query, `Reset data` chỉ xóa `demo_scope = manual_loop` và có confirm.
+```text
+backend/demos/demo_04_manual_loop/
+├── agent_loop.py · router.py · scenarios.py
+├── rules.py · skills.py · permissions.py · subagents.py · subagent_loop.py
+├── tool_dispatch.py · tool_schemas.py · sandbox/…
+```
+
+SQLite: `demo_scope = manual_loop`, `Reset data` có confirm. So sánh trực tiếp với Demo 08 `customization.py` (SDK `can_use_tool`, skills option, `AgentDefinition`).
 
 ## 05 · Structured Output — Generate · Validate · Repair
 
@@ -302,7 +309,7 @@ Bốn điểm ứng dụng vẫn kiểm soát:
 
 | Điểm | Cơ chế | Đã kiểm chứng |
 |---|---|---|
-| Permissions | `can_use_tool` được SDK gọi **trước** khi chạy tool | tool đọc → `PermissionResultAllow` tự động; tool ghi + Approve → Allow; tool ghi + Reject → `PermissionResultDeny` (SDK không chạy tool, DB không có row) |
+| Permissions | `can_use_tool` cho tool ghi; tool đọc auto qua `allowed_tools` | `create_task` **không** nằm trong `allowed_tools` (SDK shadow callback nếu có). Tool đọc trong allowlist; `create_task` → Approve/Reject qua `can_use_tool`; Reject → Deny, không ghi SQLite |
 | Hooks | `HookMatcher` cho `UserPromptSubmit`, `PreToolUse`, `include_hook_events=True` | hook `UserPromptSubmit` **được SDK gọi thật** ở +2.8s với payload thật (`prompt`, `session_id`) |
 | Skills | `sandbox/.claude/skills/task-planning/SKILL.md` + `options.skills` + tool `Skill` | Inspect cho thấy `skills=['task-planning']` và tool `Skill` được bật. Việc skill có kích hoạt hay không **chỉ kết luận được khi có lượt model** → chưa claim |
 | Subagents | hai `AgentDefinition` + tool `Task` | CLI **đăng ký đúng 2 subagent** (`requirements-analyst`, `task-planner`); scenario khác thì danh sách rỗng. Delegation thật cần lượt model → chưa claim |
@@ -311,18 +318,34 @@ Tool của agent là **MCP in-process** (`create_sdk_mcp_server`), khác Demo 07
 
 Nút **Inspect SDK session** spawn CLI + initialize mà không gọi model (2–20s): đây là đường duy nhất xem được cấu hình thật khi mạng chặn lượt model.
 
-## Implementation status (thực tế)
+## Implementation status (thực tế) — Phase 1 checklist
 
 | # | Demo | Status | Ghi chú |
 |---|---|---|---|
-| 01 | Agent Runtime | Xong | Smoke test API pass: SSE tăng dần, Approve ghi file thật, Reject không ghi, Cancel lúc sleep và lúc chờ approval, double start → 409, cancel ngay sau start không treo stream, `DELETE /file` thiếu confirm → 400. Frontend: `npm run build` + `typecheck` pass, `/demos/01-runtime` render 200. |
-| 02 | Claude API | Xong — **live verified** | 21/21 check pass với model `claude-haiku-5-5` thật: one-shot `stop_reason=end_turn` (34 in / 115 out tokens), History OFF 1 turn vs ON 3 turn (input_tokens 23 → 105, câu trả lời đổi hẳn), streaming nhiều `text_delta` trước `final` và text ghép khớp `final.answer`, `max_tokens=16` → `stop_reason=max_tokens`, 4 case validate → 422. Frontend build/typecheck pass, `/demos/02-claude-api` render 200. |
-| 03 | Tools & Registry | Xong — **live verified** | 23/23 check pass: 3 scenario với Claude thật + unit check registry (tool lạ, input sai kiểu, thiếu field, happy path) + 3 case validate 422. |
-| 04 | Manual Agent Loop | Xong — **live verified** | 25/25 check pass: approve → INSERT thật, reject, cancel, max_turns, tool failure, run lại giữ history, và case fail-giữa-loop chứng minh history không commit nhưng task đã ghi vẫn còn. Loop 3+ lượt bị giới hạn mạng (xem Known limitation). |
-| 05 | Structured Output | Xong — **live verified** | 26/26 check pass: native structured output, 4 loại lỗi schema, 3 loại lỗi semantic, repair 1 lần (−4 → 4.0), 3 case validate 422. |
-| 06 | Agent Workflows | Xong — **live verified** | 26/26 check pass: 5 pattern với Claude thật (chaining tuần tự, parallel overlap đo được, routing branch theo nhãn thật, orchestrator cap 2 worker, evaluator verdict thật) + 2 check offline chứng minh budget raise và routing fallback + 2 case 422. |
-| 07 | MCP | Xong — **verified** (không cần key) | 24/24 check pass: discover/initialize thật, `list_tasks` khớp SQLite, tool error `TaskNotFound`, resource Markdown sinh từ DB, prompt template có argument, server chạy standalone, 3 lần connect không rò rỉ subprocess, 5 case 422/400. |
-| 08 | Claude Agent SDK | Xong — **một phần live**; lượt model **LIVE PENDING** | 28/28 check pass: SDK spawn CLI 2.1.330 thật, options/tool/skill tới CLI, 2 subagent được CLI đăng ký, hook `UserPromptSubmit` được gọi thật, permission Allow/Deny đúng, tool in-process ghi/đọc SQLite, run có cận trên 45s, 4 case 422/404/400. **Chưa verify**: lượt model, tool_use thật, skill activation, subagent delegation — CLI nhận `ECONNRESET` (7 lần `api_retry`) do giới hạn mạng bên dưới. UI hiện đúng trạng thái LIVE PENDING, không bịa output. |
+| 01 | Agent Runtime | Xong + SSE disconnect | Backend hủy task khi client ngắt (`request.is_disconnected`); frontend `AbortSignal` + báo stream thiếu `run_finished`. Smoke API trước refactor vẫn pass. |
+| 02 | Claude API | Xong — **live cần re-verify sau diff** | Non-stream/stream chỉ `succeeded` khi `stop_reason=end_turn` và có text; streaming báo `incomplete_response` nếu không. |
+| 03 | Tools & Registry | Xong — **live cần re-verify** | Tool round chỉ `succeeded` khi lần gọi #2 `end_turn` + text; ép tool mà không `tool_use` → `failed`. |
+| 04 | Manual Agent Loop | Xong — **live cần re-verify** | Thêm scenario **Loop + Structured** (`structured_finish`): commit history chỉ khi `structured_validate` accepted; scenario `permissions` Demo 08 dùng cùng prompt Login. |
+| 05 | Structured Output | Xong — **validate offline pass** | Generate/repair `failed` nếu `stop_reason` lệch, `parsed_output` null, `estimated_hours` không hữu hạn, hoặc semantic fail. |
+| 06 | Agent Workflows | Xong — **logic offline pass** | Routing: nhãn phải khớp đúng một trong `draft_task`/`summarize`/`translate` (không substring). Evaluator: dòng đầu phải là `ACCEPT` chính xác. |
+| 07 | MCP | Xong — **verified** (không cần key) | Không đổi logic lõi ở lượt này. |
+| 08 | Claude Agent SDK | Xong — **Inspect PASS**; lượt model **LIVE PENDING** | Allowlist: tool đọc trong `allowed_tools`, `create_task` **ngoài** list để `can_use_tool` chạy. Run timeout 45s / approval 120s hiện trên UI. Inspect 4 scenario OK (CLI 2.1.330, 2 subagent). **LIVE PENDING** (2026-11-24): run `basic` nhận `system(api_retry)×n` rồi `error(timeout)` sau 45s — giới hạn mạng README. |
+
+**Kiểm chứng vòng này (máy dev):** `npm run typecheck` + `npm run build` PASS. Demo 08 Inspect + env PASS. Demo 03/08 lượt model: **FAIL** (`connection_error` / `api_retry`, không fake PASS).
+
+### P0–P2 checklist (tóm tắt)
+
+| Ưu tiên | Hạng mục | Kết quả |
+|---|---|---|
+| P0 | Demo 08 SDK 4 scenario | Inspect/hook/permission code sẵn sàng; **lượt model chưa verify** (mạng) |
+| P0 | Demo 08 permission allowlist + approval | Đã sửa shadow `can_use_tool`; cần live Approve/Reject khi mạng ổn |
+| P0 | Demo 03 stop_reason | Đã implement |
+| P1 | SSE disconnect/cancel 01/04/08 | Đã implement |
+| P1 | Timeout 45s / 120s đồng bộ UI | Đã implement |
+| P1 | Demo 04 structured scenario | Đã thêm |
+| P1 | Demo 02/05/06 response validation | Đã implement |
+| P2 | Demo 04 ↔ 08 cùng prompt Login | Đã đồng bộ prompt `permissions` |
+| P2 | Build/typecheck/smoke | Build/typecheck PASS; smoke một phần (xem `.tmp/smoke_phase1.py`) |
 
 Dependency thêm: `mcp==2.3.0` và `claude-agent-sdk==0.2.187`. Lưu ý MCP SDK 2.x đã đổi `FastMCP` → `MCPServer` và dùng field snake_case (`input_schema`, `is_error`, `structured_content`), khác tài liệu v1.
 

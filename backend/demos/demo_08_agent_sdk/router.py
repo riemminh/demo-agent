@@ -7,15 +7,15 @@ GET  /tasks · POST /seed · DELETE /tasks?confirm=true -> sandbox scope agent_s
 
 import asyncio
 import json
-from collections.abc import AsyncIterator
 from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, StringConstraints
 
 from shared import task_store
 from shared.sessions import Session, SessionStore
+from shared.sse_queue import stream_session_run
 
 from .environment import env_summary
 from .sdk_agent import inspect_session, run_turn
@@ -75,7 +75,7 @@ async def create_session() -> dict[str, str]:
 
 
 @router.post("/sessions/{session_id}/runs")
-async def start_run(session_id: str, body: RunRequest) -> StreamingResponse:
+async def start_run(request: Request, session_id: str, body: RunRequest) -> StreamingResponse:
     session = get_session_or_404(session_id)
     if session.busy:
         raise HTTPException(409, "This session is already running")
@@ -83,23 +83,9 @@ async def start_run(session_id: str, body: RunRequest) -> StreamingResponse:
     task = asyncio.create_task(run_turn(session, body.scenario, body.prompt, queue))
     session.task = task
 
-    async def stream() -> AsyncIterator[str]:
-        while True:
-            try:
-                event = await asyncio.wait_for(queue.get(), STREAM_IDLE_TIMEOUT_SECONDS)
-            except TimeoutError:
-                if not task.done():
-                    continue
-                yield _sse({"type": "error", "kind": "no_terminal_event",
-                            "message": "Task kết thúc mà không gửi event cuối."})
-                yield _sse({"type": "run_finished"})
-                return
-            yield _sse(event)
-            if event["type"] == "run_finished":
-                return
-
     return StreamingResponse(
-        stream(), media_type="text/event-stream",
+        stream_session_run(request, session, task, queue, STREAM_IDLE_TIMEOUT_SECONDS, _sse),
+        media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 
@@ -124,7 +110,8 @@ async def cancel_run(session_id: str) -> dict[str, bool]:
     if not session.busy or session.task is None:
         return {"cancelled": False}
     session.approvals.deny_all_pending()
-    session.task.cancel()  # Thoát khỏi `async with ClaudeSDKClient` -> SDK đóng CLI.
+    session.cancel_event.set()  # client.interrupt() trong run_query.
+    session.task.cancel()
     return {"cancelled": True}
 
 

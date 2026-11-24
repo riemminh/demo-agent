@@ -1,16 +1,16 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
+import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { getToolSchemas, runTools, type ScenarioName, type ToolRunResult } from "./api";
-import { OUTCOMES, SCENARIOS } from "./content";
+import { SCENARIOS } from "./content";
 import EventLog from "./event-log";
 import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
 import SourceDebug from "./source-debug";
 
 const { Text, Paragraph } = Typography;
-const MAX_TOKENS = 512;
+const MAX_TOKENS = 2048;
 
 export default function ToolsDemoPage() {
   const [scenario, setScenario] = useState<ScenarioName>("single");
@@ -50,6 +50,7 @@ export default function ToolsDemoPage() {
 
   return (
     <Flex vertical gap={16}>
+      <LlmNetworkAlert />
       <div>
         <Text type="secondary">03 · Tools & Registry</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>
@@ -70,7 +71,6 @@ export default function ToolsDemoPage() {
       <ResultCard result={result} running={running} transportError={transportError} />
       <EventLog events={result?.events ?? []} running={running} />
       <SourceDebug result={result} toolSchemas={toolSchemas} />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

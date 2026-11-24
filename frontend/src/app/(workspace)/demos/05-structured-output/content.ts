@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 05: preset, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 
 export const PROMPT_PRESETS = [
   "Làm login UI ưu tiên cao, khoảng 4 giờ.",
@@ -57,10 +56,4 @@ export const BREAKPOINTS = [
     code: "call = await _parse_draft(repair_instruction(raw, errors), max_tokens)",
     why: "Repair chạy đúng MỘT lần khi người dùng bấm, chỉ gửi object fail + danh sách lỗi, rồi validate lại. Không có vòng lặp tự sửa và không mặc định là sẽ thành công.",
   },
-];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Phân biệt text tự do, JSON xin bằng prompt, và native structured output (model bị ràng buộc theo JSON Schema do SDK sinh từ Pydantic)." },
-  { text: "Tách được hai loại lỗi: schema validation (kiểu/enum/thiếu field) và semantic validation (đúng kiểu nhưng sai nghiệp vụ, như -4 giờ hoặc high + 40 giờ)." },
-  { text: "Repair là một lần gọi có kiểm soát với feedback cụ thể, và chỉ object qua cả hai tầng mới được đưa vào ứng dụng." },
 ];

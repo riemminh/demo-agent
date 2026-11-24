@@ -11,6 +11,15 @@ const COLOR: Record<string, string> = {
   tool_use: "purple", tool_result: "orange", approval_required: "gold",
   approval_decision: "gold", history_committed: "green", final: "green",
   max_turns_reached: "red", error: "red", run_finished: "gray",
+  rules_loaded: "geekblue", system_prompt_sent: "geekblue",
+  skills_discovered: "purple", skill_loaded: "purple", skill_already_loaded: "purple",
+  skill_merged_into_system: "purple", skill_tool_removed: "purple", skill_tools_cleared: "purple",
+  permission_requested: "gold", permission_decided: "gold",
+  subagents_registered: "cyan", delegation_started: "cyan", delegation_finished: "cyan",
+  requirements_merged_into_system: "geekblue", subagent_read_removed: "geekblue",
+  subagent_delegate_narrowed: "geekblue", subagent_result_merged: "geekblue",
+  subagent_tools_cleared: "geekblue",
+  subagent_started: "cyan", subagent_finished: "cyan",
 };
 
 const LABEL: Record<string, string> = {
@@ -21,6 +30,25 @@ const LABEL: Record<string, string> = {
   approval_required: "chờ người duyệt (await Future)",
   history_committed: "commit working_messages vào session.history",
   max_turns_reached: "hết lượt, không có final",
+  rules_loaded: "đọc CLAUDE.md + rules từ filesystem",
+  system_prompt_sent: "system prompt gửi kèm request",
+  skills_discovered: "metadata skill (chưa nạp body)",
+  skill_loaded: "load_skill trả SKILL.md",
+  skill_already_loaded: "Python chặn nạp skill trùng",
+  skill_merged_into_system: "ghép SKILL vào system (sau compact vẫn còn)",
+  skill_tool_removed: "gỡ load_skill khỏi tools",
+  skill_tools_cleared: "gỡ hết tool — chỉ end_turn",
+  permission_requested: "kiểm tra quyền trước execute",
+  permission_decided: "allow/deny từ permissions.py",
+  subagents_registered: "khai báo subagent có sẵn",
+  delegation_started: "main gọi delegate_task",
+  subagent_started: "vòng lặp con (context tách)",
+  delegation_finished: "kết quả rút gọn về main",
+  requirements_merged_into_system: "ghép requirements.md vào system",
+  subagent_read_removed: "gỡ read_file sau khi đọc",
+  subagent_delegate_narrowed: "delegate chỉ còn subagent chưa chạy",
+  subagent_result_merged: "tóm tắt subagent vào system",
+  subagent_tools_cleared: "gỡ hết tool — chỉ end_turn",
 };
 
 export default function EventLog({ events, running }: { events: LoopEvent[]; running: boolean }) {

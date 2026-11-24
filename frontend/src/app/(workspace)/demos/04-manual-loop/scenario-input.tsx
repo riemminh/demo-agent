@@ -25,9 +25,11 @@ export default function ScenarioInput(props: Props) {
     <Card size="small" title="Scenario & Input">
       <Flex vertical gap={12}>
         <Segmented<ScenarioKey> value={scenarioKey} disabled={running} onChange={props.onScenarioChange}
-          options={SCENARIO_KEYS.map((key) => ({ value: key, label: SCENARIOS[key].label }))} />
+          options={SCENARIO_KEYS.map((key) => ({ value: key, label: SCENARIOS[key].label }))}
+          style={{ flexWrap: "wrap" }} />
         <Typography.Paragraph style={{ margin: 0 }}>{scenario.description}</Typography.Paragraph>
         <Tag color="blue">Kỳ vọng: {scenario.expect}</Tag>
+        <Tag color="green">Học: {scenario.learning}</Tag>
         <Input.TextArea value={props.prompt} onChange={(event) => props.onPromptChange(event.target.value)}
           disabled={running} rows={2} maxLength={1000} showCount aria-label="Prompt gửi agent loop" />
         <Space wrap>

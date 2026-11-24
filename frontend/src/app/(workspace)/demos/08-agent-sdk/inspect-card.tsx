@@ -10,6 +10,7 @@ export default function InspectCard({ inspection }: { inspection: Inspection | n
         ? <Empty description="Bấm Inspect để spawn CLI, initialize và đọc metadata session." />
         : <Space direction="vertical" size={8} style={{ width: "100%" }}>
             <Descriptions size="small" column={{ xs: 1, md: 3 }} bordered items={[
+              { key: "transport", label: "transport", children: inspection.transport ?? "claude_code_cli" },
               { key: "cli", label: "Claude Code CLI", children: inspection.cli_version ?? "n/a" },
               { key: "pid", label: "pid của CLI", children: inspection.pid ?? "n/a" },
               { key: "connect", label: "Thời gian initialize",

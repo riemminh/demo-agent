@@ -20,8 +20,11 @@ async def stream_events(
     messages: list[Turn], system: str, max_tokens: int
 ) -> AsyncIterator[dict[str, Any]]:
     """Yield event theo đúng tiến trình thực tế; event cuối luôn là run_finished."""
-    if config.missing_llm_settings():
-        yield {"type": "error", **config_error()}  # Chưa cấu hình thì không gọi API.
+    from shared.llm_preflight import preflight_llm_error
+
+    blocked = preflight_llm_error()
+    if blocked:
+        yield {"type": "error", **blocked}
         yield {"type": "run_finished"}
         return
 
@@ -38,20 +41,30 @@ async def stream_events(
                     yield {"type": "text_delta", "text": text}
                 # Lấy final message để có stop_reason và usage ĐÚNG (delta không có).
                 final = await stream.get_final_message()
-        final_event = {
-            "type": "final",
-            "answer": answer_text(final),
-            "response": final.to_dict(),
-            "metrics": {"api_calls": 1, "latency_ms": elapsed_ms(started),
-                        "input_tokens": final.usage.input_tokens,
-                        "output_tokens": final.usage.output_tokens},
-        }
+        answer = answer_text(final).strip()
+        if final.stop_reason != "end_turn" or not answer:
+            error = {
+                "kind": "incomplete_response", "upstream_status": None,
+                "message": (f"stop_reason={final.stop_reason!r} không phải end_turn"
+                            if final.stop_reason != "end_turn"
+                            else "end_turn nhưng không có block text."),
+                "latency_ms": elapsed_ms(started),
+            }
+        else:
+            final_event = {
+                "type": "final",
+                "answer": answer,
+                "response": final.to_dict(),
+                "metrics": {"api_calls": 1, "latency_ms": elapsed_ms(started),
+                            "input_tokens": final.usage.input_tokens,
+                            "output_tokens": final.usage.output_tokens},
+            }
     except anthropic.APIError as caught:
         error = {**api_error(caught), "latency_ms": elapsed_ms(started)}
 
     # Yield ngoài try/finally: tránh yield trong finally khi browser đã đóng stream.
-    if final_event:
+    if final_event is not None:
         yield final_event
-    if error:
+    if error is not None:
         yield {"type": "error", **error}
     yield {"type": "run_finished"}

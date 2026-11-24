@@ -59,7 +59,7 @@ export default function ScenarioInput(props: Props) {
                 placeholder="system (tùy chọn) — tham số top-level, không phải một role trong messages" />
               <Space>
                 <Typography.Text>max_tokens</Typography.Text>
-                <InputNumber min={1} max={1024} value={props.maxTokens} disabled={running}
+                <InputNumber min={1} max={4096} value={props.maxTokens} disabled={running}
                   onChange={(value) => props.onMaxTokensChange(value ?? 512)} />
                 <Typography.Text type="secondary">
                   Đặt nhỏ (vd 16) để thấy stop_reason thật là max_tokens. Trần do LLM_MAX_TOKENS ở backend.

@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 07: scenario, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 
 export type ScenarioKey = "discover" | "call" | "resources";
 
@@ -44,10 +43,4 @@ export const BREAKPOINTS = [
     code: "async with Client(SERVER_PARAMS) as client:",
     why: "Vào block: spawn subprocess + initialize. Ra khỏi block: SDK đóng session và kill subprocess, nên refresh/retry không để lại process mồ côi.",
   },
-];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Phân biệt ba vai: MCP Server (công bố tool/resource/prompt), MCP Client (initialize + gọi theo protocol), MCP Host (ứng dụng chứa client — ở đây là bridge FastAPI + trang web này)." },
-  { text: "Đọc được các bước protocol: spawn → initialize → tools/list → tools/call, cùng resources/list · resources/read và prompts/list · prompts/get." },
-  { text: "Khác Demo 03: ở đó registry là hàm Python trong cùng process; ở đây tool nằm trong một process độc lập, chạy được với bất kỳ MCP client nào và không cần Claude." },
 ];

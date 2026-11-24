@@ -7,19 +7,19 @@ Khung SSE giống Demo 01 (cùng kiểu Queue + guard), nhưng session store là
 
 import asyncio
 import json
-from collections.abc import AsyncIterator
 from typing import Annotated, Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, StringConstraints
 
 import config
 from shared import task_store
-from shared.claude import config_error
 from shared.sessions import Session, SessionStore
+from shared.sse_queue import stream_session_run
 
 from .agent_loop import MAX_TURNS_LIMIT, Event, run_loop
+from .scenarios import ScenarioName, prepare_scenario
 from .tasks_tools import DEMO_SCOPE
 
 router = APIRouter()
@@ -30,8 +30,10 @@ task_store.init_db()  # Tạo bảng nếu chưa có, ngay khi import router.
 
 
 class RunRequest(BaseModel):
+    scenario: ScenarioName = "normal"
     prompt: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=1000)]
     max_turns: int = Field(default=4, ge=1, le=MAX_TURNS_LIMIT)
+    structured_finish: bool = False
 
 
 class ApprovalDecision(BaseModel):
@@ -46,7 +48,12 @@ def get_session_or_404(session_id: str) -> Session:
 
 
 async def run_turn(
-    session: Session, prompt: str, max_turns: int, queue: asyncio.Queue[Event]
+    session: Session,
+    scenario: ScenarioName,
+    prompt: str,
+    max_turns: int,
+    structured_finish: bool,
+    queue: asyncio.Queue[Event],
 ) -> None:
     def emit(event: Event) -> None:
         queue.put_nowait(event)
@@ -54,11 +61,14 @@ async def run_turn(
     async def approver(tool_name: str, tool_input: dict[str, Any]) -> bool:
         return await session.approvals.request(tool_name, tool_input, emit)
 
+    profile = prepare_scenario(scenario, emit)
+
     try:
-        if config.missing_llm_settings():
-            emit({"type": "error", "at_ms": 0, **config_error()})
-            return
-        await run_loop(session, prompt, max_turns, emit, approver)
+        await run_loop(
+            session, prompt, max_turns, emit, approver,
+            profile=profile,
+            structured_finish=structured_finish or profile.structured_finish,
+        )
     except asyncio.CancelledError:
         emit({"type": "error", "kind": "cancelled",
               "message": "Loop bị cancel: history KHÔNG commit. Task đã ghi trước đó "
@@ -82,31 +92,19 @@ async def get_session(session_id: str) -> dict[str, Any]:
 
 
 @router.post("/sessions/{session_id}/runs")
-async def start_run(session_id: str, body: RunRequest) -> StreamingResponse:
+async def start_run(request: Request, session_id: str, body: RunRequest) -> StreamingResponse:
     session = get_session_or_404(session_id)
     if session.busy:
         raise HTTPException(409, "This session is already running")
     queue: asyncio.Queue[Event] = asyncio.Queue()
-    task = asyncio.create_task(run_turn(session, body.prompt, body.max_turns, queue))
+    task = asyncio.create_task(
+        run_turn(session, body.scenario, body.prompt, body.max_turns, body.structured_finish, queue),
+    )
     session.task = task
 
-    async def stream() -> AsyncIterator[str]:
-        while True:
-            try:
-                event = await asyncio.wait_for(queue.get(), STREAM_IDLE_TIMEOUT_SECONDS)
-            except TimeoutError:
-                if not task.done():
-                    continue  # Đang chờ Claude hoặc chờ approval.
-                yield _sse({"type": "error", "kind": "no_terminal_event",
-                            "message": "Task kết thúc mà không gửi event cuối."})
-                yield _sse({"type": "run_finished"})
-                return
-            yield _sse(event)
-            if event["type"] == "run_finished":
-                return
-
     return StreamingResponse(
-        stream(), media_type="text/event-stream",
+        stream_session_run(request, session, task, queue, STREAM_IDLE_TIMEOUT_SECONDS, _sse),
+        media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 

@@ -5,6 +5,7 @@ import type { SdkEvent } from "./api";
 
 type Props = {
   events: SdkEvent[];
+  liveText?: string;
   running: boolean;
   pendingApproval: SdkEvent | null;
   decisionSending: boolean;
@@ -52,10 +53,20 @@ export default function ResultCard(props: Props) {
               </Space>
             </Flex>} />
         )}
-        {retries > 0 && !result?.text && (
+        {retries > 0 && (running || result?.is_error) && (
           <Alert type="warning" showIcon
-            title={`LIVE PENDING — CLI đã retry ${retries} lần vì lỗi mạng`}
-            description="Mạng hiện tại reset request lớn tới api.anthropic.com, nên lượt model của SDK không hoàn thành. Phần đã kiểm chứng được (session, tools, hooks, subagents, permissions) nằm ở các card khác. Demo không hiển thị output giả." />
+            title={`CLI đã retry ${retries} lần (CLAUDE_CODE_MAX_RETRIES)`}
+            description={result?.is_error
+              ? "Mạng đang reset kết nối tới api.anthropic.com (ECONNRESET). Retry không tự khỏi được — cần đổi mạng/VPN được phép. Demo không hiển thị output giả."
+              : "Request lỗi tạm thời, CLI đang thử lại."} />
+        )}
+        {props.liveText && (
+          <div>
+            <Typography.Text strong>Đang stream (partial)</Typography.Text>
+            <Typography.Paragraph style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
+              {props.liveText}
+            </Typography.Paragraph>
+          </div>
         )}
         {texts.length > 0 && (
           <div>

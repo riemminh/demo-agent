@@ -1,9 +1,8 @@
 "use client";
 import { Alert, Flex, Space, Tag, Typography } from "antd";
 import { useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
 import { readNote, resetNote, type NoteFile } from "./api";
-import { OUTCOMES, SCENARIOS, type ScenarioKey } from "./content";
+import { SCENARIOS, type ScenarioKey } from "./content";
 import EventLog from "./event-log";
 import NoteFileCard from "./note-file";
 import RunResult from "./run-result";
@@ -75,7 +74,6 @@ export default function RuntimeDemoPage() {
       )}
       <EventLog events={run.events} running={run.running} expectedFlow={scenario.expectedFlow} />
       <SourceDebug />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

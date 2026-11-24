@@ -37,7 +37,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
     },
     "permissions": {
         "label": "Permissions & Hooks",
-        "prompt": 'Tạo task "Login" với priority high.',
+        "prompt": 'Kiểm tra danh sách task. Nếu chưa có task "Login", hãy tạo task "Login" priority high. Trả lời ngắn khi xong.',
         "tools": ALL_TOOLS,
         "skills": None,
         "agents": False,
@@ -72,23 +72,52 @@ SUBAGENTS = {
 }
 
 
-def permission_callback(emit: Emit, approver: Approver) -> Any:
-    """SDK gọi hàm này trước mỗi tool call. Tool chỉ đọc thì cho qua; tool ghi thì hỏi người."""
+def scenario_allowlist(scenario: str) -> list[str]:
+    """Tool auto-approve qua allowed_tools sẽ KHÔNG gọi can_use_tool — chỉ đưa tool đọc."""
+    config_ = SCENARIOS[scenario]
+    allowed = [tool for tool in config_["tools"] if tool != CREATE_TOOL]
+    if config_["skills"]:
+        allowed.append("Skill")
+    if config_["agents"]:
+        allowed.append("Task")
+    return allowed
+
+
+def _scenario_tool_names(scenario: str) -> frozenset[str]:
+    cfg = SCENARIOS[scenario]
+    names = set(cfg["tools"])
+    if cfg["skills"]:
+        names.add("Skill")
+    if cfg["agents"]:
+        names.add("Task")
+    return frozenset(names)
+
+
+def permission_callback(
+    emit: Emit, approver: Approver, allowed_tools: list[str], scenario: str,
+) -> Any:
+    """SDK gọi trước mỗi tool. Tool đọc: auto qua allowed_tools; ghi: luôn qua approver."""
+
+    allowset = frozenset(allowed_tools)
+    permitted = _scenario_tool_names(scenario)
 
     async def can_use_tool(
         tool_name: str, tool_input: dict[str, Any], context: ToolPermissionContext
     ) -> PermissionResultAllow | PermissionResultDeny:
         emit({"type": "permission_requested", "tool": tool_name, "input": tool_input})
+        if tool_name not in permitted:
+            emit({"type": "permission_decided", "tool": tool_name, "allowed": False,
+                  "reason": "tool không thuộc scenario"})
+            return PermissionResultDeny(message=f"Tool {tool_name} không được phép trong scenario này.")
         if tool_name != CREATE_TOOL:
             emit({"type": "permission_decided", "tool": tool_name, "allowed": True,
-                  "reason": "tool chỉ đọc, tự động cho phép"})
+                  "reason": "trong allowlist, không ghi dữ liệu"})
             return PermissionResultAllow()
-        approved = await approver(tool_name, tool_input)  # await Future -> chờ browser.
+        approved = await approver(tool_name, tool_input)
         emit({"type": "permission_decided", "tool": tool_name, "allowed": approved,
-              "reason": "người dùng quyết định"})
+              "reason": "người dùng quyết định cho tool ghi"})
         if approved:
             return PermissionResultAllow()
-        # Deny thật: SDK sẽ không chạy tool, không có row nào vào SQLite.
         return PermissionResultDeny(message="Người dùng từ chối ghi dữ liệu.")
 
     return can_use_tool
@@ -111,26 +140,36 @@ def hook_matchers(emit: Emit) -> dict[str, list[HookMatcher]]:
     }
 
 
-def build_options(scenario: str, emit: Emit, approver: Approver) -> ClaudeAgentOptions:
+def build_options(
+    scenario: str, emit: Emit, approver: Approver, *, resume: str | None = None
+) -> ClaudeAgentOptions:
     config_ = SCENARIOS[scenario]
-    allowed = list(config_["tools"])
+    allowed = scenario_allowlist(scenario)
+    extra_tools: list[str] = []
     if config_["skills"]:
-        allowed.append("Skill")  # Skill là tool của CLI; không bật thì skill không chạy được.
+        extra_tools.append("Skill")
     if config_["agents"]:
-        allowed.append("Task")  # Task là tool để delegate cho subagent.
+        extra_tools.append("Task")
+    from .transport import cli_child_env
+
     return ClaudeAgentOptions(
         system_prompt="Bạn là trợ lý quản lý task. Trả lời ngắn gọn bằng tiếng Việt.",
         cwd=str(SANDBOX_DIR),
-        setting_sources=[],  # KHÔNG nạp settings/plugin cá nhân của máy đang chạy.
+        # Tắt Bash/Read/Edit… — chỉ Skill, Task và MCP demo (giảm payload CLI).
+        tools=extra_tools,
+        setting_sources=[],
         mcp_servers={"tasks": build_tool_server()},
         allowed_tools=allowed,
-        can_use_tool=permission_callback(emit, approver),
+        strict_mcp_config=True,
+        can_use_tool=permission_callback(emit, approver, allowed, scenario),
         hooks=hook_matchers(emit),
         include_hook_events=True,
+        include_partial_messages=True,
         skills=config_["skills"],
         agents=SUBAGENTS if config_["agents"] else None,
-        max_turns=MAX_TURNS,          # Cận trên số lượt.
-        max_budget_usd=MAX_BUDGET_USD,  # Cận trên chi phí.
+        max_turns=MAX_TURNS,
+        max_budget_usd=MAX_BUDGET_USD,
         model=config.LLM_MODEL,
-        env={"ANTHROPIC_API_KEY": config.ANTHROPIC_API_KEY},
+        resume=resume,
+        env=cli_child_env(),
     )

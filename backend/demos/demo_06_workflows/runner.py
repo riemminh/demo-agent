@@ -13,11 +13,15 @@ from anthropic import AsyncAnthropic
 import config
 from shared.claude import answer_text, elapsed_ms
 
-MAX_OUTPUT_TOKENS = 220  # Giữ output ngắn: 5 pattern có thể chạy nhiều call.
+MAX_OUTPUT_TOKENS = config.LLM_OUTPUT_MAX_TOKENS
 
 
 class BudgetExceeded(RuntimeError):
     """Pattern cố gọi Claude nhiều hơn số call mà scenario được phép."""
+
+
+class IncompleteResponse(RuntimeError):
+    """Model trả stop_reason hoặc nội dung chưa đủ để coi là bước hoàn chỉnh."""
 
 
 @dataclass
@@ -48,7 +52,13 @@ class Trace:
             messages=[{"role": "user", "content": prompt}],
             thinking={"type": "disabled"},
         )
+        if message.stop_reason != "end_turn":
+            raise IncompleteResponse(
+                f"Model trả stop_reason={message.stop_reason!r}, không coi là hoàn chỉnh."
+            )
         text = answer_text(message).strip()
+        if not text:
+            raise IncompleteResponse("Model trả end_turn nhưng không có block text.")
         self.input_tokens += message.usage.input_tokens
         self.output_tokens += message.usage.output_tokens
         self.steps.append({

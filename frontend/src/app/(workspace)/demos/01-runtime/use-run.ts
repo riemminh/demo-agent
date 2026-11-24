@@ -8,6 +8,9 @@ import type { ReceivedEvent } from "./event-log";
 export function useRun() {
   const createdSession = useRef(false);
   const runStartedAt = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
+  const runningRef = useRef(false);
+  const sessionRef = useRef("");
   const [sessionId, setSessionId] = useState("");
   const [sessionError, setSessionError] = useState(""); // Tách khỏi `error` để Reset view không xóa.
   const [events, setEvents] = useState<ReceivedEvent[]>([]);
@@ -21,10 +24,20 @@ export function useRun() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (createdSession.current) return; // Strict Mode chạy effect 2 lần ở dev: chỉ tạo 1 session.
+    if (createdSession.current) return;
     createdSession.current = true;
-    // Chỉ tạo session trong RAM backend; KHÔNG chạy agent khi mở trang.
     createSession().then(setSessionId).catch((e: Error) => setSessionError(e.message));
+  }, []);
+
+  useEffect(() => {
+    sessionRef.current = sessionId;
+  }, [sessionId]);
+
+  useEffect(() => () => {
+    abortRef.current?.abort();
+    if (runningRef.current && sessionRef.current) {
+      void postAction(`/sessions/${sessionRef.current}/cancel`);
+    }
   }, []);
 
   function resetView() {
@@ -54,14 +67,18 @@ export function useRun() {
   async function start(text: string, scenario: BackendScenario) {
     if (!sessionId || running || !text.trim()) return;
     setRunning(true);
+    runningRef.current = true;
     resetView();
     runStartedAt.current = performance.now();
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
-      // Backend không await agent trong handler: create_task() cho phép stream ngay.
-      await startRun(sessionId, text, scenario, handleEvent);
+      await startRun(sessionId, text, scenario, handleEvent, controller.signal);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
+      runningRef.current = false;
       setRunning(false);
       setPendingApproval(null);
       setDecisionSending(false);

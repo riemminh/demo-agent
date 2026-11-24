@@ -1,10 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { createSession, getSession, postAction, startRun, type LoopEvent } from "./api";
+import type { ScenarioKey } from "./content";
 
 // State của một run loop: session, event backend, approval đang chờ, cancel.
 export function useLoop() {
   const createdSession = useRef(false);
+  const abortRef = useRef<AbortController | null>(null);
+  const runningRef = useRef(false);
+  const sessionRef = useRef("");
   const [sessionId, setSessionId] = useState("");
   const [sessionError, setSessionError] = useState("");
   const [historyMessages, setHistoryMessages] = useState(0);
@@ -16,9 +20,20 @@ export function useLoop() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (createdSession.current) return; // Strict Mode gọi effect 2 lần ở dev.
+    if (createdSession.current) return;
     createdSession.current = true;
     createSession().then(setSessionId).catch((e: Error) => setSessionError(e.message));
+  }, []);
+
+  useEffect(() => {
+    sessionRef.current = sessionId;
+  }, [sessionId]);
+
+  useEffect(() => () => {
+    abortRef.current?.abort();
+    if (runningRef.current && sessionRef.current) {
+      void postAction(`/sessions/${sessionRef.current}/cancel`);
+    }
   }, []);
 
   function resetView() {
@@ -38,15 +53,21 @@ export function useLoop() {
     }
   }
 
-  async function run(prompt: string, maxTurns: number) {
+  async function run(scenario: ScenarioKey, prompt: string, maxTurns: number) {
     if (!sessionId || running) return;
     setRunning(true);
+    runningRef.current = true;
     resetView();
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
-      await startRun(sessionId, prompt, maxTurns, handleEvent);
+      const structuredFinish = scenario === "structured";
+      await startRun(sessionId, scenario, prompt, maxTurns, structuredFinish, handleEvent, controller.signal);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : String(caught));
     } finally {
+      runningRef.current = false;
       setRunning(false);
       setPendingApproval(null);
       // history_messages đọc lại từ backend: thấy rõ run nào commit, run nào không.

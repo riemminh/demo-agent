@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 06: 5 pattern, prompt mẫu, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 import type { PatternName } from "./api";
 
 export type Pattern = {
@@ -74,9 +73,3 @@ export const PATTERNS: Record<PatternName, Pattern> = {
 };
 
 export const PATTERN_KEYS = Object.keys(PATTERNS) as PatternName[];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Phân biệt bước do developer quy định (thứ tự, branch, song song, cap) với bước do model quyết định (nội dung, nhãn, kế hoạch, verdict)." },
-  { text: "Chọn pattern theo yêu cầu: chaining khi có thứ tự rõ, routing khi input đa dạng, parallel khi việc độc lập, orchestrator khi không biết trước số bước, evaluator khi cần chất lượng cao hơn một lần sinh." },
-  { text: "Mọi vòng lặp/kế hoạch do model sinh ra đều phải có cận trên: budget call, MAX_WORKERS, MAX_REVISIONS — nếu không, chi phí và latency không kiểm soát được." },
-];

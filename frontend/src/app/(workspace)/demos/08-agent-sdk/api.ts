@@ -1,5 +1,6 @@
 // Gọi endpoint của Demo 08: /api/demos/08/* (backend/demos/demo_08_agent_sdk/router.py).
 import { API_URL } from "@/lib/api";
+import { consumeSse } from "@/lib/sse";
 
 const DEMO_URL = `${API_URL}/api/demos/08`;
 
@@ -49,6 +50,14 @@ export type Env = {
   sandbox_dir: string;
   max_turns: number;
   max_budget_usd: number;
+  run_timeout_seconds: number;
+  approval_timeout_seconds: number;
+  messages_api_reachable: boolean;
+  https_proxy_configured: boolean;
+  openssl_conf_active: boolean;
+  sdk_cli_may_fail_despite_messages: boolean;
+  sdk_messages_fallback: boolean;
+  prefer_messages_over_cli: boolean;
   scenarios: Record<ScenarioName, {
     label: string; prompt: string; tools: string[]; skills: string[] | null; subagents: boolean;
   }>;
@@ -65,6 +74,7 @@ export type Inspection = {
   subagents_declared: string[];
   subagents_registered: string[];
   cwd: string;
+  transport?: string;
 };
 
 export type Task = { id: number; title: string; priority: string; status: string };
@@ -95,30 +105,22 @@ export const createSession = () =>
   request<{ id: string }>("/sessions", jsonPost()).then((data) => data.id);
 
 export async function startRun(
-  sessionId: string, scenario: ScenarioName, prompt: string,
+  sessionId: string,
+  scenario: ScenarioName,
+  prompt: string,
   onEvent: (event: SdkEvent) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   const response = await fetch(`${DEMO_URL}/sessions/${sessionId}/runs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ scenario, prompt }),
+    signal,
   });
   if (!response.ok || !response.body) {
     throw new Error(`POST /runs: HTTP ${response.status} — ${await response.text()}`);
   }
-  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buffer = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buffer += value;
-    const frames = buffer.split("\n\n");
-    buffer = frames.pop() ?? "";
-    for (const frame of frames) {
-      const line = frame.split("\n").find((part) => part.startsWith("data: "));
-      if (line) onEvent(JSON.parse(line.slice(6)) as SdkEvent);
-    }
-  }
+  await consumeSse(response, onEvent, signal);
 }
 
 export const postAction = (path: string, body?: object) =>

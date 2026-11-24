@@ -30,7 +30,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
 class RunRequest(BaseModel):
     scenario: Literal["single", "registry", "error"]
     prompt: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)]
-    max_tokens: int = Field(default=512, ge=1)
+    max_tokens: int = Field(default=2048, ge=1)
 
 
 @router.get("/tools")

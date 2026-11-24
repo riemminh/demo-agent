@@ -1,9 +1,9 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
+import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { generateDraft, getSchema, repairDraft, validateDraft, type DraftResult } from "./api";
-import { OUTCOMES, PROMPT_PRESETS } from "./content";
+import { PROMPT_PRESETS } from "./content";
 import DraftEditor from "./draft-editor";
 import EventLog from "./event-log";
 import ResultCard from "./result-card";
@@ -77,6 +77,7 @@ export default function StructuredOutputDemoPage() {
 
   return (
     <Flex vertical gap={16}>
+      <LlmNetworkAlert />
       <div>
         <Text type="secondary">05 · Structured Output</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>
@@ -101,7 +102,6 @@ export default function StructuredOutputDemoPage() {
       <ResultCard result={result} busy={!!busy} transportError={transportError} />
       <EventLog events={result?.events ?? []} busy={!!busy} />
       <SourceDebug result={result} schema={schema} />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

@@ -1,12 +1,10 @@
 "use client";
 import { Alert, Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
 import {
   getEnv, getTasks, inspectScenario, resetTasks,
   type Env, type Inspection, type ScenarioName, type Task,
 } from "./api";
-import { OUTCOMES } from "./content";
 import EventLog from "./event-log";
 import InspectCard from "./inspect-card";
 import ResultCard from "./result-card";
@@ -93,19 +91,33 @@ export default function AgentSdkDemoPage() {
         <Alert type="error" showIcon title="Không tạo được session"
           description={`${sdk.sessionError}. Chạy backend ở port 9000 (xem README) rồi tải lại trang.`} />
       )}
+      {env?.prefer_messages_over_cli && (
+        <Alert
+          type="info"
+          showIcon
+          title="Run dùng Messages fallback (không gọi API qua CLI)"
+          description={
+            <>
+              Mọi scenario (kể cả Permissions) chạy <Text code>list_tasks</Text> + Messages API trong Python khi{" "}
+              <Text code>SDK_MESSAGES_FALLBACK=true</Text>. Bảng task trống là bình thường trước lần Approve/ghi DB —
+              không gây ECONNRESET. <Text code>Inspect</Text> vẫn spawn CLI. Tắt fallback:{" "}
+              <Text code>SDK_MESSAGES_FALLBACK=false</Text>.
+            </>
+          }
+        />
+      )}
       <ScenarioInput scenario={scenario} prompt={prompt} running={sdk.running} inspecting={inspecting}
         cancelRequested={sdk.cancelRequested} sessionReady={!!sdk.sessionId} env={env}
         onScenarioChange={changeScenario} onPromptChange={setPrompt} onInspect={inspect}
         onRun={run} onCancel={sdk.cancel} onReset={() => { setInspection(null); sdk.resetView(); }} />
       <InspectCard inspection={inspection} />
-      <ResultCard events={sdk.events} running={sdk.running} pendingApproval={sdk.pendingApproval}
+      <ResultCard events={sdk.events} liveText={sdk.liveText} running={sdk.running} pendingApproval={sdk.pendingApproval}
         decisionSending={sdk.decisionSending} cancelRequested={sdk.cancelRequested}
         transportError={sdk.error} onDecide={sdk.decide} />
       <TasksPanel tasks={tasks} loading={tasksLoading} disabled={sdk.running}
         onReload={() => void loadTasks(getTasks)} onReset={() => void loadTasks(resetTasks)} />
       <EventLog events={sdk.events} running={sdk.running} />
       <SourceDebug />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

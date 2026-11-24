@@ -1,0 +1,7837 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "53b201a1455ab68611326d40919fd1a66b441ffd",
+  "generatedAt": "2026-11-24T02:56:06.446Z",
+  "files": {
+    ".kiro/skills/simple-coding/SKILL.md": {
+      "filePath": ".kiro/skills/simple-coding/SKILL.md",
+      "contentHash": "19bb4149361b03227a1c62a9779e4b1be3a7e2b587407e187569d45acff13dd8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": false
+    },
+    ".kiro/steering/coding-principles.md": {
+      "filePath": ".kiro/steering/coding-principles.md",
+      "contentHash": "6ebf656faf7b4b679a47958a34076cd9dfc0efb8e9bcd20ac9df6af79be75039",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    ".kiro/steering/scratch-files.md": {
+      "filePath": ".kiro/steering/scratch-files.md",
+      "contentHash": "bdfe9082cdb105a543fcb164afcf3a1240e13303972964738bc414811b6c354a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": false
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "c2fe45e365e4a7ea11f54e4256c71762c8fa1e882a0e94bd60776baf5bb430d4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 332,
+      "hasStructuralAnalysis": false
+    },
+    "backend/.env.example": {
+      "filePath": "backend/.env.example",
+      "contentHash": "ed25fd97834c54495fa7723cd9e71de15fc6bf2ea3b1c4b0f57e5cb80fdffff6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": false
+    },
+    "backend/config.py": {
+      "filePath": "backend/config.py",
+      "contentHash": "5bafa26a0dd7e52034e10f8a192c03e6486e8bc30fa8963f726cb8eb0ca91fee",
+      "functions": [
+        {
+          "name": "_positive_int_env",
+          "params": [
+            "name",
+            "default"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "missing_llm_settings",
+          "params": [],
+          "returnType": "list[str]",
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "dotenv",
+          "specifiers": [
+            "load_dotenv"
+          ]
+        }
+      ],
+      "exports": [
+        "_positive_int_env",
+        "missing_llm_settings"
+      ],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/__init__.py": {
+      "filePath": "backend/demos/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_01_runtime/__init__.py": {
+      "filePath": "backend/demos/demo_01_runtime/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_01_runtime/approval_note.py": {
+      "filePath": "backend/demos/demo_01_runtime/approval_note.py",
+      "contentHash": "065a7277286568b327ae020496c306bd158a6135a742ed37d295392479871af3",
+      "functions": [
+        {
+          "name": "build_note",
+          "params": [
+            "question"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "write_note",
+          "params": [
+            "content"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "read_note",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "delete_note",
+          "params": [],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "_now",
+          "params": [
+            "timestamp"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "datetime",
+          "specifiers": [
+            "datetime"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        }
+      ],
+      "exports": [
+        "build_note",
+        "write_note",
+        "read_note",
+        "delete_note",
+        "_now"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_01_runtime/router.py": {
+      "filePath": "backend/demos/demo_01_runtime/router.py",
+      "contentHash": "5603f0b014ce8aea2997819cbb03a35589eaffcd9ae168281a244f3d4a6db3b2",
+      "functions": [
+        {
+          "name": "get_session_or_404",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "Session",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "create_session",
+          "params": [],
+          "returnType": "dict[str, str]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "get_session",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "start_run",
+          "params": [
+            "session_id",
+            "body"
+          ],
+          "returnType": "StreamingResponse",
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "_sse",
+          "params": [
+            "event"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "decide_approval",
+          "params": [
+            "session_id",
+            "approval_id",
+            "body"
+          ],
+          "returnType": "dict[str, bool]",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "cancel_run",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "dict[str, bool]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_approval_note",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reset_approval_note",
+          "params": [
+            "confirm"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [
+        {
+          "name": "RunRequest",
+          "methods": [],
+          "properties": [
+            "text",
+            "scenario"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "ApprovalDecision",
+          "methods": [],
+          "properties": [
+            "approved"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "AsyncIterator"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "StreamingResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field"
+          ]
+        },
+        {
+          "source": "shared.sessions",
+          "specifiers": [
+            "Session",
+            "SessionStore"
+          ]
+        },
+        {
+          "source": ".approval_note",
+          "specifiers": [
+            "delete_note",
+            "read_note"
+          ]
+        },
+        {
+          "source": ".runtime",
+          "specifiers": [
+            "Event",
+            "Scenario",
+            "run_turn"
+          ]
+        }
+      ],
+      "exports": [
+        "RunRequest",
+        "ApprovalDecision",
+        "get_session_or_404",
+        "create_session",
+        "get_session",
+        "start_run",
+        "_sse",
+        "decide_approval",
+        "cancel_run",
+        "get_approval_note",
+        "reset_approval_note"
+      ],
+      "totalLines": 125,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_01_runtime/runtime.py": {
+      "filePath": "backend/demos/demo_01_runtime/runtime.py",
+      "contentHash": "68e70b708dfee12a60cc4c6f7084c511929ea608748ed62fe32f182ccda11eb6",
+      "functions": [
+        {
+          "name": "deny_all",
+          "params": [
+            "tool_name",
+            "tool_input"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "run_turn",
+          "params": [
+            "session",
+            "text",
+            "queue",
+            "scenario"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "run_agent",
+          "params": [
+            "question",
+            "emit",
+            "approver",
+            "scenario"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "_run_approval",
+          "params": [
+            "question",
+            "emit",
+            "approver"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "_run_long",
+          "params": [
+            "emit"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_run_sse",
+          "params": [
+            "question",
+            "emit"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Awaitable",
+            "Callable"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "shared.sessions",
+          "specifiers": [
+            "Session"
+          ]
+        },
+        {
+          "source": ".approval_note",
+          "specifiers": [
+            "NOTE_NAME",
+            "build_note",
+            "write_note"
+          ]
+        }
+      ],
+      "exports": [
+        "deny_all",
+        "run_turn",
+        "run_agent",
+        "_run_approval",
+        "_run_long",
+        "_run_sse"
+      ],
+      "totalLines": 119,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_02_claude_api/__init__.py": {
+      "filePath": "backend/demos/demo_02_claude_api/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_02_claude_api/messages.py": {
+      "filePath": "backend/demos/demo_02_claude_api/messages.py",
+      "contentHash": "c115a932dfb9f7d1bcbf668c2b0df35757e70d9253b6714f6579365eb53b1f28",
+      "functions": [
+        {
+          "name": "build_request",
+          "params": [
+            "messages",
+            "system",
+            "max_tokens"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "new_client",
+          "params": [],
+          "returnType": "AsyncAnthropic",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "answer_text",
+          "params": [
+            "message"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "elapsed_ms",
+          "params": [
+            "started"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "api_error",
+          "params": [
+            "error"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "config_error",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "failed",
+          "params": [
+            "error",
+            "request",
+            "api_calls",
+            "latency_ms"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "succeeded",
+          "params": [
+            "request",
+            "message",
+            "latency_ms"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "run_messages",
+          "params": [
+            "messages",
+            "system",
+            "max_tokens"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "AsyncAnthropic"
+          ]
+        },
+        {
+          "source": "anthropic.types",
+          "specifiers": [
+            "Message"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        }
+      ],
+      "exports": [
+        "build_request",
+        "new_client",
+        "answer_text",
+        "elapsed_ms",
+        "api_error",
+        "config_error",
+        "failed",
+        "succeeded",
+        "run_messages"
+      ],
+      "totalLines": 107,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_02_claude_api/router.py": {
+      "filePath": "backend/demos/demo_02_claude_api/router.py",
+      "contentHash": "4d95c11a480de66eee89e30b72532832b794d6faf3eb81a0a3d2ade57f1e5718",
+      "functions": [
+        {
+          "name": "validate_limits",
+          "params": [
+            "body"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "post_messages",
+          "params": [
+            "body"
+          ],
+          "returnType": "JSONResponse",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "post_messages_stream",
+          "params": [
+            "body"
+          ],
+          "returnType": "StreamingResponse",
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [
+        {
+          "name": "Turn",
+          "methods": [],
+          "properties": [
+            "role",
+            "content"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "MessagesRequest",
+          "methods": [
+            "turns"
+          ],
+          "properties": [
+            "messages",
+            "system",
+            "max_tokens"
+          ],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "AsyncIterator"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Literal"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "JSONResponse",
+            "StreamingResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": ".messages",
+          "specifiers": [
+            "run_messages"
+          ]
+        },
+        {
+          "source": ".streaming",
+          "specifiers": [
+            "stream_events"
+          ]
+        }
+      ],
+      "exports": [
+        "Turn",
+        "MessagesRequest",
+        "validate_limits",
+        "post_messages",
+        "post_messages_stream"
+      ],
+      "totalLines": 75,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_02_claude_api/streaming.py": {
+      "filePath": "backend/demos/demo_02_claude_api/streaming.py",
+      "contentHash": "7db4b0ae470e52e5305145ec8196482f3b8ed7c62d0710828bf5d9c2edd26edb",
+      "functions": [
+        {
+          "name": "stream_events",
+          "params": [
+            "messages",
+            "system",
+            "max_tokens"
+          ],
+          "returnType": "AsyncIterator[dict[str, Any]]",
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "AsyncIterator"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": ".messages",
+          "specifiers": [
+            "Turn",
+            "answer_text",
+            "api_error",
+            "build_request",
+            "config_error",
+            "elapsed_ms",
+            "new_client"
+          ]
+        }
+      ],
+      "exports": [
+        "stream_events"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_03_tools/__init__.py": {
+      "filePath": "backend/demos/demo_03_tools/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_03_tools/registry.py": {
+      "filePath": "backend/demos/demo_03_tools/registry.py",
+      "contentHash": "c0546ee771d85e1d4c5ebd41a20c948319f20445b6813d1e919b1e632a77f331",
+      "functions": [
+        {
+          "name": "execute",
+          "params": [
+            "name",
+            "tool_input"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Callable"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "ValidationError"
+          ]
+        },
+        {
+          "source": ".tools",
+          "specifiers": [
+            "CountWordsInput",
+            "DivideNumbersInput",
+            "SumNumbersInput",
+            "count_words",
+            "divide_numbers",
+            "sum_numbers"
+          ]
+        }
+      ],
+      "exports": [
+        "execute"
+      ],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_03_tools/router.py": {
+      "filePath": "backend/demos/demo_03_tools/router.py",
+      "contentHash": "883593eda57c79a46d8eb5c72907579beaf2a2812853a6a53b2ad8b363bec169",
+      "functions": [
+        {
+          "name": "get_tools",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "post_run",
+          "params": [
+            "body"
+          ],
+          "returnType": "JSONResponse",
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [
+        {
+          "name": "RunRequest",
+          "methods": [],
+          "properties": [
+            "scenario",
+            "prompt",
+            "max_tokens"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "JSONResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": ".tool_calling",
+          "specifiers": [
+            "run_tool_round"
+          ]
+        },
+        {
+          "source": ".tools",
+          "specifiers": [
+            "TOOL_SCHEMAS"
+          ]
+        }
+      ],
+      "exports": [
+        "RunRequest",
+        "get_tools",
+        "post_run"
+      ],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_03_tools/tool_calling.py": {
+      "filePath": "backend/demos/demo_03_tools/tool_calling.py",
+      "contentHash": "d7b4c4459d8c9d7e66dff0628dcfb4e4eaf9091611ce0ea6f6c453fdecac0f5d",
+      "functions": [
+        {
+          "name": "_result",
+          "params": [
+            "status",
+            "events",
+            "requests",
+            "responses",
+            "api_calls",
+            "started",
+            "answer",
+            "tool_calls",
+            "error"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "run_tool_round",
+          "params": [
+            "prompt",
+            "tool_names",
+            "forced_tool",
+            "max_tokens"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 77
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "anthropic.types",
+          "specifiers": [
+            "Message"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared.claude",
+          "specifiers": [
+            "answer_text",
+            "api_error",
+            "config_error",
+            "elapsed_ms",
+            "new_client",
+            "usage_totals"
+          ]
+        },
+        {
+          "source": ".registry",
+          "specifiers": [
+            "TOOL_REGISTRY",
+            "execute"
+          ]
+        },
+        {
+          "source": ".tools",
+          "specifiers": [
+            "schemas_for"
+          ]
+        }
+      ],
+      "exports": [
+        "_result",
+        "run_tool_round"
+      ],
+      "totalLines": 113,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_03_tools/tools.py": {
+      "filePath": "backend/demos/demo_03_tools/tools.py",
+      "contentHash": "333bcf7cbccb534645bd523e0a98acef4d3040cc998500c1af7911a4047948a5",
+      "functions": [
+        {
+          "name": "sum_numbers",
+          "params": [
+            "numbers"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "count_words",
+          "params": [
+            "text"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "divide_numbers",
+          "params": [
+            "numerator",
+            "denominator"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "schemas_for",
+          "params": [
+            "names"
+          ],
+          "returnType": "list[dict[str, Any]]",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "SumNumbersInput",
+          "methods": [],
+          "properties": [
+            "numbers"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "CountWordsInput",
+          "methods": [],
+          "properties": [
+            "text"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "DivideNumbersInput",
+          "methods": [],
+          "properties": [
+            "numerator",
+            "denominator"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field"
+          ]
+        }
+      ],
+      "exports": [
+        "SumNumbersInput",
+        "CountWordsInput",
+        "DivideNumbersInput",
+        "sum_numbers",
+        "count_words",
+        "divide_numbers",
+        "schemas_for"
+      ],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_04_manual_loop/__init__.py": {
+      "filePath": "backend/demos/demo_04_manual_loop/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_04_manual_loop/agent_loop.py": {
+      "filePath": "backend/demos/demo_04_manual_loop/agent_loop.py",
+      "contentHash": "7fa8f07e5842a01760297714e2cce5442606f891815a80c11c8575e9b05c9d4e",
+      "functions": [
+        {
+          "name": "run_loop",
+          "params": [
+            "session",
+            "prompt",
+            "max_turns",
+            "emit",
+            "approver"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 72
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "copy",
+          "specifiers": [
+            "copy"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Callable"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared.claude",
+          "specifiers": [
+            "answer_text",
+            "api_error",
+            "elapsed_ms",
+            "new_client"
+          ]
+        },
+        {
+          "source": "shared.sessions",
+          "specifiers": [
+            "Session"
+          ]
+        },
+        {
+          "source": ".tasks_tools",
+          "specifiers": [
+            "TOOL_SCHEMAS",
+            "Approver",
+            "execute_tool"
+          ]
+        }
+      ],
+      "exports": [
+        "run_loop"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_04_manual_loop/router.py": {
+      "filePath": "backend/demos/demo_04_manual_loop/router.py",
+      "contentHash": "6bdb689f9577d0034fb60d7ec176f422034c43bfafa2f4bedf263b7c0d6b9333",
+      "functions": [
+        {
+          "name": "get_session_or_404",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "Session",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "run_turn",
+          "params": [
+            "session",
+            "prompt",
+            "max_turns",
+            "queue"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "create_session",
+          "params": [],
+          "returnType": "dict[str, str]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "get_session",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "start_run",
+          "params": [
+            "session_id",
+            "body"
+          ],
+          "returnType": "StreamingResponse",
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "_sse",
+          "params": [
+            "event"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "decide_approval",
+          "params": [
+            "session_id",
+            "approval_id",
+            "body"
+          ],
+          "returnType": "dict[str, bool]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "cancel_run",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "dict[str, bool]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_tasks",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "reset_tasks",
+          "params": [
+            "confirm"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "RunRequest",
+          "methods": [],
+          "properties": [
+            "prompt",
+            "max_turns"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "ApprovalDecision",
+          "methods": [],
+          "properties": [
+            "approved"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "AsyncIterator"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Any"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "StreamingResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared",
+          "specifiers": [
+            "task_store"
+          ]
+        },
+        {
+          "source": "shared.claude",
+          "specifiers": [
+            "config_error"
+          ]
+        },
+        {
+          "source": "shared.sessions",
+          "specifiers": [
+            "Session",
+            "SessionStore"
+          ]
+        },
+        {
+          "source": ".agent_loop",
+          "specifiers": [
+            "MAX_TURNS_LIMIT",
+            "Event",
+            "run_loop"
+          ]
+        },
+        {
+          "source": ".tasks_tools",
+          "specifiers": [
+            "DEMO_SCOPE"
+          ]
+        }
+      ],
+      "exports": [
+        "RunRequest",
+        "ApprovalDecision",
+        "get_session_or_404",
+        "run_turn",
+        "create_session",
+        "get_session",
+        "start_run",
+        "_sse",
+        "decide_approval",
+        "cancel_run",
+        "get_tasks",
+        "reset_tasks"
+      ],
+      "totalLines": 150,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_04_manual_loop/tasks_tools.py": {
+      "filePath": "backend/demos/demo_04_manual_loop/tasks_tools.py",
+      "contentHash": "47ab314dc1a0acd04650746966351b467e5045c7f04a0a423d0d0a8ed3d678f8",
+      "functions": [
+        {
+          "name": "_ok",
+          "params": [
+            "content"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_error",
+          "params": [
+            "content"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "execute_tool",
+          "params": [
+            "name",
+            "tool_input",
+            "approver"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "classes": [
+        {
+          "name": "CreateTaskInput",
+          "methods": [],
+          "properties": [
+            "title",
+            "priority"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "GetTaskInput",
+          "methods": [],
+          "properties": [
+            "task_id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Awaitable",
+            "Callable"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field",
+            "ValidationError"
+          ]
+        },
+        {
+          "source": "shared",
+          "specifiers": [
+            "task_store"
+          ]
+        }
+      ],
+      "exports": [
+        "CreateTaskInput",
+        "GetTaskInput",
+        "_ok",
+        "_error",
+        "execute_tool"
+      ],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_05_structured_output/__init__.py": {
+      "filePath": "backend/demos/demo_05_structured_output/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_05_structured_output/generation.py": {
+      "filePath": "backend/demos/demo_05_structured_output/generation.py",
+      "contentHash": "91d4d8fbe9ae0ccd9c5313775891af866d189140de1bdf4f3fbcb5ed5523bda5",
+      "functions": [
+        {
+          "name": "_metrics",
+          "params": [
+            "message",
+            "latency_ms"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "_parse_draft",
+          "params": [
+            "prompt",
+            "max_tokens"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "_result",
+          "params": [
+            "stage",
+            "raw",
+            "validation",
+            "call",
+            "events"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "generate_draft",
+          "params": [
+            "prompt",
+            "max_tokens"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "repair_draft",
+          "params": [
+            "raw",
+            "errors",
+            "max_tokens"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared.claude",
+          "specifiers": [
+            "api_error",
+            "config_error",
+            "elapsed_ms",
+            "new_client"
+          ]
+        },
+        {
+          "source": ".schemas",
+          "specifiers": [
+            "TaskDraft"
+          ]
+        },
+        {
+          "source": ".validation",
+          "specifiers": [
+            "repair_instruction",
+            "validate_draft"
+          ]
+        }
+      ],
+      "exports": [
+        "_metrics",
+        "_parse_draft",
+        "_result",
+        "generate_draft",
+        "repair_draft"
+      ],
+      "totalLines": 91,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_05_structured_output/router.py": {
+      "filePath": "backend/demos/demo_05_structured_output/router.py",
+      "contentHash": "6283cdbfddc5a11e40d1d7376f385d3ef72b4d65196e8155bb0f959bdec05e63",
+      "functions": [
+        {
+          "name": "_check_max_tokens",
+          "params": [
+            "max_tokens"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_respond",
+          "params": [
+            "result"
+          ],
+          "returnType": "JSONResponse",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "get_schema",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "post_generate",
+          "params": [
+            "body"
+          ],
+          "returnType": "JSONResponse",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "post_validate",
+          "params": [
+            "body"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "post_repair",
+          "params": [
+            "body"
+          ],
+          "returnType": "JSONResponse",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "GenerateRequest",
+          "methods": [],
+          "properties": [
+            "prompt",
+            "max_tokens"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "ValidateRequest",
+          "methods": [],
+          "properties": [
+            "draft"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "RepairRequest",
+          "methods": [],
+          "properties": [
+            "draft",
+            "errors",
+            "max_tokens"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Any"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "JSONResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": ".generation",
+          "specifiers": [
+            "generate_draft",
+            "repair_draft"
+          ]
+        },
+        {
+          "source": ".schemas",
+          "specifiers": [
+            "json_schema"
+          ]
+        },
+        {
+          "source": ".validation",
+          "specifiers": [
+            "validate_draft"
+          ]
+        }
+      ],
+      "exports": [
+        "GenerateRequest",
+        "ValidateRequest",
+        "RepairRequest",
+        "_check_max_tokens",
+        "_respond",
+        "get_schema",
+        "post_generate",
+        "post_validate",
+        "post_repair"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_05_structured_output/schemas.py": {
+      "filePath": "backend/demos/demo_05_structured_output/schemas.py",
+      "contentHash": "6f4e220566699d3aa7e3d869eca949ed65b2bd7e9f619ad61ab43077d5c30899",
+      "functions": [
+        {
+          "name": "json_schema",
+          "params": [],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "TaskDraft",
+          "methods": [],
+          "properties": [
+            "title",
+            "priority",
+            "estimated_hours"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Literal"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field"
+          ]
+        }
+      ],
+      "exports": [
+        "TaskDraft",
+        "json_schema"
+      ],
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_05_structured_output/validation.py": {
+      "filePath": "backend/demos/demo_05_structured_output/validation.py",
+      "contentHash": "4adc2f4434381493ef8c36fec65fed9cbddd211978b577e360fc9734133e21ec",
+      "functions": [
+        {
+          "name": "validate_semantics",
+          "params": [
+            "draft"
+          ],
+          "returnType": "list[str]",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "_schema_errors",
+          "params": [
+            "error"
+          ],
+          "returnType": "list[str]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "validate_draft",
+          "params": [
+            "raw"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "repair_instruction",
+          "params": [
+            "raw",
+            "errors"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "ValidationError"
+          ]
+        },
+        {
+          "source": ".schemas",
+          "specifiers": [
+            "TaskDraft"
+          ]
+        }
+      ],
+      "exports": [
+        "validate_semantics",
+        "_schema_errors",
+        "validate_draft",
+        "repair_instruction"
+      ],
+      "totalLines": 90,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_06_workflows/__init__.py": {
+      "filePath": "backend/demos/demo_06_workflows/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_06_workflows/patterns.py": {
+      "filePath": "backend/demos/demo_06_workflows/patterns.py",
+      "contentHash": "9c7e0366e211d7820cc634f7cc1300db6370612aa426a68ede448ddff6626ad1",
+      "functions": [
+        {
+          "name": "chaining",
+          "params": [
+            "client",
+            "trace",
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "routing",
+          "params": [
+            "client",
+            "trace",
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "parallel",
+          "params": [
+            "client",
+            "trace",
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "orchestrator",
+          "params": [
+            "client",
+            "trace",
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "evaluator",
+          "params": [
+            "client",
+            "trace",
+            "text"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "run_workflow",
+          "params": [
+            "scenario",
+            "text"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "AsyncAnthropic"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared.claude",
+          "specifiers": [
+            "api_error",
+            "config_error",
+            "new_client"
+          ]
+        },
+        {
+          "source": ".runner",
+          "specifiers": [
+            "BudgetExceeded",
+            "Trace"
+          ]
+        }
+      ],
+      "exports": [
+        "chaining",
+        "routing",
+        "parallel",
+        "orchestrator",
+        "evaluator",
+        "run_workflow"
+      ],
+      "totalLines": 137,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_06_workflows/router.py": {
+      "filePath": "backend/demos/demo_06_workflows/router.py",
+      "contentHash": "78af62c0cd5c1a306bd0626d486115a8435e7f35c33813cd3988d4dfb453892f",
+      "functions": [
+        {
+          "name": "get_caps",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "post_run",
+          "params": [
+            "body"
+          ],
+          "returnType": "JSONResponse",
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [
+        {
+          "name": "RunRequest",
+          "methods": [],
+          "properties": [
+            "scenario",
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "JSONResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": ".patterns",
+          "specifiers": [
+            "BUDGETS",
+            "MAX_REVISIONS",
+            "MAX_WORKERS",
+            "run_workflow"
+          ]
+        }
+      ],
+      "exports": [
+        "RunRequest",
+        "get_caps",
+        "post_run"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_06_workflows/runner.py": {
+      "filePath": "backend/demos/demo_06_workflows/runner.py",
+      "contentHash": "2ed15fdaba3e28f9e8df6ac019e5cb95a813a8bfc361e123bbd039c3f284f8a2",
+      "functions": [],
+      "classes": [
+        {
+          "name": "BudgetExceeded",
+          "methods": [],
+          "properties": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "Trace",
+          "methods": [
+            "note",
+            "call",
+            "metrics"
+          ],
+          "properties": [
+            "budget",
+            "started",
+            "steps",
+            "calls",
+            "input_tokens",
+            "output_tokens"
+          ],
+          "exported": true,
+          "lineCount": 43
+        }
+      ],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "AsyncAnthropic"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared.claude",
+          "specifiers": [
+            "answer_text",
+            "elapsed_ms"
+          ]
+        }
+      ],
+      "exports": [
+        "BudgetExceeded",
+        "Trace"
+      ],
+      "totalLines": 67,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_07_mcp/__init__.py": {
+      "filePath": "backend/demos/demo_07_mcp/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_07_mcp/mcp_client.py": {
+      "filePath": "backend/demos/demo_07_mcp/mcp_client.py",
+      "contentHash": "bb79f2308298244d24fd9d5999d3bc6135ef58f4eea53812df60e525f2e230f7",
+      "functions": [
+        {
+          "name": "_session_info",
+          "params": [
+            "client"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "_tool_schema",
+          "params": [
+            "tool"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "_result_text",
+          "params": [
+            "result"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "discover",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "call_tool",
+          "params": [
+            "name",
+            "arguments"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "resources_and_prompts",
+          "params": [
+            "goal"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 35
+        }
+      ],
+      "classes": [
+        {
+          "name": "Recorder",
+          "methods": [
+            "__init__",
+            "log"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "imports": [
+        {
+          "source": "sys",
+          "specifiers": [
+            "sys"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "mcp.client",
+          "specifiers": [
+            "Client"
+          ]
+        },
+        {
+          "source": "mcp.client.stdio",
+          "specifiers": [
+            "StdioServerParameters"
+          ]
+        }
+      ],
+      "exports": [
+        "Recorder",
+        "_session_info",
+        "_tool_schema",
+        "_result_text",
+        "discover",
+        "call_tool",
+        "resources_and_prompts"
+      ],
+      "totalLines": 137,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_07_mcp/mcp_server.py": {
+      "filePath": "backend/demos/demo_07_mcp/mcp_server.py",
+      "contentHash": "499401f295a0c9cc4ecc2d3e6083302f5bc20f8ab77a7ca79a12b0222b27959b",
+      "functions": [
+        {
+          "name": "list_tasks",
+          "params": [],
+          "returnType": "list[dict]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "get_task",
+          "params": [
+            "task_id"
+          ],
+          "returnType": "dict",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "tasks_summary",
+          "params": [],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "plan_task",
+          "params": [
+            "goal"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "mcp.server.mcpserver",
+          "specifiers": [
+            "MCPServer"
+          ]
+        },
+        {
+          "source": "mcp.server.mcpserver.exceptions",
+          "specifiers": [
+            "ToolError"
+          ]
+        },
+        {
+          "source": "shared",
+          "specifiers": [
+            "task_store"
+          ]
+        }
+      ],
+      "exports": [
+        "list_tasks",
+        "get_task",
+        "tasks_summary",
+        "plan_task"
+      ],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_07_mcp/router.py": {
+      "filePath": "backend/demos/demo_07_mcp/router.py",
+      "contentHash": "d56f0b833fcd562103a1a7db243415a22653c0d6c9366c9ff49925bc5a1dbafb",
+      "functions": [
+        {
+          "name": "_mcp_error",
+          "params": [
+            "error"
+          ],
+          "returnType": "HTTPException",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "post_discover",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "post_call_tool",
+          "params": [
+            "body"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "post_resources_prompts",
+          "params": [
+            "body"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "get_tasks",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "post_seed",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "reset_tasks",
+          "params": [
+            "confirm"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "CallToolRequest",
+          "methods": [],
+          "properties": [
+            "name",
+            "task_id"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "PromptRequest",
+          "methods": [],
+          "properties": [
+            "goal"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "Field",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": "shared",
+          "specifiers": [
+            "task_store"
+          ]
+        },
+        {
+          "source": ".",
+          "specifiers": [
+            "mcp_client"
+          ]
+        },
+        {
+          "source": ".mcp_server",
+          "specifiers": [
+            "DEMO_SCOPE"
+          ]
+        }
+      ],
+      "exports": [
+        "CallToolRequest",
+        "PromptRequest",
+        "_mcp_error",
+        "post_discover",
+        "post_call_tool",
+        "post_resources_prompts",
+        "get_tasks",
+        "post_seed",
+        "reset_tasks"
+      ],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_08_agent_sdk/__init__.py": {
+      "filePath": "backend/demos/demo_08_agent_sdk/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_08_agent_sdk/customization.py": {
+      "filePath": "backend/demos/demo_08_agent_sdk/customization.py",
+      "contentHash": "957e9983c6d20901f28fcb551c97b7f73e7ea912ef91b813ff8c0d9bcc3b5d81",
+      "functions": [
+        {
+          "name": "permission_callback",
+          "params": [
+            "emit",
+            "approver"
+          ],
+          "returnType": "Any",
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "hook_matchers",
+          "params": [
+            "emit"
+          ],
+          "returnType": "dict[str, list[HookMatcher]]",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "build_options",
+          "params": [
+            "scenario",
+            "emit",
+            "approver"
+          ],
+          "returnType": "ClaudeAgentOptions",
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Awaitable",
+            "Callable"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "claude_agent_sdk",
+          "specifiers": [
+            "AgentDefinition",
+            "ClaudeAgentOptions",
+            "HookMatcher",
+            "PermissionResultAllow",
+            "PermissionResultDeny",
+            "ToolPermissionContext"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": ".sdk_tools",
+          "specifiers": [
+            "ALL_TOOLS",
+            "CREATE_TOOL",
+            "LIST_TOOL",
+            "build_tool_server"
+          ]
+        }
+      ],
+      "exports": [
+        "permission_callback",
+        "hook_matchers",
+        "build_options"
+      ],
+      "totalLines": 137,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_08_agent_sdk/environment.py": {
+      "filePath": "backend/demos/demo_08_agent_sdk/environment.py",
+      "contentHash": "fed71d239e7f064376765ac344938b74c690b11673acc6f4b422f32a4159a1e5",
+      "functions": [
+        {
+          "name": "env_summary",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "importlib.metadata",
+          "specifiers": [
+            "metadata"
+          ]
+        },
+        {
+          "source": "shutil",
+          "specifiers": [
+            "shutil"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": ".customization",
+          "specifiers": [
+            "MAX_BUDGET_USD",
+            "MAX_TURNS",
+            "SANDBOX_DIR",
+            "SCENARIOS"
+          ]
+        }
+      ],
+      "exports": [
+        "env_summary"
+      ],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_08_agent_sdk/router.py": {
+      "filePath": "backend/demos/demo_08_agent_sdk/router.py",
+      "contentHash": "bad2bde971ccba52c11f45329248d0a01cda0eb78ca8a8ab66e201ed120cc780",
+      "functions": [
+        {
+          "name": "get_session_or_404",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "Session",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "get_env",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "post_inspect",
+          "params": [
+            "body"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "create_session",
+          "params": [],
+          "returnType": "dict[str, str]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "start_run",
+          "params": [
+            "session_id",
+            "body"
+          ],
+          "returnType": "StreamingResponse",
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "_sse",
+          "params": [
+            "event"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "decide_approval",
+          "params": [
+            "session_id",
+            "approval_id",
+            "body"
+          ],
+          "returnType": "dict[str, bool]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "cancel_run",
+          "params": [
+            "session_id"
+          ],
+          "returnType": "dict[str, bool]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_tasks",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reset_tasks",
+          "params": [
+            "confirm"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "RunRequest",
+          "methods": [],
+          "properties": [
+            "scenario",
+            "prompt"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "ApprovalDecision",
+          "methods": [],
+          "properties": [
+            "approved"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "InspectRequest",
+          "methods": [],
+          "properties": [
+            "scenario"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "AsyncIterator"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Annotated",
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "APIRouter",
+            "HTTPException"
+          ]
+        },
+        {
+          "source": "fastapi.responses",
+          "specifiers": [
+            "StreamingResponse"
+          ]
+        },
+        {
+          "source": "pydantic",
+          "specifiers": [
+            "BaseModel",
+            "StringConstraints"
+          ]
+        },
+        {
+          "source": "shared",
+          "specifiers": [
+            "task_store"
+          ]
+        },
+        {
+          "source": "shared.sessions",
+          "specifiers": [
+            "Session",
+            "SessionStore"
+          ]
+        },
+        {
+          "source": ".environment",
+          "specifiers": [
+            "env_summary"
+          ]
+        },
+        {
+          "source": ".sdk_agent",
+          "specifiers": [
+            "inspect_session",
+            "run_turn"
+          ]
+        },
+        {
+          "source": ".sdk_tools",
+          "specifiers": [
+            "DEMO_SCOPE"
+          ]
+        }
+      ],
+      "exports": [
+        "RunRequest",
+        "ApprovalDecision",
+        "get_session_or_404",
+        "get_env",
+        "InspectRequest",
+        "post_inspect",
+        "create_session",
+        "start_run",
+        "_sse",
+        "decide_approval",
+        "cancel_run",
+        "get_tasks",
+        "reset_tasks"
+      ],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_08_agent_sdk/sandbox/.claude/skills/task-planning/SKILL.md": {
+      "filePath": "backend/demos/demo_08_agent_sdk/sandbox/.claude/skills/task-planning/SKILL.md",
+      "contentHash": "f742703bb2e55ff5756aa31cc3c30fee5f8a2732ff582386ae6af4f92a2e2a9b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "backend/demos/demo_08_agent_sdk/sandbox/requirements.md": {
+      "filePath": "backend/demos/demo_08_agent_sdk/sandbox/requirements.md",
+      "contentHash": "e3292fd65cb14cf2903d9b849f104a76755e43eef75ac9d9a79eb9dc69bd503c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": false
+    },
+    "backend/demos/demo_08_agent_sdk/sdk_agent.py": {
+      "filePath": "backend/demos/demo_08_agent_sdk/sdk_agent.py",
+      "contentHash": "ba0606b0b377792fde21d59992ee52ae8dc4f3189eaff7875266e52ed4d11e29",
+      "functions": [
+        {
+          "name": "_blocks",
+          "params": [
+            "message",
+            "emit",
+            "log"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "run_turn",
+          "params": [
+            "session",
+            "scenario",
+            "prompt",
+            "queue"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "inspect_session",
+          "params": [
+            "scenario"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "run_query",
+          "params": [
+            "scenario",
+            "prompt",
+            "emit",
+            "approver"
+          ],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Awaitable",
+            "Callable"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "claude_agent_sdk",
+          "specifiers": [
+            "AssistantMessage",
+            "ClaudeSDKClient",
+            "ResultMessage",
+            "SystemMessage",
+            "TextBlock",
+            "ThinkingBlock",
+            "ToolResultBlock",
+            "ToolUseBlock",
+            "UserMessage"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "shared.sessions",
+          "specifiers": [
+            "Session"
+          ]
+        },
+        {
+          "source": ".customization",
+          "specifiers": [
+            "MAX_BUDGET_USD",
+            "MAX_TURNS",
+            "SCENARIOS",
+            "build_options"
+          ]
+        }
+      ],
+      "exports": [
+        "_blocks",
+        "run_turn",
+        "inspect_session",
+        "run_query"
+      ],
+      "totalLines": 144,
+      "hasStructuralAnalysis": true
+    },
+    "backend/demos/demo_08_agent_sdk/sdk_tools.py": {
+      "filePath": "backend/demos/demo_08_agent_sdk/sdk_tools.py",
+      "contentHash": "7b3d1241f3948515fc6898cae3ec9ed8cab1d40f7e929b4718d05673c4c3cab1",
+      "functions": [
+        {
+          "name": "_text",
+          "params": [
+            "payload"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_error",
+          "params": [
+            "message"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "list_tasks",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "create_task",
+          "params": [
+            "args"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "build_tool_server",
+          "params": [],
+          "returnType": "Any",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "json",
+          "specifiers": [
+            "json"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "claude_agent_sdk",
+          "specifiers": [
+            "create_sdk_mcp_server",
+            "tool"
+          ]
+        },
+        {
+          "source": "shared",
+          "specifiers": [
+            "task_store"
+          ]
+        }
+      ],
+      "exports": [
+        "_text",
+        "_error",
+        "list_tasks",
+        "create_task",
+        "build_tool_server"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "backend/main.py": {
+      "filePath": "backend/main.py",
+      "contentHash": "ac7e63f1e843d23785bab2aab5dfae4919dcd0543b36a735833b84e460233fe6",
+      "functions": [
+        {
+          "name": "health",
+          "params": [],
+          "returnType": "dict[str, object]",
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "fastapi",
+          "specifiers": [
+            "FastAPI"
+          ]
+        },
+        {
+          "source": "fastapi.middleware.cors",
+          "specifiers": [
+            "CORSMiddleware"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        },
+        {
+          "source": "demos.demo_01_runtime.router",
+          "specifiers": [
+            "demo_01_router"
+          ]
+        },
+        {
+          "source": "demos.demo_02_claude_api.router",
+          "specifiers": [
+            "demo_02_router"
+          ]
+        },
+        {
+          "source": "demos.demo_03_tools.router",
+          "specifiers": [
+            "demo_03_router"
+          ]
+        },
+        {
+          "source": "demos.demo_04_manual_loop.router",
+          "specifiers": [
+            "demo_04_router"
+          ]
+        },
+        {
+          "source": "demos.demo_05_structured_output.router",
+          "specifiers": [
+            "demo_05_router"
+          ]
+        },
+        {
+          "source": "demos.demo_06_workflows.router",
+          "specifiers": [
+            "demo_06_router"
+          ]
+        },
+        {
+          "source": "demos.demo_07_mcp.router",
+          "specifiers": [
+            "demo_07_router"
+          ]
+        },
+        {
+          "source": "demos.demo_08_agent_sdk.router",
+          "specifiers": [
+            "demo_08_router"
+          ]
+        }
+      ],
+      "exports": [
+        "health"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "backend/pyproject.toml": {
+      "filePath": "backend/pyproject.toml",
+      "contentHash": "10b67099aa7a7c1c5ca3013decd673cc0d05f60f8ad0c4e611c80ddc1552d386",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "backend/shared/__init__.py": {
+      "filePath": "backend/shared/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "backend/shared/approval.py": {
+      "filePath": "backend/shared/approval.py",
+      "contentHash": "8e3bf7ae06588598a68d9c7ab4ccb5d15e1ef6c39ef11e7728204bae3988b90d",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ApprovalBroker",
+          "methods": [
+            "__init__",
+            "request",
+            "resolve",
+            "deny_all_pending"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "uuid",
+          "specifiers": [
+            "uuid"
+          ]
+        },
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Callable"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        }
+      ],
+      "exports": [
+        "ApprovalBroker"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "backend/shared/claude.py": {
+      "filePath": "backend/shared/claude.py",
+      "contentHash": "0c8e54128bff5bd8124c436529e737f4b098462f260e8ed495a23406163e119d",
+      "functions": [
+        {
+          "name": "new_client",
+          "params": [],
+          "returnType": "AsyncAnthropic",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "answer_text",
+          "params": [
+            "message"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "elapsed_ms",
+          "params": [
+            "started"
+          ],
+          "returnType": "float",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "api_error",
+          "params": [
+            "error"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "config_error",
+          "params": [],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "usage_totals",
+          "params": [
+            "messages"
+          ],
+          "returnType": "dict[str, int]",
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "time",
+          "specifiers": [
+            "time"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "anthropic"
+          ]
+        },
+        {
+          "source": "anthropic",
+          "specifiers": [
+            "AsyncAnthropic"
+          ]
+        },
+        {
+          "source": "anthropic.types",
+          "specifiers": [
+            "Message"
+          ]
+        },
+        {
+          "source": "config",
+          "specifiers": [
+            "config"
+          ]
+        }
+      ],
+      "exports": [
+        "new_client",
+        "answer_text",
+        "elapsed_ms",
+        "api_error",
+        "config_error",
+        "usage_totals"
+      ],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "backend/shared/sessions.py": {
+      "filePath": "backend/shared/sessions.py",
+      "contentHash": "b9cc4a43469476123c22c2c5b320a60786607888794138db9cba5f98b85c366e",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Session",
+          "methods": [
+            "busy"
+          ],
+          "properties": [
+            "id",
+            "history",
+            "task",
+            "approvals"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "SessionStore",
+          "methods": [
+            "__init__",
+            "create",
+            "get"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "imports": [
+        {
+          "source": "asyncio",
+          "specifiers": [
+            "asyncio"
+          ]
+        },
+        {
+          "source": "uuid",
+          "specifiers": [
+            "uuid"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass",
+            "field"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        },
+        {
+          "source": ".approval",
+          "specifiers": [
+            "ApprovalBroker"
+          ]
+        }
+      ],
+      "exports": [
+        "Session",
+        "SessionStore"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "backend/shared/task_store.py": {
+      "filePath": "backend/shared/task_store.py",
+      "contentHash": "d950cc258a5d1a91e2b0f6be7bf9e5f98591443dc512d6acc2e851adbb33ec19",
+      "functions": [
+        {
+          "name": "_connect",
+          "params": [],
+          "returnType": "sqlite3.Connection",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "init_db",
+          "params": [],
+          "returnType": "None",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "list_tasks",
+          "params": [
+            "scope"
+          ],
+          "returnType": "list[dict[str, Any]]",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_task",
+          "params": [
+            "scope",
+            "task_id"
+          ],
+          "returnType": "dict[str, Any] | None",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "create_task",
+          "params": [
+            "scope",
+            "title",
+            "priority",
+            "status"
+          ],
+          "returnType": "dict[str, Any]",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "reset_scope",
+          "params": [
+            "scope"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sqlite3",
+          "specifiers": [
+            "sqlite3"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any"
+          ]
+        }
+      ],
+      "exports": [
+        "_connect",
+        "init_db",
+        "list_tasks",
+        "get_task",
+        "create_task",
+        "reset_scope"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/.env.example": {
+      "filePath": "frontend/.env.example",
+      "contentHash": "7865d7054a6f7bbbd4a523472208028822da10ecb48ea80bb06d28d203106bda",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "frontend/next-env.d.ts": {
+      "filePath": "frontend/next-env.d.ts",
+      "contentHash": "0f70629890b72a0a82e91972cc032c04b658b26c265373cb711cf576bfbf8fcc",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./.next/dev/types/routes.d.ts",
+          "specifiers": []
+        },
+        {
+          "source": "./.next/dev/types/root-params.d.ts",
+          "specifiers": []
+        }
+      ],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/next.config.ts": {
+      "filePath": "frontend/next.config.ts",
+      "contentHash": "10cbdba160a71912a59f881a6a2c0368ca1e95647cf85646f8c067a2348ea9e6",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "NextConfig"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/package.json": {
+      "filePath": "frontend/package.json",
+      "contentHash": "1bfca51f34cff8188a74f1df659a43e0feee462ef5b6e0be76b5ff9fb8781cf0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/api.ts",
+      "contentHash": "8812ffdd31d171b08a91b78dd51244e2ad02e66d99d980b60288ae056c6a7527",
+      "functions": [
+        {
+          "name": "createSession",
+          "params": [],
+          "returnType": "Promise<string>",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "startRun",
+          "params": [
+            "sessionId",
+            "text",
+            "scenario",
+            "onEvent"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 28
+        },
+        {
+          "name": "postAction",
+          "params": [
+            "path",
+            "body"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "readNote",
+          "params": [],
+          "returnType": "Promise<NoteFile>",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "resetNote",
+          "params": [],
+          "returnType": "Promise<NoteFile>",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "createSession",
+        "startRun",
+        "postAction",
+        "readNote",
+        "resetNote"
+      ],
+      "totalLines": 96,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/content.ts",
+      "contentHash": "ea1abd49882fcf1d72ba5e641d14a7be84cad95005a5afa7d113893fbe5dc076",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "BackendScenario"
+          ]
+        }
+      ],
+      "exports": [
+        "SCENARIOS",
+        "SCENARIO_KEYS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 77,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/event-log.tsx",
+      "contentHash": "80c086852de5f15541ab301e0a115d5bcf83fc3e4620ad64912210c20597e98b",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, running, expectedFlow }"
+          ],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "AgentEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/note-file.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/note-file.tsx",
+      "contentHash": "a08632f2fbbf27684669d49edcc472cd9c024231138ad1d7adac942c37834232",
+      "functions": [
+        {
+          "name": "NoteFileCard",
+          "params": [
+            "{ note, loading, disabled, onRead, onReset }"
+          ],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "DeleteOutlined",
+            "ReloadOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Descriptions",
+            "Popconfirm",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "NoteFile"
+          ]
+        }
+      ],
+      "exports": [
+        "NoteFileCard"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/page.tsx",
+      "contentHash": "a9ef30d60905a3ad2dfdc6cbe57af312f6fb3efc8554d5b05193811e8bd79308",
+      "functions": [
+        {
+          "name": "RuntimeDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "readNote",
+            "resetNote",
+            "NoteFile"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./note-file",
+          "specifiers": [
+            "NoteFileCard"
+          ]
+        },
+        {
+          "source": "./run-result",
+          "specifiers": [
+            "RunResult"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        },
+        {
+          "source": "./use-run",
+          "specifiers": [
+            "useRun"
+          ]
+        }
+      ],
+      "exports": [
+        "RuntimeDemoPage"
+      ],
+      "totalLines": 82,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/run-result.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/run-result.tsx",
+      "contentHash": "ac47ac21553c6fd1c7674f8172fe73f82d62c88ced843224df750b60dcb7db33",
+      "functions": [
+        {
+          "name": "runStatus",
+          "params": [
+            "props"
+          ],
+          "returnType": "keyof typeof STATUS",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "RunResult",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 57
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "Progress",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "AgentEvent"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "ReceivedEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "RunResult"
+      ],
+      "totalLines": 100,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/scenario-input.tsx",
+      "contentHash": "4de90fb188d2c8985d04c3b213d62422d00ad73bd0966c69462b5b47754e1641",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "PlayCircleOutlined",
+            "StopOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "Segmented",
+            "Space",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "SCENARIO_KEYS",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/source-debug.tsx",
+      "contentHash": "7867be7feafc74042eb67c2e4c9ef491f97f897db93ce5d457e106643629e061",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Collapse",
+            "Flex",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/01-runtime/use-run.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/01-runtime/use-run.ts",
+      "contentHash": "6bb9d440d09723f81ce49a3298d24759ec54521cfaf155471778788ee6765ef6",
+      "functions": [
+        {
+          "name": "useRun",
+          "params": [],
+          "exported": true,
+          "lineCount": 92
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "createSession",
+            "postAction",
+            "startRun",
+            "AgentEvent",
+            "BackendScenario"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "ReceivedEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "useRun"
+      ],
+      "totalLines": 100,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/api.ts",
+      "contentHash": "6d374b77b22c3bee2fb0be05f8b3ffcab0e6c7dd2c9b3ed55e91847e1b09a19f",
+      "functions": [
+        {
+          "name": "sendMessages",
+          "params": [
+            "body"
+          ],
+          "returnType": "Promise<ClaudeResult>",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "streamMessages",
+          "params": [
+            "body",
+            "onEvent"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 27
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "sendMessages",
+        "streamMessages"
+      ],
+      "totalLines": 96,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/content.ts",
+      "contentHash": "23828b80b7a4e87c0905957b52307f0bac043b189564e7034cd48ee4060ec01d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        }
+      ],
+      "exports": [
+        "SCENARIOS",
+        "SCENARIO_KEYS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/event-log.tsx",
+      "contentHash": "9374e97390aafd29ec47f01e36eca76b401bfb9c4c83738b0ddb41677219aebd",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, running }"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./use-claude",
+          "specifiers": [
+            "DemoEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 44,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/history-panel.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/history-panel.tsx",
+      "contentHash": "5ccc33a3ddeae5e448e1eaa3f3e63e5ccd09ba069e97e586a43f63d937819260",
+      "functions": [
+        {
+          "name": "HistoryPanel",
+          "params": [
+            "{ turns, sent }"
+          ],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Card",
+            "Empty",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Turn"
+          ]
+        }
+      ],
+      "exports": [
+        "HistoryPanel"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/page.tsx",
+      "contentHash": "0d16edb6ebd67119542a33a06663b54d05b95f3ed4434ba289b967c410f60047",
+      "functions": [
+        {
+          "name": "ClaudeApiDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 71
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Turn"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./history-panel",
+          "specifiers": [
+            "HistoryPanel",
+            "SentRequest"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        },
+        {
+          "source": "./use-claude",
+          "specifiers": [
+            "useClaude"
+          ]
+        }
+      ],
+      "exports": [
+        "ClaudeApiDemoPage"
+      ],
+      "totalLines": 87,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/result-card.tsx",
+      "contentHash": "3f1bb264fb6650d0002bfbcac3aefd8d18f8260b675db838e7a955731a9242ee",
+      "functions": [
+        {
+          "name": "metric",
+          "params": [
+            "value",
+            "suffix"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "ResultCard",
+          "params": [
+            "{ result, streamText, running, transportError }"
+          ],
+          "exported": true,
+          "lineCount": 50
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "CopyOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "App",
+            "Button",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ClaudeResult"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 75,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/scenario-input.tsx",
+      "contentHash": "bd8b950869ac0d5b5f8fd95c92bc6d740bb2f134d6095b5d6428c7c95e0ae8a1",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 60
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "SendOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Collapse",
+            "Flex",
+            "Input",
+            "InputNumber",
+            "Segmented",
+            "Space",
+            "Switch",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "SCENARIO_KEYS",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/source-debug.tsx",
+      "contentHash": "95f4fd6362a9446e367060651c3f51e63ad98b80633da80114f5b9f23a4b8bc5",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [
+            "{ result }"
+          ],
+          "exported": true,
+          "lineCount": 41
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tabs",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ClaudeResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/02-claude-api/use-claude.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/02-claude-api/use-claude.ts",
+      "contentHash": "9604c4402a93c1fb242dd9c54cae38f9b863ee59abb532b0d7321972fa1febae",
+      "functions": [
+        {
+          "name": "useClaude",
+          "params": [],
+          "exported": true,
+          "lineCount": 87
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "sendMessages",
+            "streamMessages",
+            "ClaudeRequest",
+            "ClaudeResult",
+            "SendBody",
+            "StreamEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "useClaude"
+      ],
+      "totalLines": 101,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/api.ts",
+      "contentHash": "5bf2acab47c6a05b8ff66db77afe4d3b65c7a01596bbaae7aae6ab2faf291f0b",
+      "functions": [
+        {
+          "name": "runTools",
+          "params": [
+            "scenario",
+            "prompt",
+            "maxTokens"
+          ],
+          "returnType": "Promise<ToolRunResult>",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "getToolSchemas",
+          "params": [],
+          "returnType": "Promise<Record<string, unknown>[]>",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "runTools",
+        "getToolSchemas"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/content.ts",
+      "contentHash": "4290418aaac6750ed0890f1201c00d40fcf8f28bbc0b5089760bbb26432f77f3",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ScenarioName"
+          ]
+        }
+      ],
+      "exports": [
+        "SCENARIOS",
+        "SCENARIO_KEYS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/event-log.tsx",
+      "contentHash": "709b47bec89e8841a76ce5ae0594ccff8699f1f3c4e65cb16f4b801e55939c30",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, running }"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ToolEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/page.tsx",
+      "contentHash": "787ab4e304728072a004fe0cd3f378cbd79fcc1e9fe8eada5fbd4fcd8273e680",
+      "functions": [
+        {
+          "name": "ToolsDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "getToolSchemas",
+            "runTools",
+            "ScenarioName",
+            "ToolRunResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "SCENARIOS"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        }
+      ],
+      "exports": [
+        "ToolsDemoPage"
+      ],
+      "totalLines": 77,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/result-card.tsx",
+      "contentHash": "daf9228baef81fdafbb76e7ed565e54d5f1926f3f0edfc76267ee9a438e82c19",
+      "functions": [
+        {
+          "name": "ResultCard",
+          "params": [
+            "{ result, running, transportError }"
+          ],
+          "exported": true,
+          "lineCount": 61
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ToolRunResult"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/scenario-input.tsx",
+      "contentHash": "9974e033b87d3d555051e24351283d53d0bf62ec688d0a787d30a00b54c3c782",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "PlayCircleOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "Segmented",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ScenarioName"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "SCENARIO_KEYS",
+            "SCENARIOS"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/03-tools/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/03-tools/source-debug.tsx",
+      "contentHash": "0907fd85708fbfda6a597e1fb72e1ce3d9c670fb4f4db87cd78cdb098595508f",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [
+            "{ result, toolSchemas }"
+          ],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tabs",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ToolRunResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 65,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/api.ts",
+      "contentHash": "148db531d4be82ef24786b854b0231ae49a242ffb96376902e82341a7f77cb9e",
+      "functions": [
+        {
+          "name": "createSession",
+          "params": [],
+          "returnType": "Promise<string>",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "getSession",
+          "params": [
+            "sessionId"
+          ],
+          "returnType": "Promise<{ history_messages: number; busy: boolean }>",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "startRun",
+          "params": [
+            "sessionId",
+            "prompt",
+            "maxTurns",
+            "onEvent"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "postAction",
+          "params": [
+            "path",
+            "body"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "getTasks",
+          "params": [],
+          "returnType": "Promise<Task[]>",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "resetTasks",
+          "params": [],
+          "returnType": "Promise<Task[]>",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "createSession",
+        "getSession",
+        "startRun",
+        "postAction",
+        "getTasks",
+        "resetTasks"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/content.ts",
+      "contentHash": "d56cad526457111eedf436faef339d5677bb6231c151de9c4ee91b71073b3ab1",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        }
+      ],
+      "exports": [
+        "SCENARIOS",
+        "SCENARIO_KEYS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/event-log.tsx",
+      "contentHash": "a7893ca9d19084b8d5f30d928b808e38a1fb2226129c6800f4932598ff7937e3",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, running }"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "LoopEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/page.tsx",
+      "contentHash": "1e51c5c9e03de09b2ae931f68e37441efc92d6b8b990d3bfedbff4e30f43d737",
+      "functions": [
+        {
+          "name": "ManualLoopDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 74
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "getTasks",
+            "resetTasks",
+            "Task"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        },
+        {
+          "source": "./tasks-table",
+          "specifiers": [
+            "TasksTable"
+          ]
+        },
+        {
+          "source": "./use-loop",
+          "specifiers": [
+            "useLoop"
+          ]
+        }
+      ],
+      "exports": [
+        "ManualLoopDemoPage"
+      ],
+      "totalLines": 90,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/result-card.tsx",
+      "contentHash": "aeea9331d9d8f395bbffc34ada01043b3b1ff843d693418904dd23bdeb7ceb82",
+      "functions": [
+        {
+          "name": "find",
+          "params": [
+            "events",
+            "type"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "ResultCard",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 80
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "LoopEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 101,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/scenario-input.tsx",
+      "contentHash": "a8ef3918efe68bc75aed6ee7a220734e9befd3b5ab8a9a08c38a049bced4584a",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "PlayCircleOutlined",
+            "StopOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "InputNumber",
+            "Segmented",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "SCENARIO_KEYS",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/source-debug.tsx",
+      "contentHash": "3b9c6f062fa0c650c9f1c351a3b82334cdedef8fe1f1be73abb9cf3732e67768",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/tasks-table.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/tasks-table.tsx",
+      "contentHash": "07fb22e9801a7603c9e6bcc70f6a12c16ae56232d98b0da5995c3f7c25369e96",
+      "functions": [
+        {
+          "name": "TasksTable",
+          "params": [
+            "{ tasks, loading, disabled, onReload, onReset }"
+          ],
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "DeleteOutlined",
+            "ReloadOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Popconfirm",
+            "Space",
+            "Table",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Task"
+          ]
+        }
+      ],
+      "exports": [
+        "TasksTable"
+      ],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/04-manual-loop/use-loop.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/04-manual-loop/use-loop.ts",
+      "contentHash": "c56ba18bfec694b0bcda7d34315c086d3047b6e89be7bb5dcb8c13aa0e6f18d5",
+      "functions": [
+        {
+          "name": "useLoop",
+          "params": [],
+          "exported": true,
+          "lineCount": 77
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "createSession",
+            "getSession",
+            "postAction",
+            "startRun",
+            "LoopEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "useLoop"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/api.ts",
+      "contentHash": "5c2728f38d22fa6c57688bbdb83538a7ba58faa32e55ba71a1b5413491d14ce0",
+      "functions": [
+        {
+          "name": "post",
+          "params": [
+            "path",
+            "body"
+          ],
+          "returnType": "Promise<DraftResult>",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "generateDraft",
+          "params": [
+            "prompt"
+          ],
+          "returnType": "Promise<DraftResult>",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "validateDraft",
+          "params": [
+            "draft"
+          ],
+          "returnType": "Promise<DraftResult>",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "repairDraft",
+          "params": [
+            "draft",
+            "errors"
+          ],
+          "returnType": "Promise<DraftResult>",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getSchema",
+          "params": [],
+          "returnType": "Promise<Record<string, unknown>>",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "generateDraft",
+        "validateDraft",
+        "repairDraft",
+        "getSchema"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/content.ts",
+      "contentHash": "9c25ea53d1797059a285107ec9c49a9ee2ecaee299c95e70cb60741dabfa2f59",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        }
+      ],
+      "exports": [
+        "PROMPT_PRESETS",
+        "BAD_DRAFTS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 67,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/draft-editor.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/draft-editor.tsx",
+      "contentHash": "858666ea9fe229ef2dc5dc9c3f1305fff4980ac8007ab82e2db7aeea6850edf0",
+      "functions": [
+        {
+          "name": "DraftEditor",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "CheckCircleOutlined",
+            "ThunderboltOutlined",
+            "ToolOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "Space",
+            "Tooltip",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BAD_DRAFTS",
+            "PROMPT_PRESETS"
+          ]
+        }
+      ],
+      "exports": [
+        "DraftEditor"
+      ],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/event-log.tsx",
+      "contentHash": "333185f4d70a9e2ef8ca7a54965455cf9ccbd69470c5486d607e3881c35c4480",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, busy }"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "DraftEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/page.tsx",
+      "contentHash": "a474b0d2850868bb163ff4f14057bda3abddbe0c8c5372d4c6074006449f4eee",
+      "functions": [
+        {
+          "name": "StructuredOutputDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 93
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "generateDraft",
+            "getSchema",
+            "repairDraft",
+            "validateDraft",
+            "DraftResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "PROMPT_PRESETS"
+          ]
+        },
+        {
+          "source": "./draft-editor",
+          "specifiers": [
+            "DraftEditor"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        }
+      ],
+      "exports": [
+        "StructuredOutputDemoPage"
+      ],
+      "totalLines": 108,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/result-card.tsx",
+      "contentHash": "0a6724c110939abd682278475ce5ef4da2caf9ef1227f976d35bfb566497f911",
+      "functions": [
+        {
+          "name": "ResultCard",
+          "params": [
+            "{ result, busy, transportError }"
+          ],
+          "exported": true,
+          "lineCount": 61
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "List",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "DraftResult"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 75,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/05-structured-output/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/05-structured-output/source-debug.tsx",
+      "contentHash": "fadd5008ad72167761e6aafe8278ce2c519c499e39f98a3fdca1822898f0e8f0",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [
+            "{ result, schema }"
+          ],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tabs",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "DraftResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/api.ts",
+      "contentHash": "afcf40fc48fd541ef8720e0ebe9f004bb7a932315088795efa3bd9d7602d59b2",
+      "functions": [
+        {
+          "name": "runWorkflow",
+          "params": [
+            "scenario",
+            "input"
+          ],
+          "returnType": "Promise<WorkflowResult>",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "getCaps",
+          "params": [],
+          "returnType": "Promise<Caps>",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "runWorkflow",
+        "getCaps"
+      ],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/content.ts",
+      "contentHash": "4124815fff98538c438ad46c5a870c9c60d62e376f35e65ff18889598430806b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "PatternName"
+          ]
+        }
+      ],
+      "exports": [
+        "PATTERNS",
+        "PATTERN_KEYS",
+        "OUTCOMES"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/page.tsx",
+      "contentHash": "b13933d02eb216afd89103d3452d30a4bed1a1fa2b0eee5215c5aef8e95fe3c6",
+      "functions": [
+        {
+          "name": "WorkflowsDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "getCaps",
+            "runWorkflow",
+            "Caps",
+            "PatternName",
+            "WorkflowResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "PATTERNS"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        },
+        {
+          "source": "./step-trace",
+          "specifiers": [
+            "StepTrace"
+          ]
+        }
+      ],
+      "exports": [
+        "WorkflowsDemoPage"
+      ],
+      "totalLines": 80,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/result-card.tsx",
+      "contentHash": "03b4c22eaeb197b3c2c0ddeb0c33bcd77a799c4b193df4b0013b8f74b1a7da94",
+      "functions": [
+        {
+          "name": "ResultCard",
+          "params": [
+            "{ result, running, transportError }"
+          ],
+          "exported": true,
+          "lineCount": 48
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "WorkflowResult"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/scenario-input.tsx",
+      "contentHash": "fdfe511cb12d8fa1a7cd3fe04680e6b2cd9546200cff4f2c69d1faec1aa071de",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "PlayCircleOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "Segmented",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Caps",
+            "PatternName"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "PATTERN_KEYS",
+            "PATTERNS"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/source-debug.tsx",
+      "contentHash": "e698e95904e1c4fbb0fe9206cf8ac87ecfcb10b617c1feaa58dd254ec41a7212",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [
+            "{ pattern }"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "PatternName"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "PATTERNS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/06-workflows/step-trace.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/06-workflows/step-trace.tsx",
+      "contentHash": "a2aa2b26a0ce96790b8b203e5d0798f420079ba9dd3b4ade9bcb56fcacf470bc",
+      "functions": [
+        {
+          "name": "TimingBar",
+          "params": [
+            "{ step, totalMs }"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "StepTrace",
+          "params": [
+            "{ steps, totalMs, running }"
+          ],
+          "exported": true,
+          "lineCount": 54
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Collapse",
+            "Empty",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "WorkflowStep"
+          ]
+        }
+      ],
+      "exports": [
+        "StepTrace"
+      ],
+      "totalLines": 75,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/api.ts",
+      "contentHash": "24184436ab8b37e02f5a65b538f0f5976711bf53667c3004b28f49dac7daefd7",
+      "functions": [
+        {
+          "name": "request",
+          "params": [
+            "path",
+            "init"
+          ],
+          "returnType": "Promise<T>",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "jsonPost",
+          "params": [
+            "body"
+          ],
+          "returnType": "RequestInit",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "discover",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "callTool",
+          "params": [
+            "name",
+            "taskId"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "resourcesPrompts",
+          "params": [
+            "goal"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getTasks",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "seedTasks",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "resetTasks",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "discover",
+        "callTool",
+        "resourcesPrompts",
+        "getTasks",
+        "seedTasks",
+        "resetTasks"
+      ],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/content.ts",
+      "contentHash": "9968e768eca88b9001868fda2e70d674e8778f5327e13245454a9e125bc0b401",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        }
+      ],
+      "exports": [
+        "SCENARIOS",
+        "SCENARIO_KEYS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/event-log.tsx",
+      "contentHash": "a0fbbad9fb81cba03cc18cb9ee0b7a46682a6faf7421e88fd48c9ffb540ee1e3",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, running }"
+          ],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "McpEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/page.tsx",
+      "contentHash": "96bd96d04c59cc9e3e87a2ee67a6b0ca172e0204461538880ebb5e8ea2429644",
+      "functions": [
+        {
+          "name": "McpDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 104
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "callTool",
+            "discover",
+            "getTasks",
+            "resetTasks",
+            "resourcesPrompts",
+            "seedTasks",
+            "DiscoverResult",
+            "McpEvent",
+            "ResourcesPromptsResult",
+            "Task",
+            "ToolCallResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES",
+            "ScenarioKey"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        },
+        {
+          "source": "./tasks-panel",
+          "specifiers": [
+            "TasksPanel"
+          ]
+        }
+      ],
+      "exports": [
+        "McpDemoPage"
+      ],
+      "totalLines": 122,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/result-card.tsx",
+      "contentHash": "7f0559155983ccd83ecc5f98d4093192b639a8c774e30dfc5c93766c33186c86",
+      "functions": [
+        {
+          "name": "ResultCard",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 82
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "List",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "DiscoverResult",
+            "ResourcesPromptsResult",
+            "ToolCallResult"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "ScenarioKey"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/scenario-input.tsx",
+      "contentHash": "a2aae047d2e6ef7a6ac95a8a091d92c62992144ba47c0f444dbf65b823e27127",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 54
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "ApiOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "InputNumber",
+            "Segmented",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Session"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "SCENARIO_KEYS",
+            "SCENARIOS",
+            "ScenarioKey"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/source-debug.tsx",
+      "contentHash": "7c4485a4ae712eb1b7bf7fa789f94e31e6f8b8aa7ad367a19d7116cb952a1c65",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/07-mcp/tasks-panel.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/07-mcp/tasks-panel.tsx",
+      "contentHash": "8654e22411735d559646631f370c6a6aed9be440578c9572165f50605b0de871",
+      "functions": [
+        {
+          "name": "TasksPanel",
+          "params": [
+            "{ tasks, loading, disabled, onReload, onSeed, onReset }"
+          ],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "DeleteOutlined",
+            "PlusOutlined",
+            "ReloadOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Popconfirm",
+            "Space",
+            "Table",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Task"
+          ]
+        }
+      ],
+      "exports": [
+        "TasksPanel"
+      ],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/api.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/api.ts",
+      "contentHash": "259f0d4f47bfb6c28f7187c67fe975a11ab6c17bafeeeb1e809897fb11ca9740",
+      "functions": [
+        {
+          "name": "request",
+          "params": [
+            "path",
+            "init"
+          ],
+          "returnType": "Promise<T>",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "jsonPost",
+          "params": [
+            "body"
+          ],
+          "returnType": "RequestInit",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getEnv",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "inspectScenario",
+          "params": [
+            "scenario"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "createSession",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "startRun",
+          "params": [
+            "sessionId",
+            "scenario",
+            "prompt",
+            "onEvent"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "postAction",
+          "params": [
+            "path",
+            "body"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getTasks",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "resetTasks",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "API_URL"
+          ]
+        }
+      ],
+      "exports": [
+        "getEnv",
+        "inspectScenario",
+        "createSession",
+        "startRun",
+        "postAction",
+        "getTasks",
+        "resetTasks"
+      ],
+      "totalLines": 132,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/content.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/content.ts",
+      "contentHash": "1a26e828665296f0c10769c4e0769d25e99b3d0572bc8fd99801604bebce56fe",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "OutcomeItem"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "ScenarioName"
+          ]
+        }
+      ],
+      "exports": [
+        "SCENARIOS",
+        "SCENARIO_KEYS",
+        "BREAKPOINTS",
+        "OUTCOMES"
+      ],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/event-log.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/event-log.tsx",
+      "contentHash": "77b13372f8c55fc3cdd0c4101c42d323b5245c0367d7b1ea36aee391d1d436bc",
+      "functions": [
+        {
+          "name": "EventLog",
+          "params": [
+            "{ events, running }"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Empty",
+            "Tag",
+            "Timeline",
+            "Typography"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "TimelineProps"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "SdkEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "EventLog"
+      ],
+      "totalLines": 63,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/inspect-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/inspect-card.tsx",
+      "contentHash": "ae916b6dd4100aab8a16d22280bcdbf570ac66efe423fb16ca33ca92858787dd",
+      "functions": [
+        {
+          "name": "InspectCard",
+          "params": [
+            "{ inspection }"
+          ],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Inspection"
+          ]
+        }
+      ],
+      "exports": [
+        "InspectCard"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/page.tsx",
+      "contentHash": "f8c16f81f0b2c1ce90ecfa7873abc19d53312cd9630f4d27da62293b6cc83e6a",
+      "functions": [
+        {
+          "name": "AgentSdkDemoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 92
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/LearningOutcome",
+          "specifiers": [
+            "LearningOutcome"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "getEnv",
+            "getTasks",
+            "inspectScenario",
+            "resetTasks",
+            "Env",
+            "Inspection",
+            "ScenarioName",
+            "Task"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "OUTCOMES"
+          ]
+        },
+        {
+          "source": "./event-log",
+          "specifiers": [
+            "EventLog"
+          ]
+        },
+        {
+          "source": "./inspect-card",
+          "specifiers": [
+            "InspectCard"
+          ]
+        },
+        {
+          "source": "./result-card",
+          "specifiers": [
+            "ResultCard"
+          ]
+        },
+        {
+          "source": "./scenario-input",
+          "specifiers": [
+            "ScenarioInput"
+          ]
+        },
+        {
+          "source": "./source-debug",
+          "specifiers": [
+            "SourceDebug"
+          ]
+        },
+        {
+          "source": "./tasks-panel",
+          "specifiers": [
+            "TasksPanel"
+          ]
+        },
+        {
+          "source": "./use-sdk-run",
+          "specifiers": [
+            "useSdkRun"
+          ]
+        }
+      ],
+      "exports": [
+        "AgentSdkDemoPage"
+      ],
+      "totalLines": 112,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/result-card.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/result-card.tsx",
+      "contentHash": "80c3e85688ecf5269f59cfa3cf239a2696cb3d88e3e7058bedaf707207b1204a",
+      "functions": [
+        {
+          "name": "find",
+          "params": [
+            "events",
+            "type"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "ResultCard",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 83
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Descriptions",
+            "Empty",
+            "Flex",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "@/components/CodeBlock",
+          "specifiers": [
+            "CodeBlock"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "SdkEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "ResultCard"
+      ],
+      "totalLines": 103,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/scenario-input.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/scenario-input.tsx",
+      "contentHash": "c4c66c40ba96a01ea6dbccf20bc7fcb2292c43611bd93c7a3a005df3bfcb338b",
+      "functions": [
+        {
+          "name": "ScenarioInput",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "ExperimentOutlined",
+            "PlayCircleOutlined",
+            "StopOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Flex",
+            "Input",
+            "Segmented",
+            "Space",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Env",
+            "ScenarioName"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "SCENARIO_KEYS",
+            "SCENARIOS"
+          ]
+        }
+      ],
+      "exports": [
+        "ScenarioInput"
+      ],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/source-debug.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/source-debug.tsx",
+      "contentHash": "1990f93b0e6a98b2170bb80a2ac7240a9fcc9a030b29acc28f1f01acf9becce7",
+      "functions": [
+        {
+          "name": "withCode",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "SourceDebug",
+          "params": [],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Collapse",
+            "Flex",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "./content",
+          "specifiers": [
+            "BREAKPOINTS"
+          ]
+        }
+      ],
+      "exports": [
+        "SourceDebug"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/tasks-panel.tsx": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/tasks-panel.tsx",
+      "contentHash": "87741c632805128de61498f7ab62f37cb9c2acd3fa3484b51fd840173cfd8563",
+      "functions": [
+        {
+          "name": "TasksPanel",
+          "params": [
+            "{ tasks, loading, disabled, onReload, onReset }"
+          ],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "DeleteOutlined",
+            "ReloadOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Button",
+            "Card",
+            "Popconfirm",
+            "Space",
+            "Table",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "Task"
+          ]
+        }
+      ],
+      "exports": [
+        "TasksPanel"
+      ],
+      "totalLines": 44,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/demos/08-agent-sdk/use-sdk-run.ts": {
+      "filePath": "frontend/src/app/(workspace)/demos/08-agent-sdk/use-sdk-run.ts",
+      "contentHash": "e2fefab33058e8d3ea5e3e969ff13af7c996b9dbc635bab467585ae82551c742",
+      "functions": [
+        {
+          "name": "useSdkRun",
+          "params": [],
+          "exported": true,
+          "lineCount": 74
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "./api",
+          "specifiers": [
+            "createSession",
+            "postAction",
+            "startRun",
+            "ScenarioName",
+            "SdkEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "useSdkRun"
+      ],
+      "totalLines": 80,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/layout.tsx": {
+      "filePath": "frontend/src/app/(workspace)/layout.tsx",
+      "contentHash": "600a114395d16197fedb9549c5054f957c1122c1f725a287c626d092614932b1",
+      "functions": [
+        {
+          "name": "WorkspaceRouteLayout",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/nextjs-registry",
+          "specifiers": [
+            "AntdRegistry"
+          ]
+        },
+        {
+          "source": "@/components/WorkspaceLayout",
+          "specifiers": [
+            "WorkspaceLayout"
+          ]
+        },
+        {
+          "source": "./providers",
+          "specifiers": [
+            "Providers"
+          ]
+        }
+      ],
+      "exports": [
+        "WorkspaceRouteLayout"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/providers.tsx": {
+      "filePath": "frontend/src/app/(workspace)/providers.tsx",
+      "contentHash": "0ca5b075ca2201effc08df8cf0c4a4c6e099978f74aa0cde04fdeaf39ffd423a",
+      "functions": [
+        {
+          "name": "Providers",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "App",
+            "ConfigProvider"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "workspaceTheme"
+          ]
+        }
+      ],
+      "exports": [
+        "Providers"
+      ],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/(workspace)/workspace/page.tsx": {
+      "filePath": "frontend/src/app/(workspace)/workspace/page.tsx",
+      "contentHash": "d0ca0b5319ba7439f3cea3ba0155fb7ebc4a0c24a1a5909e396ec0d9dca8aa4a",
+      "functions": [
+        {
+          "name": "WorkspaceHome",
+          "params": [],
+          "exported": true,
+          "lineCount": 70
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "ArrowRightOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Alert",
+            "Button",
+            "Card",
+            "Col",
+            "Descriptions",
+            "Flex",
+            "Row",
+            "Tag",
+            "Typography"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "getHealth",
+            "Health"
+          ]
+        },
+        {
+          "source": "@/lib/demos",
+          "specifiers": [
+            "LIVE_DEMOS",
+            "ROADMAP_DEMOS"
+          ]
+        }
+      ],
+      "exports": [
+        "WorkspaceHome"
+      ],
+      "totalLines": 82,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/app/layout.tsx": {
+      "filePath": "frontend/src/app/layout.tsx",
+      "contentHash": "4324b79317ce36c8f36f5642f616c7126787806f478d53f6f9518eb189999bc7",
+      "functions": [
+        {
+          "name": "RootLayout",
+          "params": [
+            "{\n  children,\n}"
+          ],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        }
+      ],
+      "exports": [
+        "metadata",
+        "RootLayout"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/CodeBlock.tsx": {
+      "filePath": "frontend/src/components/CodeBlock.tsx",
+      "contentHash": "11a4e8fdd19fe9c612a737d3f9b6c5fcd5ab1c4ab09a356f49d774aab091e433",
+      "functions": [
+        {
+          "name": "CodeBlock",
+          "params": [
+            "{ title, code, lineNumbers = false }"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "CopyOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "App",
+            "Button",
+            "Card"
+          ]
+        },
+        {
+          "source": "@/theme/theme",
+          "specifiers": [
+            "MONO_FONT"
+          ]
+        }
+      ],
+      "exports": [
+        "CodeBlock"
+      ],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/DemoMenu.tsx": {
+      "filePath": "frontend/src/components/DemoMenu.tsx",
+      "contentHash": "91161afad1ac9e93dae8db932277170779013c5974f7028712a99787725ec301",
+      "functions": [
+        {
+          "name": "DemoMenu",
+          "params": [],
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "HomeOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Menu"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "MenuProps"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "usePathname"
+          ]
+        },
+        {
+          "source": "@/lib/demos",
+          "specifiers": [
+            "LIVE_DEMOS"
+          ]
+        }
+      ],
+      "exports": [
+        "DemoMenu"
+      ],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/LearningOutcome.tsx": {
+      "filePath": "frontend/src/components/LearningOutcome.tsx",
+      "contentHash": "6989fac851e131cf631e7fb824fef0a5c799dab0e23f13424b5b6b3cd290080c",
+      "functions": [
+        {
+          "name": "LearningOutcome",
+          "params": [
+            "{ items, title = \"Kết quả cần đạt\" }"
+          ],
+          "exported": true,
+          "lineCount": 27
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@ant-design/icons",
+          "specifiers": [
+            "TrophyOutlined"
+          ]
+        },
+        {
+          "source": "antd",
+          "specifiers": [
+            "Card",
+            "Flex",
+            "Space",
+            "Typography",
+            "theme"
+          ]
+        }
+      ],
+      "exports": [
+        "LearningOutcome"
+      ],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/WorkspaceLayout.tsx": {
+      "filePath": "frontend/src/components/WorkspaceLayout.tsx",
+      "contentHash": "0534bb1f5a5d18fa4eec0bd64d7c612975709aced20042a05c13e1d7e4da3806",
+      "functions": [
+        {
+          "name": "WorkspaceLayout",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 41
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "Flex",
+            "Layout",
+            "Space",
+            "Tag",
+            "Typography",
+            "theme"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/DemoMenu",
+          "specifiers": [
+            "DemoMenu"
+          ]
+        },
+        {
+          "source": "@/lib/api",
+          "specifiers": [
+            "getHealth",
+            "Health"
+          ]
+        }
+      ],
+      "exports": [
+        "WorkspaceLayout"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/lib/api.ts": {
+      "filePath": "frontend/src/lib/api.ts",
+      "contentHash": "9917e15008db7c2c630a724bf3d937a270431c30290141dcbf9b853e2fad4d66",
+      "functions": [
+        {
+          "name": "getHealth",
+          "params": [],
+          "returnType": "Promise<Health>",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "API_URL",
+        "getHealth"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/lib/demos.ts": {
+      "filePath": "frontend/src/lib/demos.ts",
+      "contentHash": "3dd81941bd46bcc24fc204bba1c43bae68e725bc0702465d659ec4115a285641",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "DEMOS",
+        "LIVE_DEMOS",
+        "ROADMAP_DEMOS"
+      ],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/theme/theme.ts": {
+      "filePath": "frontend/src/theme/theme.ts",
+      "contentHash": "5a3a2eada3c31d1616a1f6b39866a29d15acbd716739ed9b6669d61b816a21a3",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "antd",
+          "specifiers": [
+            "theme",
+            "ThemeConfig"
+          ]
+        }
+      ],
+      "exports": [
+        "MONO_FONT",
+        "workspaceTheme"
+      ],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/tsconfig.json": {
+      "filePath": "frontend/tsconfig.json",
+      "contentHash": "55134881a23efd2a1f9266d2d0752731ff9c40d0e867136cd8863ea679560a09",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    "plans/00-START-HERE.md": {
+      "filePath": "plans/00-START-HERE.md",
+      "contentHash": "26d21cedd0106f27e90bd87b02b1458cd68d8d071b32ca495e55c95b1192b6f6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 179,
+      "hasStructuralAnalysis": false
+    },
+    "plans/01-SHARED-ARCHITECTURE-UI.md": {
+      "filePath": "plans/01-SHARED-ARCHITECTURE-UI.md",
+      "contentHash": "0314a34fd24b371c189b73d64fccc7631f41b23f1d1af7409fadfeccb610fe56",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 107,
+      "hasStructuralAnalysis": false
+    },
+    "plans/02-DEMO-01-AGENT-RUNTIME.md": {
+      "filePath": "plans/02-DEMO-01-AGENT-RUNTIME.md",
+      "contentHash": "a0729c5ea6ec1ed06229e302afa5c2da978118fba5be5940a917a55b0563f509",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 120,
+      "hasStructuralAnalysis": false
+    },
+    "plans/03-DEMO-02-CLAUDE-API.md": {
+      "filePath": "plans/03-DEMO-02-CLAUDE-API.md",
+      "contentHash": "fac2261f9ac6e0a6b22e63e7230f19cf14bacf4e8ed50a0d4921cb3efbda471c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 98,
+      "hasStructuralAnalysis": false
+    },
+    "plans/04-DEMO-03-TOOL-CALLING-REGISTRY.md": {
+      "filePath": "plans/04-DEMO-03-TOOL-CALLING-REGISTRY.md",
+      "contentHash": "42703341388d14f6308c940415a4b749076688ece824b71a4446d02de8a6d1d5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 102,
+      "hasStructuralAnalysis": false
+    },
+    "plans/05-DEMO-04-MANUAL-AGENT-LOOP.md": {
+      "filePath": "plans/05-DEMO-04-MANUAL-AGENT-LOOP.md",
+      "contentHash": "538891e247188d1fbf1e81a5fe2c62fc21d51c6cd31e53b808c933bca9d87fe8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 110,
+      "hasStructuralAnalysis": false
+    },
+    "plans/06-DEMO-05-STRUCTURED-OUTPUT.md": {
+      "filePath": "plans/06-DEMO-05-STRUCTURED-OUTPUT.md",
+      "contentHash": "f29d55fec3c0f4af8a76c6dab75d8df9ce5c3ce1eeae2a50cc2ab3799b5f49f8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "plans/07-DEMO-06-AGENT-WORKFLOWS.md": {
+      "filePath": "plans/07-DEMO-06-AGENT-WORKFLOWS.md",
+      "contentHash": "ee339b0990031cf3bd2c69818c32b3473e1ea30ec62d34b80683a6e436b61023",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": false
+    },
+    "plans/08-DEMO-07-MCP-SERVER-CLIENT.md": {
+      "filePath": "plans/08-DEMO-07-MCP-SERVER-CLIENT.md",
+      "contentHash": "ef69549abb40ae938b87beb98c00248c14641f77d02c5c65b828b089eaaa1558",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 86,
+      "hasStructuralAnalysis": false
+    },
+    "plans/09-DEMO-08-CLAUDE-AGENT-SDK.md": {
+      "filePath": "plans/09-DEMO-08-CLAUDE-AGENT-SDK.md",
+      "contentHash": "a9077ee80907794349c5daceacb2a92913894c477ee6704954ba12ed435da4dd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 90,
+      "hasStructuralAnalysis": false
+    }
+  }
+}

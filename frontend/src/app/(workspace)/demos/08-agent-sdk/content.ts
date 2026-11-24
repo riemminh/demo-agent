@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 08: scenario, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 import type { ScenarioName } from "./api";
 
 export type Scenario = {
@@ -54,10 +53,4 @@ export const BREAKPOINTS = [
     code: "setting_sources=[],  # KHÔNG nạp settings/plugin cá nhân",
     why: "Không có dòng này thì CLI nạp skill/plugin trong máy người chạy (đã quan sát: skill-creator, plugin Postman) và demo sẽ không còn tái lập được.",
   },
-];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Phân biệt Demo 04 với Demo 08: Manual Loop là vòng lặp do mình viết (tự gọi messages.create, tự append tool_result, tự đặt MAX_TURNS); SDK runtime chạy vòng lặp đó hộ mình, mình chỉ cấp options và xử lý message." },
-  { text: "Bốn điểm tích hợp của ứng dụng: permissions (can_use_tool — chặn thật), hooks (quan sát, không thay quyền chặn), skills (file SKILL.md + option skills), subagents (AgentDefinition, SDK tự quyết định có delegate hay không)." },
-  { text: "Giới hạn vẫn thuộc về ứng dụng: max_turns, max_budget_usd, timeout, sandbox cwd, setting_sources=[] để không nạp cấu hình cá nhân, và tool ghi phải qua approval." },
 ];

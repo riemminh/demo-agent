@@ -1,5 +1,6 @@
 // Gọi endpoint của Demo 01: /api/demos/01/* (backend/demos/demo_01_runtime/router.py).
 import { API_URL } from "@/lib/api";
+import { consumeSse } from "@/lib/sse";
 
 const DEMO_URL = `${API_URL}/api/demos/01`;
 
@@ -47,28 +48,16 @@ export async function startRun(
   text: string,
   scenario: BackendScenario,
   onEvent: (event: AgentEvent) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   const response = await fetch(`${DEMO_URL}/sessions/${sessionId}/runs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text, scenario }),
+    signal,
   });
   if (!response.ok || !response.body) throw new Error(`POST /runs: HTTP ${response.status}`);
-  // EventSource không POST được, nên dùng fetch() + ReadableStream.
-  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buffer = "";
-  for (;;) {
-    const { value, done } = await reader.read(); // <-- Browser chờ chunk HTTP tiếp theo.
-    if (done) break;
-    buffer += value;
-    // Một chunk mạng có thể chứa nửa khung HOẶC nhiều khung.
-    const frames = buffer.split("\n\n");
-    buffer = frames.pop() ?? ""; // Giữ khung chưa đủ cho lần đọc sau.
-    for (const frame of frames) {
-      const line = frame.split("\n").find((part) => part.startsWith("data: "));
-      if (line) onEvent(JSON.parse(line.slice(6)) as AgentEvent);
-    }
-  }
+  await consumeSse(response, onEvent, signal);
 }
 
 // Approve/Reject và Cancel là request HTTP KHÁC, chạy song song với SSE đang mở.

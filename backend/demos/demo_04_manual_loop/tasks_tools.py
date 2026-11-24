@@ -16,19 +16,16 @@ DEMO_SCOPE = "manual_loop"
 
 Approver = Callable[[str, dict[str, Any]], Awaitable[bool]]
 
+# Mô tả ngắn: giảm body mỗi lượt loop (mạng công ty hay cắt payload > ~1.5KB).
 TOOL_SCHEMAS: list[dict[str, Any]] = [
-    {
-        "name": "list_tasks",
-        "description": "Liệt kê tất cả task hiện có (id, title, priority, status). Không cần input.",
-        "input_schema": {"type": "object", "properties": {}},
-    },
+    {"name": "list_tasks", "description": "List tasks.", "input_schema": {"type": "object", "properties": {}}},
     {
         "name": "create_task",
-        "description": "Tạo một task mới. Hành động này ghi dữ liệu nên cần người dùng phê duyệt.",
+        "description": "Create task (needs approval).",
         "input_schema": {
             "type": "object",
             "properties": {
-                "title": {"type": "string", "description": "Tiêu đề task"},
+                "title": {"type": "string"},
                 "priority": {"type": "string", "enum": ["low", "medium", "high"]},
             },
             "required": ["title", "priority"],
@@ -36,10 +33,10 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
     },
     {
         "name": "get_task",
-        "description": "Đọc một task theo id. Trả lỗi nếu id không tồn tại.",
+        "description": "Get task by id.",
         "input_schema": {
             "type": "object",
-            "properties": {"task_id": {"type": "integer", "description": "ID của task"}},
+            "properties": {"task_id": {"type": "integer"}},
             "required": ["task_id"],
         },
     },
@@ -63,8 +60,12 @@ def _error(content: str) -> dict[str, Any]:
     return {"is_error": True, "content": content}
 
 
-async def execute_tool(
-    name: str, tool_input: dict[str, Any], approver: Approver
+async def execute_task_tool(
+    name: str,
+    tool_input: dict[str, Any],
+    approver: Approver,
+    *,
+    skip_approval: bool = False,
 ) -> dict[str, Any]:
     """Trả {is_error, content, created_id?}. Lỗi tool là dữ liệu trả cho model."""
     if name == "list_tasks":
@@ -77,7 +78,6 @@ async def execute_tool(
             return _error(f"Input không hợp lệ cho get_task: {error}")
         task = task_store.get_task(DEMO_SCOPE, validated.task_id)
         if task is None:
-            # Lỗi nghiệp vụ thật: id không tồn tại trong DB.
             return _error(f"TaskNotFound: không có task id={validated.task_id}")
         return _ok(task)
 
@@ -86,11 +86,17 @@ async def execute_tool(
             validated = CreateTaskInput(**tool_input)
         except (ValidationError, TypeError) as error:
             return _error(f"Input không hợp lệ cho create_task: {error}")
-        # ĐIỂM DỪNG: await Future tới khi người dùng Approve/Reject.
-        approved = await approver(name, validated.model_dump())
-        if not approved:
-            return _error("Người dùng không phê duyệt create_task nên không ghi gì vào DB.")
+        if not skip_approval:
+            approved = await approver(name, validated.model_dump())
+            if not approved:
+                return _error("Người dùng không phê duyệt create_task nên không ghi gì vào DB.")
         created = task_store.create_task(DEMO_SCOPE, validated.title, validated.priority)
         return _ok(created, created_id=created["id"])
 
     return _error(f"Unknown tool: {name}")
+
+
+async def execute_tool(
+    name: str, tool_input: dict[str, Any], approver: Approver
+) -> dict[str, Any]:
+    return await execute_task_tool(name, tool_input, approver)

@@ -1,14 +1,14 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
 import type { Turn } from "./api";
-import { OUTCOMES, SCENARIOS, type ScenarioKey } from "./content";
+import { SCENARIOS, type ScenarioKey } from "./content";
 import EventLog from "./event-log";
 import HistoryPanel, { type SentRequest } from "./history-panel";
 import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
 import SourceDebug from "./source-debug";
+import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { useClaude } from "./use-claude";
 
 const { Text, Paragraph } = Typography;
@@ -18,7 +18,7 @@ export default function ClaudeApiDemoPage() {
   const [scenarioKey, setScenarioKey] = useState<ScenarioKey>("one-shot");
   const [prompt, setPrompt] = useState(SCENARIOS["one-shot"].presets[0].prompt);
   const [system, setSystem] = useState("");
-  const [maxTokens, setMaxTokens] = useState(512);
+  const [maxTokens, setMaxTokens] = useState(2048);
   const [includeHistory, setIncludeHistory] = useState(false);
   // Lịch sử hội thoại do FRONTEND giữ; Claude không tự nhớ gì.
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -54,6 +54,7 @@ export default function ClaudeApiDemoPage() {
 
   return (
     <Flex vertical gap={16}>
+      <LlmNetworkAlert />
       <div>
         <Text type="secondary">02 · Claude API</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>
@@ -80,7 +81,6 @@ export default function ClaudeApiDemoPage() {
       {scenarioKey === "history" && <HistoryPanel turns={turns} sent={sent} />}
       <EventLog events={run.events} running={run.running} />
       <SourceDebug result={run.result} />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

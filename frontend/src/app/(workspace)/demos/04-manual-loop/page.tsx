@@ -1,14 +1,14 @@
 "use client";
 import { Alert, Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LearningOutcome from "@/components/LearningOutcome";
 import { getTasks, resetTasks, type Task } from "./api";
-import { OUTCOMES, SCENARIOS, type ScenarioKey } from "./content";
+import { SCENARIOS, type ScenarioKey } from "./content";
 import EventLog from "./event-log";
 import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
 import SourceDebug from "./source-debug";
 import TasksTable from "./tasks-table";
+import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { useLoop } from "./use-loop";
 
 const { Text, Paragraph } = Typography;
@@ -45,7 +45,7 @@ export default function ManualLoopDemoPage() {
   }
 
   async function run() {
-    await loop.run(prompt, maxTurns);
+    await loop.run(scenarioKey, prompt, maxTurns);
     await loadTasks(getTasks); // Read-back: thấy ngay DB có thay đổi hay không.
   }
 
@@ -57,9 +57,8 @@ export default function ManualLoopDemoPage() {
           Python giữ vòng lặp · model quyết định dừng
         </Typography.Title>
         <Paragraph style={{ marginBottom: 8 }}>
-          Demo 03 chỉ có một tool round. Ở đây vòng lặp chạy nhiều lượt: mỗi lượt là một request Claude,
-          <Text code>stop_reason</Text> quyết định còn gọi tool hay đã xong, và <Text code>MAX_TURNS</Text> là
-          giới hạn an toàn. Tool ghi dữ liệu phải được bạn duyệt trước.
+          Demo 03 chỉ có một tool round. Ở đây vòng lặp chạy nhiều lượt — kể cả khi tự triển khai Rules, Skills,
+          Permissions và Subagents bằng Python thuần (so sánh với Demo 08 Agent SDK).
         </Paragraph>
         <Space wrap size={4}>
           <Tag color="geekblue">Claude API thật</Tag>
@@ -68,6 +67,7 @@ export default function ManualLoopDemoPage() {
           <Tag>session: {loop.sessionId || (loop.sessionError ? "lỗi" : "đang tạo…")}</Tag>
         </Space>
       </div>
+      <LlmNetworkAlert />
       {loop.sessionError && (
         <Alert type="error" showIcon title="Không tạo được session"
           description={`${loop.sessionError}. Chạy backend ở port 9000 (xem README) rồi tải lại trang.`} />
@@ -83,7 +83,6 @@ export default function ManualLoopDemoPage() {
         onReload={() => void loadTasks(getTasks)} onReset={() => void loadTasks(resetTasks)} />
       <EventLog events={loop.events} running={loop.running} />
       <SourceDebug />
-      <LearningOutcome items={OUTCOMES} />
     </Flex>
   );
 }

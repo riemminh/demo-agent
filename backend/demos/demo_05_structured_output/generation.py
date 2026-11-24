@@ -5,6 +5,7 @@
 Repair chỉ chạy đúng MỘT lần khi người dùng bấm; không tự lặp.
 """
 
+import math
 import time
 from typing import Any
 
@@ -25,8 +26,11 @@ def _metrics(message: Any, latency_ms: float) -> dict[str, Any]:
 
 async def _parse_draft(prompt: str, max_tokens: int) -> dict[str, Any]:
     """Một request parse() -> {draft thô, response, metrics} hoặc error."""
-    if config.missing_llm_settings():
-        return {"error": config_error()}
+    from shared.llm_preflight import preflight_llm_error
+
+    blocked = preflight_llm_error()
+    if blocked:
+        return {"error": blocked}
     started = time.perf_counter()
     async with new_client() as client:
         try:
@@ -38,10 +42,25 @@ async def _parse_draft(prompt: str, max_tokens: int) -> dict[str, Any]:
         except anthropic.APIError as error:
             return {"error": api_error(error)}
     latency = elapsed_ms(started)
-    # parsed_output là TaskDraft do SDK parse; vẫn chạy validate của app để kiểm semantic.
+    if message.stop_reason != "end_turn":
+        return {"error": {
+            "kind": "incomplete_response", "upstream_status": None,
+            "message": f"stop_reason={message.stop_reason!r} không phải end_turn",
+        }}
     parsed = message.parsed_output
+    if parsed is None:
+        return {"error": {
+            "kind": "parse_failed", "upstream_status": None,
+            "message": "messages.parse không trả parsed_output — response chưa hoàn chỉnh.",
+        }}
+    hours = parsed.estimated_hours
+    if not math.isfinite(float(hours)):
+        return {"error": {
+            "kind": "invalid_number", "upstream_status": None,
+            "message": f"estimated_hours không hữu hạn: {hours!r}",
+        }}
     return {
-        "raw": parsed.model_dump() if parsed else None,
+        "raw": parsed.model_dump(),
         "response": message.to_dict(),
         "metrics": _metrics(message, latency),
     }
@@ -49,9 +68,10 @@ async def _parse_draft(prompt: str, max_tokens: int) -> dict[str, Any]:
 
 def _result(stage: str, raw: Any, validation: dict[str, Any] | None,
             call: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, Any]:
+    api_ok = not call.get("error")
     return {
         "stage": stage,
-        "status": "failed" if call.get("error") else "succeeded",
+        "status": "succeeded" if api_ok and validation and validation["accepted"] else "failed",
         "raw": raw,
         "accepted": bool(validation and validation["accepted"]),
         "schema_errors": validation["schema_errors"] if validation else [],

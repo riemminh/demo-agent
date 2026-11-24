@@ -1,5 +1,7 @@
 // Gọi endpoint của Demo 04: /api/demos/04/* (backend/demos/demo_04_manual_loop/router.py).
 import { API_URL } from "@/lib/api";
+import { consumeSse } from "@/lib/sse";
+import type { ScenarioKey } from "./content";
 
 const DEMO_URL = `${API_URL}/api/demos/04`;
 
@@ -29,6 +31,20 @@ export type LoopEvent = {
   approved?: boolean;
   kind?: string;
   message?: string;
+  scenario?: string;
+  system_prompt?: string;
+  files?: string[];
+  loaded_files?: { path: string; content: string }[];
+  skills?: { name: string; description: string }[];
+  preview?: string;
+  chars?: number;
+  allowed?: boolean;
+  reason?: string;
+  agents?: { name: string; description: string }[];
+  agent?: string;
+  subagent?: string;
+  instruction?: string;
+  result_preview?: string;
 };
 
 export type Task = { id: number; title: string; priority: string; status: string };
@@ -47,30 +63,29 @@ export async function getSession(sessionId: string): Promise<{ history_messages:
 
 // POST /runs mở SSE; mỗi khung là một event thật của loop.
 export async function startRun(
-  sessionId: string, prompt: string, maxTurns: number,
+  sessionId: string,
+  scenario: ScenarioKey,
+  prompt: string,
+  maxTurns: number,
+  structuredFinish: boolean,
   onEvent: (event: LoopEvent) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   const response = await fetch(`${DEMO_URL}/sessions/${sessionId}/runs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, max_turns: maxTurns }),
+    body: JSON.stringify({
+      scenario,
+      prompt,
+      max_turns: maxTurns,
+      structured_finish: structuredFinish,
+    }),
+    signal,
   });
   if (!response.ok || !response.body) {
     throw new Error(`POST /runs: HTTP ${response.status} — ${await response.text()}`);
   }
-  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buffer = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buffer += value;
-    const frames = buffer.split("\n\n");
-    buffer = frames.pop() ?? "";
-    for (const frame of frames) {
-      const line = frame.split("\n").find((part) => part.startsWith("data: "));
-      if (line) onEvent(JSON.parse(line.slice(6)) as LoopEvent);
-    }
-  }
+  await consumeSse(response, onEvent, signal);
 }
 
 // Approve/Reject và Cancel là request HTTP khác, chạy song song với SSE đang mở.

@@ -34,7 +34,7 @@ class MessagesRequest(BaseModel):
     # Tối đa 10 turn: đủ cho scenario History, chặn request quá lớn.
     messages: list[Turn] = Field(min_length=1, max_length=10)
     system: Annotated[str, StringConstraints(strip_whitespace=True, max_length=2000)] = ""
-    max_tokens: int = Field(default=512, ge=1)
+    max_tokens: int = Field(default=2048, ge=1)
 
     def turns(self) -> list[dict[str, str]]:
         return [turn.model_dump() for turn in self.messages]

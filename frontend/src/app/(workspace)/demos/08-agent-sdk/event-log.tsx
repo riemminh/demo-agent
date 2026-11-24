@@ -10,7 +10,7 @@ const COLOR: Record<string, string> = {
   options_built: "orange", sdk_connected: "blue", hook_fired: "gold",
   permission_requested: "purple", permission_decided: "purple",
   approval_required: "gold", approval_decision: "gold",
-  tool_use: "purple", tool_result: "cyan", assistant_text: "green",
+  tool_use: "purple", tool_result: "cyan", assistant_text: "green", api_error: "red",
   system: "default", result: "green", error: "red", run_finished: "gray",
 };
 
@@ -24,6 +24,7 @@ const LABEL: Record<string, string> = {
   tool_use: "agent gọi tool",
   tool_result: "kết quả tool trả về agent",
   assistant_text: "text của agent",
+  api_error: "lỗi API do CLI báo (không phải model trả lời)",
   system: "SystemMessage của SDK",
   result: "ResultMessage: kết thúc run",
 };

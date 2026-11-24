@@ -1,5 +1,4 @@
 // Nội dung tĩnh của Demo 01: scenario, breakpoint, kết quả cần đạt.
-import type { OutcomeItem } from "@/components/LearningOutcome";
 import type { BackendScenario } from "./api";
 
 export type ScenarioKey = "sse" | "approval" | "cancel";
@@ -66,11 +65,4 @@ export const BREAKPOINTS = [
     code: "const { value, done } = await reader.read();",
     why: "Browser nhận chunk SSE, tách khung `data: ...` rồi gọi onEvent → handleEvent() cập nhật React state.",
   },
-];
-
-export const OUTCOMES: OutcomeItem[] = [
-  { text: "Giải thích được chuỗi POST → asyncio.create_task → emit → Queue → StreamingResponse → reader.read() → React state, và vì sao create_task khác await run_turn()." },
-  { text: "Hiểu vì sao agent phải await Future khi cần người duyệt, và Approve/Reject đi bằng một request HTTP khác rồi resolve đúng Future đó." },
-  { text: "Phân biệt Task.cancel() ở backend (có event error kind=cancelled, history không commit) với việc browser chỉ đóng stream." },
-  { text: "Side effect chỉ xảy ra sau khi Approve: file approval-note.md được đọc lại từ disk, Reject thì không có file." },
 ];

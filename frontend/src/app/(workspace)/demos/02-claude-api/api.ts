@@ -1,6 +1,7 @@
 // Gọi endpoint của Demo 02: /api/demos/02/* (backend/demos/demo_02_claude_api/router.py).
 // Frontend KHÔNG bao giờ gọi Anthropic trực tiếp: API key chỉ nằm ở backend.
 import { API_URL } from "@/lib/api";
+import { consumeSse } from "@/lib/sse";
 
 const DEMO_URL = `${API_URL}/api/demos/02`;
 
@@ -69,27 +70,17 @@ export async function sendMessages(body: SendBody): Promise<ClaudeResult> {
 export async function streamMessages(
   body: SendBody,
   onEvent: (event: StreamEvent) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
   const response = await fetch(`${DEMO_URL}/messages/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    signal,
   });
   if (!response.ok || !response.body) {
     const detail = await response.text();
     throw new Error(`POST /messages/stream: HTTP ${response.status} — ${detail}`);
   }
-  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buffer = "";
-  for (;;) {
-    const { value, done } = await reader.read(); // <-- Browser chờ chunk HTTP tiếp theo.
-    if (done) break;
-    buffer += value;
-    const frames = buffer.split("\n\n");
-    buffer = frames.pop() ?? ""; // Giữ khung chưa đủ cho lần đọc sau.
-    for (const frame of frames) {
-      const line = frame.split("\n").find((part) => part.startsWith("data: "));
-      if (line) onEvent(JSON.parse(line.slice(6)) as StreamEvent);
-    }
-  }
+  await consumeSse(response, onEvent, signal);
 }

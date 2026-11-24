@@ -4,14 +4,14 @@ cancel và file sandbox (đọc lại / xóa). Handler mỏng; logic nằm ở r
 
 import asyncio
 import json
-from collections.abc import AsyncIterator
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from shared.sessions import Session, SessionStore
+from shared.sse_queue import stream_session_run
 
 from .approval_note import delete_note, read_note
 from .runtime import Event, Scenario, run_turn
@@ -52,35 +52,18 @@ async def get_session(session_id: str) -> dict[str, Any]:
 
 
 @router.post("/sessions/{session_id}/runs")
-async def start_run(session_id: str, body: RunRequest) -> StreamingResponse:
+async def start_run(request: Request, session_id: str, body: RunRequest) -> StreamingResponse:
     session = get_session_or_404(session_id)
     if session.busy:
         raise HTTPException(409, "This session is already running")
 
-    queue: asyncio.Queue[Event] = asyncio.Queue()  # Mỗi run một Queue riêng.
+    queue: asyncio.Queue[Event] = asyncio.Queue()
     task = asyncio.create_task(run_turn(session, body.text, queue, body.scenario))
-    session.task = task  # create_task, KHÔNG await: handler trả response ngay.
-
-    async def stream() -> AsyncIterator[str]:
-        while True:
-            try:
-                # BACKEND CONSUMER: hứng event. Có timeout vì nếu Task bị cancel
-                # trước khi thân run_turn chạy thì finally không chạy -> không có
-                # event cuối, stream sẽ treo.
-                event = await asyncio.wait_for(queue.get(), STREAM_IDLE_TIMEOUT_SECONDS)
-            except TimeoutError:
-                if not task.done():
-                    continue  # Vẫn đang chạy (vd đang chờ approval): tiếp tục chờ.
-                yield _sse({"type": "error", "kind": "no_terminal_event",
-                            "message": "Task kết thúc mà không gửi event cuối."})
-                yield _sse({"type": "run_finished"})
-                return
-            yield _sse(event)
-            if event["type"] == "run_finished":
-                return
+    session.task = task
 
     return StreamingResponse(
-        stream(), media_type="text/event-stream",
+        stream_session_run(request, session, task, queue, STREAM_IDLE_TIMEOUT_SECONDS, _sse),
+        media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 

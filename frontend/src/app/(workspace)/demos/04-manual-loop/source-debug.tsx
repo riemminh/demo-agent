@@ -13,7 +13,7 @@ export default function SourceDebug() {
   return (
     <Collapse size="small" items={[{
       key: "source",
-      label: "Source & Debug — 4 breakpoint của loop",
+      label: "Source & Debug — breakpoint Rules · Skills · Permissions · Subagents",
       children: (
         <Flex vertical gap={10}>
           {BREAKPOINTS.map((breakpoint, index) => (

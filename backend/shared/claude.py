@@ -2,6 +2,7 @@
 
 Demo 02 giữ bản tự chứa trong demos/demo_02_claude_api/messages.py vì nó là demo
 dạy chính cách gọi API. Demo 03 trở đi dùng file này để khỏi lặp lại phần hạ tầng.
+Probe/preflight: shared/llm_network.py, shared/llm_preflight.py. CLI fallback Demo 08: transport/.
 Không import FastAPI.
 """
 
@@ -39,8 +40,18 @@ def api_error(error: anthropic.APIError) -> dict[str, Any]:
         return {"kind": "timeout", "upstream_status": None,
                 "message": f"Claude không trả lời trong {config.LLM_TIMEOUT_SECONDS}s"}
     if isinstance(error, anthropic.APIConnectionError):
-        return {"kind": "connection_error", "upstream_status": None,
-                "message": f"Không kết nối được Claude API: {error}"}
+        from shared.llm_network import llm_network_hints
+
+        msg = f"Không kết nối được Claude API: {error}"
+        hints = llm_network_hints()
+        if not hints.get("openssl_conf_active"):
+            msg += " — thử restart backend (OPENSSL_CONF trong config.py)."
+        else:
+            msg += (
+                " Mạng có thể reset request body lớn (>~1.5KB) — đặc biệt Demo 04 lượt 2+; "
+                "xem NETWORK_BODY_WARN_BYTES trong llm_limits.py."
+            )
+        return {"kind": "connection_error", "upstream_status": None, "message": msg}
     if isinstance(error, anthropic.APIStatusError):
         return {"kind": error.type or "api_error", "upstream_status": error.status_code,
                 "message": error.api_message or str(error)}
