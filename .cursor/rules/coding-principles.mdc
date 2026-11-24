@@ -1,0 +1,28 @@
+---
+description: Nguyên tắc viết code — Simple → Correct → Maintainable; giữ logic hiện có; file source ≤ 150 dòng.
+alwaysApply: true
+---
+
+# Coding principles
+
+Thứ tự ưu tiên: **Simple → Correct → Maintainable → Optimize when needed.**
+Khi hai nguyên tắc xung đột, nguyên tắc đứng trước thắng, trừ khi nó làm code sai hoặc mất an toàn.
+
+## Rules
+
+1. **Simple first**: Viết cách đơn giản nhất chạy đúng. Chỉ thêm độ phức tạp (cache, pattern, generic, concurrency) khi có lý do cụ thể: yêu cầu thật, số đo thật, hoặc bug thật.
+2. **Minimal abstraction**: Không tạo class, wrapper, helper, interface hay layer mới nếu nó chỉ được dùng một lần hoặc chỉ gọi lại một hàm khác. Tách hàm khi logic lặp lại từ 2-3 chỗ hoặc khi tên hàm làm flow dễ đọc hơn.
+3. **Readable code**: Tên biến/hàm nói rõ nó chứa gì hoặc làm gì (`unpaidInvoices`, không phải `data2`). Flow đọc từ trên xuống, dùng early return thay cho if lồng sâu. Comment giải thích *tại sao*, không lặp lại *cái gì*.
+4. **Preserve existing logic**: Khi sửa code có sẵn, giữ nguyên cấu trúc, convention, tên và behavior hiện tại. Chỉ sửa phần cần cho yêu cầu. Không refactor, đổi tên hay format lại code không liên quan. Nếu thấy chỗ nên cải thiện, đề xuất riêng thay vì tự sửa.
+5. **Production-minded**: Đơn giản nhưng không cẩu thả:
+   - Validate input tại ranh giới (API, form, file, env, dữ liệu từ bên ngoài).
+   - Xử lý lỗi rõ ràng: không nuốt lỗi im lặng, message lỗi có ngữ cảnh, không lộ secret hay stack trace ra client.
+   - An toàn: parameterized query, secret trong env, kiểm tra quyền, timeout cho network call.
+6. **Explain why**: Khi đưa code, giải thích ngắn gọn lý do chọn cách làm và flow chạy (input → xử lý → output, các nhánh lỗi). Nêu trade-off nếu có lựa chọn khác hợp lý.
+7. **File size ≤ 150 dòng**: Mỗi file source code không quá 150 dòng. Khi vượt, tách theo **tính năng** (feature), không tách theo loại kỹ thuật một cách máy móc. Chi tiết cách tách: dùng skill `simple-coding`.
+
+## Phạm vi của rule 150 dòng
+
+- Áp dụng cho file source code do người viết.
+- Không áp dụng cho: file generated, lock file, migration tự sinh, fixture/test data lớn, file tài liệu (`.md`), file config do tool sinh ra.
+- File cũ đã vượt 150 dòng: không tự ý tách khi chỉ sửa nhỏ (rule 4). Báo cho người dùng và đề xuất cách tách; chỉ tách khi được đồng ý hoặc khi task chính là refactor file đó.
