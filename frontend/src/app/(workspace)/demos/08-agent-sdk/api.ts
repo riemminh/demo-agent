@@ -52,12 +52,6 @@ export type Env = {
   max_budget_usd: number;
   run_timeout_seconds: number;
   approval_timeout_seconds: number;
-  messages_api_reachable: boolean;
-  https_proxy_configured: boolean;
-  openssl_conf_active: boolean;
-  sdk_cli_may_fail_despite_messages: boolean;
-  sdk_messages_fallback: boolean;
-  prefer_messages_over_cli: boolean;
   scenarios: Record<ScenarioName, {
     label: string; prompt: string; tools: string[]; skills: string[] | null; subagents: boolean;
   }>;

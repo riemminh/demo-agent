@@ -1,7 +1,6 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { generateDraft, getSchema, repairDraft, validateDraft, type DraftResult } from "./api";
 import { PROMPT_PRESETS } from "./content";
 import DraftEditor from "./draft-editor";
@@ -77,7 +76,6 @@ export default function StructuredOutputDemoPage() {
 
   return (
     <Flex vertical gap={16}>
-      <LlmNetworkAlert />
       <div>
         <Text type="secondary">05 · Structured Output</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>

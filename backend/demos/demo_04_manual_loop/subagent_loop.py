@@ -7,8 +7,7 @@ from typing import Any
 
 import anthropic
 
-from shared.claude import answer_text, api_error, elapsed_ms, new_client
-from shared.llm_request import create_with_compact
+from shared.claude import answer_text, api_error, create_message, elapsed_ms, new_client
 
 from .subagents import SUBAGENTS, SUBAGENT_MAX_TURNS, SubagentSpec
 from .tool_dispatch import dispatch_tool
@@ -52,7 +51,7 @@ async def run_subagent(
     async with new_client() as client:
         for turn in range(1, SUBAGENT_MAX_TURNS + 1):
             try:
-                response, _ = await create_with_compact(
+                response = await create_message(
                     client, messages=messages, tools=schemas, system=system,
                 )
             except anthropic.APIError as error:

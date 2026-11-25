@@ -12,9 +12,9 @@ from typing import Any
 
 import anthropic
 
+import config
 import llm_limits
-from shared.claude import answer_text, api_error, elapsed_ms, new_client
-from shared.llm_request import create_with_compact
+from shared.claude import answer_text, api_error, config_error, create_message, elapsed_ms, new_client
 from shared.sessions import Session
 
 from .loop_turns import run_tool_batch
@@ -52,7 +52,7 @@ async def run_loop(
     )
     structured_finish = structured_finish or active.structured_finish
     tool_schemas = active.tools
-    # Structured: không gửi history cũ — body lượt 1 vẫn nhỏ khi session dài.
+    # Structured: không gửi history cũ khi finish theo schema.
     max_hist = 0 if structured_finish else llm_limits.MAX_HISTORY_MESSAGES
     if len(working) > max_hist:
         dropped = len(working) - max_hist
@@ -61,11 +61,8 @@ async def run_loop(
     working.append({"role": "user", "content": prompt})
     created_ids: list[int] = []
     usage = {"input_tokens": 0, "output_tokens": 0}
-    from shared.llm_preflight import preflight_llm_error
-
-    blocked = preflight_llm_error()
-    if blocked:
-        log("error", **blocked, created_ids=[])
+    if config.missing_llm_settings():
+        log("error", **config_error(), created_ids=[])
         return
 
     log("run_started", max_turns=max_turns, history_before=len(session.history),
@@ -77,20 +74,12 @@ async def run_loop(
         for turn in range(1, max_turns + 1):
             log("request_sent", turn=turn, messages_in_request=len(working))
             try:
-                response, compacted = await create_with_compact(
+                response = await create_message(
                     client, messages=working, tools=tool_schemas, system=active.system,
                 )
             except anthropic.APIError as error:
-                err = api_error(error)
-                if err["kind"] == "connection_error" and turn > 1:
-                    err["message"] += (
-                        " Mạng đang chặn/reset request lớn tới api.anthropic.com "
-                        "(thường từ lượt 2 của loop). Thử VPN/HTTPS_PROXY hoặc giảm max_turns."
-                    )
-                log("error", **err, created_ids=created_ids)
+                log("error", **api_error(error), created_ids=created_ids)
                 return
-            if compacted:
-                log("system", subtype="payload_compacted", detail="messages[] thu gọn.")
             usage["input_tokens"] += response.usage.input_tokens
             usage["output_tokens"] += response.usage.output_tokens
             log("response_received", turn=turn, stop_reason=response.stop_reason,

@@ -9,9 +9,6 @@ export type Health = {
   max_tokens_cap: number;
   output_max_tokens?: number;
   timeout_seconds: number;
-  messages_api_reachable?: boolean;
-  https_proxy_configured?: boolean;
-  openssl_conf_active?: boolean;
 };
 
 // GET /api/health không gọi Claude; dùng để biết backend sống và đã cấu hình chưa.

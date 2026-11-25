@@ -105,11 +105,8 @@ def succeeded(request: dict[str, Any], message: Message, latency_ms: float) -> d
 
 
 async def run_messages(messages: list[Turn], system: str, max_tokens: int) -> dict[str, Any]:
-    from shared.llm_preflight import preflight_llm_error
-
-    blocked = preflight_llm_error()
-    if blocked:
-        return failed(blocked, None, 0)
+    if config.missing_llm_settings():
+        return failed(config_error(), None, 0)
     request_body = build_request(messages, system, max_tokens)
     async with new_client() as client:
         started = time.perf_counter()

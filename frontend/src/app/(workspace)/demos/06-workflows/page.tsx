@@ -1,7 +1,6 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { getCaps, runWorkflow, type Caps, type PatternName, type WorkflowResult } from "./api";
 import { PATTERNS } from "./content";
 import ResultCard from "./result-card";
@@ -51,7 +50,6 @@ export default function WorkflowsDemoPage() {
 
   return (
     <Flex vertical gap={16}>
-      <LlmNetworkAlert />
       <div>
         <Text type="secondary">06 · Agent Workflows</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>

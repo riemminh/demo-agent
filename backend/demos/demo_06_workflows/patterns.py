@@ -129,12 +129,9 @@ PATTERNS = {"chaining": chaining, "routing": routing, "parallel": parallel,
 
 
 async def run_workflow(scenario: str, text: str) -> dict[str, Any]:
-    from shared.llm_preflight import preflight_llm_error
-
-    blocked = preflight_llm_error()
-    if blocked:
+    if config.missing_llm_settings():
         return {"status": "failed", "scenario": scenario, "answer": None,
-                "steps": [], "metrics": None, "error": blocked}
+                "steps": [], "metrics": None, "error": config_error()}
     trace = Trace(budget=BUDGETS[scenario])
     error: dict[str, Any] | None = None
     answer: str | None = None

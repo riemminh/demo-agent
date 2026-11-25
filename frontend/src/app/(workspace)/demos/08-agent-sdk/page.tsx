@@ -91,21 +91,6 @@ export default function AgentSdkDemoPage() {
         <Alert type="error" showIcon title="Không tạo được session"
           description={`${sdk.sessionError}. Chạy backend ở port 9000 (xem README) rồi tải lại trang.`} />
       )}
-      {env?.prefer_messages_over_cli && (
-        <Alert
-          type="info"
-          showIcon
-          title="Run dùng Messages fallback (không gọi API qua CLI)"
-          description={
-            <>
-              Mọi scenario (kể cả Permissions) chạy <Text code>list_tasks</Text> + Messages API trong Python khi{" "}
-              <Text code>SDK_MESSAGES_FALLBACK=true</Text>. Bảng task trống là bình thường trước lần Approve/ghi DB —
-              không gây ECONNRESET. <Text code>Inspect</Text> vẫn spawn CLI. Tắt fallback:{" "}
-              <Text code>SDK_MESSAGES_FALLBACK=false</Text>.
-            </>
-          }
-        />
-      )}
       <ScenarioInput scenario={scenario} prompt={prompt} running={sdk.running} inspecting={inspecting}
         cancelRequested={sdk.cancelRequested} sessionReady={!!sdk.sessionId} env={env}
         onScenarioChange={changeScenario} onPromptChange={setPrompt} onInspect={inspect}

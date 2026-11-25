@@ -4,12 +4,10 @@ Mọi logic nằm trong backend/demos/demo_XX_*/. Router của demo chưa có co
 thì KHÔNG import ở đây (plans/00-START-HERE.md, mục 3).
 """
 
-import config  # noqa: F401 — OPENSSL_CONF trước FastAPI/httpx
+import config  # noqa: F401 — load_dotenv khi khởi động
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from shared.llm_network import llm_network_hints
 from demos.demo_01_runtime.router import router as demo_01_router
 from demos.demo_02_claude_api.router import router as demo_02_router
 from demos.demo_03_tools.router import router as demo_03_router
@@ -44,7 +42,6 @@ async def health() -> dict[str, object]:
         "max_tokens_cap": config.LLM_MAX_TOKENS,
         "output_max_tokens": config.LLM_OUTPUT_MAX_TOKENS,
         "timeout_seconds": config.LLM_TIMEOUT_SECONDS,
-        **llm_network_hints(),
     }
 
 

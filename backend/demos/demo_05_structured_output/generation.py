@@ -26,11 +26,8 @@ def _metrics(message: Any, latency_ms: float) -> dict[str, Any]:
 
 async def _parse_draft(prompt: str, max_tokens: int) -> dict[str, Any]:
     """Một request parse() -> {draft thô, response, metrics} hoặc error."""
-    from shared.llm_preflight import preflight_llm_error
-
-    blocked = preflight_llm_error()
-    if blocked:
-        return {"error": blocked}
+    if config.missing_llm_settings():
+        return {"error": config_error()}
     started = time.perf_counter()
     async with new_client() as client:
         try:

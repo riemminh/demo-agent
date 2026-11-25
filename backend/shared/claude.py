@@ -2,7 +2,6 @@
 
 Demo 02 giữ bản tự chứa trong demos/demo_02_claude_api/messages.py vì nó là demo
 dạy chính cách gọi API. Demo 03 trở đi dùng file này để khỏi lặp lại phần hạ tầng.
-Probe/preflight: shared/llm_network.py, shared/llm_preflight.py. CLI fallback Demo 08: transport/.
 Không import FastAPI.
 """
 
@@ -34,24 +33,35 @@ def elapsed_ms(started: float) -> float:
     return round((time.perf_counter() - started) * 1000, 1)
 
 
+async def create_message(
+    client: AsyncAnthropic,
+    *,
+    messages: list[dict[str, Any]],
+    tools: list[dict[str, Any]] | None = None,
+    system: str | list[dict[str, Any]] | None = None,
+    max_tokens: int | None = None,
+) -> Message:
+    kwargs: dict[str, Any] = {
+        "model": config.LLM_MODEL,
+        "max_tokens": max_tokens if max_tokens is not None else config.LLM_OUTPUT_MAX_TOKENS,
+        "messages": messages,
+        "thinking": {"type": "disabled"},
+    }
+    if system:
+        kwargs["system"] = system
+    if tools:
+        kwargs["tools"] = tools
+    return await client.messages.create(**kwargs)
+
+
 def api_error(error: anthropic.APIError) -> dict[str, Any]:
     """Map lỗi SDK sang {kind, message, upstream_status}. Không bao giờ log key."""
     if isinstance(error, anthropic.APITimeoutError):  # Xét trước APIConnectionError (lớp cha).
         return {"kind": "timeout", "upstream_status": None,
                 "message": f"Claude không trả lời trong {config.LLM_TIMEOUT_SECONDS}s"}
     if isinstance(error, anthropic.APIConnectionError):
-        from shared.llm_network import llm_network_hints
-
-        msg = f"Không kết nối được Claude API: {error}"
-        hints = llm_network_hints()
-        if not hints.get("openssl_conf_active"):
-            msg += " — thử restart backend (OPENSSL_CONF trong config.py)."
-        else:
-            msg += (
-                " Mạng có thể reset request body lớn (>~1.5KB) — đặc biệt Demo 04 lượt 2+; "
-                "xem NETWORK_BODY_WARN_BYTES trong llm_limits.py."
-            )
-        return {"kind": "connection_error", "upstream_status": None, "message": msg}
+        return {"kind": "connection_error", "upstream_status": None,
+                "message": f"Không kết nối được Claude API: {error}"}
     if isinstance(error, anthropic.APIStatusError):
         return {"kind": error.type or "api_error", "upstream_status": error.status_code,
                 "message": error.api_message or str(error)}

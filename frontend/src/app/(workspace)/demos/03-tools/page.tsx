@@ -1,7 +1,6 @@
 "use client";
 import { Flex, Space, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
-import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { getToolSchemas, runTools, type ScenarioName, type ToolRunResult } from "./api";
 import { SCENARIOS } from "./content";
 import EventLog from "./event-log";
@@ -50,7 +49,6 @@ export default function ToolsDemoPage() {
 
   return (
     <Flex vertical gap={16}>
-      <LlmNetworkAlert />
       <div>
         <Text type="secondary">03 · Tools & Registry</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>

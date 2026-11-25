@@ -1,4 +1,4 @@
-"""Claude Agent SDK: options, transport (CLI hoặc Messages fallback), không bọc agent loop."""
+"""Claude Agent SDK: options, transport CLI, không bọc agent loop."""
 
 import asyncio
 import time
@@ -8,15 +8,11 @@ from typing import Any
 from claude_agent_sdk import ClaudeSDKClient
 
 import config
+from shared.claude import config_error
 from shared.sessions import Session
 
 from .customization import MAX_BUDGET_USD, MAX_TURNS, SCENARIOS, build_options
-from .transport import (
-    inspect_without_cli,
-    prefer_messages_over_cli,
-    run_via_cli,
-    run_via_messages,
-)
+from .transport import run_via_cli
 
 Event = dict[str, Any]
 Emit = Callable[[Event], None]
@@ -35,11 +31,8 @@ async def run_turn(
     timeout = float(config.SDK_RUN_TIMEOUT_SECONDS)
     session.cancel_event.clear()
     try:
-        from shared.llm_preflight import preflight_llm_error
-
-        blocked = preflight_llm_error()
-        if blocked:
-            emit({"type": "error", "at_ms": 0, **blocked})
+        if config.missing_llm_settings():
+            emit({"type": "error", "at_ms": 0, **config_error()})
             return
         await asyncio.wait_for(
             run_query(scenario, prompt, emit, approver, session), timeout,
@@ -57,8 +50,6 @@ async def run_turn(
 
 
 async def inspect_session(scenario: str) -> dict[str, Any]:
-    if prefer_messages_over_cli():
-        return await inspect_without_cli(scenario)
     started = time.perf_counter()
     collected: list[Event] = []
 
@@ -102,9 +93,5 @@ async def run_query(
     log("options_built", tools=list(options.allowed_tools or []),
         skills=scen["skills"], subagents=list((options.agents or {}).keys()),
         max_turns=MAX_TURNS, max_budget_usd=MAX_BUDGET_USD, resume=session.sdk_session_id)
-
-    if prefer_messages_over_cli():
-        await run_via_messages(scenario, prompt, log, approver)
-        return
 
     await run_via_cli(options, prompt, session, log, session.cancel_event)

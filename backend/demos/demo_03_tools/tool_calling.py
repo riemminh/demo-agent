@@ -37,11 +37,8 @@ def _result(status: str, events: list[dict[str, Any]], requests: list[dict[str, 
 async def run_tool_round(
     prompt: str, tool_names: list[str], forced_tool: str | None, max_tokens: int
 ) -> dict[str, Any]:
-    from shared.llm_preflight import preflight_llm_error
-
-    blocked = preflight_llm_error()
-    if blocked:
-        return _result("failed", [], [], [], 0, None, error=blocked)
+    if config.missing_llm_settings():
+        return _result("failed", [], [], [], 0, None, error=config_error())
 
     tools = schemas_for(tool_names)
     messages: list[dict[str, Any]] = [{"role": "user", "content": prompt}]

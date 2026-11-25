@@ -6,7 +6,7 @@ Source of truth: `plans/00-START-HERE.md` + `plans/01-SHARED-ARCHITECTURE-UI.md`
 
 Stack: Python + FastAPI (backend, port 9000) · Next.js 16 App Router (Turbopack) + TypeScript + Ant Design v6 (frontend, port 3001).
 
-**Trạng thái hiện tại:** đủ **8/8 demo** có code chạy được. Demo 08 (Agent SDK) cần thêm prerequisite (Claude Code CLI) và lượt model của nó hiện bị giới hạn mạng — xem Known limitation.
+**Trạng thái hiện tại:** đủ **8/8 demo** có code chạy được. Demo 08 (Agent SDK) cần thêm prerequisite Claude Code CLI (`claude` trên PATH).
 
 ## Setup
 
@@ -25,29 +25,6 @@ uv run uvicorn main:app --reload --port 9000
 - `config.py` gọi `load_dotenv(backend/.env)` tường minh; uvicorn không tự đọc `.env`. Sửa `.env` xong phải **restart** (`--reload` chỉ theo dõi file `.py`).
 - Session/Future của Demo 01 nằm trong RAM process, nên chạy **một** worker.
 - Thêm dependency: `uv add <package>`.
-- **Lỗi `connection_error` dù `curl https://api.anthropic.com` vẫn ra?** OpenSSL của Python (4.1.0 trên máy này) gửi key share post-quantum `X25519MLKEM768`; một số mạng/proxy reset handshake đó. Chạy backend với một OpenSSL config chỉ dùng group cổ điển:
-  ```bash
-  # file .cnf: openssl_conf → ssl_conf → system_default: Groups = X25519:P-256:P-384
-  OPENSSL_CONF=/path/to/openssl-classic-groups.cnf uv run uvicorn main:app --reload --port 9000
-  ```
-  Chỉ là workaround môi trường, không đổi code.
-
-### Known limitation của môi trường mạng (đã đo)
-
-Mạng đang dùng để phát triển **reset mọi HTTPS request có body lớn hơn khoảng 1–1,5 KB khi đích là `api.anthropic.com`**. Bằng chứng:
-
-| Thử nghiệm | Kết quả |
-|---|---|
-| body ~352 B và ~952 B → `api.anthropic.com` | OK |
-| body ~1.6 KB trở lên → `api.anthropic.com` | `httpcore2.ReadError` → SDK bọc thành `APIConnectionError("Connection error.")` |
-| `curl` body 6 KB → `api.anthropic.com` | fail (exit 56) |
-| `curl` body 6 KB → một host khác (`postman-echo.com`) | HTTP 200 |
-| HTTP/1.1 và HTTP/2 | fail như nhau → không phải vấn đề protocol |
-| `ping -D` tới 1472 B | OK → không phải MTU blackhole thông thường |
-
-Đo lại 2026-11-24: TLS post-quantum (`X25519MLKEM768`) bị reset ngay cả với body 50 B; ép nhóm cổ điển thì body ≤ 800 B qua, ≥ 1,5 KB vẫn reset; giảm TCP MSS xuống 536 không đổi kết quả → **không phải MTU**, mà là thiết bị mạng chủ động cắt upload lớn tới `api.anthropic.com`. CLI bundle 2.1.330 (Bun) luôn `ECONNRESET`. Demo 08 vì vậy đặt `CLAUDE_CODE_MAX_RETRIES=2` và `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`: run fail trong ~3 s với `error(kind=sdk_api_error)` thay vì retry tới timeout.
-
-Hệ quả: demo nào gửi request lớn sẽ nhận `error(kind=connection_error)` — Demo 04 khi loop sang lượt thứ 3, và **Demo 08** vì Claude Code CLI luôn gửi system prompt lớn (CLI tự retry rồi báo `ECONNRESET`; cả HTTP/1.1 và HTTP/2 đều vậy). **Không phải bug của code** — chạy qua VPN/proxy hoặc mạng khác (ví dụ 4G hotspot) là hết. Backend tôn trọng `HTTPS_PROXY` của httpx nếu bạn có proxy.
 
 ### Frontend
 

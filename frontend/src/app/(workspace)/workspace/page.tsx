@@ -38,12 +38,6 @@ export default function WorkspaceHome() {
                 ? <Tag color="blue">đã cấu hình</Tag>
                 : <Tag color="warning">thiếu {health.missing_env.join(", ")}: Live verification pending</Tag> },
               { key: "model", label: "Model (LLM_MODEL)", children: health?.model ?? "—" },
-              { key: "reach", label: "Messages API (probe)",
-                children: !health?.messages_api_reachable
-                  ? <Tag color="warning">chưa kiểm tra / lỗi</Tag>
-                  : <Tag color="success">reachable</Tag> },
-              { key: "proxy", label: "HTTPS_PROXY",
-                children: health?.https_proxy_configured ? <Tag color="blue">có</Tag> : <Tag>không</Tag> },
             ]} />}
       </Card>
 

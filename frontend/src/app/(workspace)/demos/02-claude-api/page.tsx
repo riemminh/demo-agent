@@ -8,7 +8,6 @@ import HistoryPanel, { type SentRequest } from "./history-panel";
 import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
 import SourceDebug from "./source-debug";
-import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { useClaude } from "./use-claude";
 
 const { Text, Paragraph } = Typography;
@@ -54,7 +53,6 @@ export default function ClaudeApiDemoPage() {
 
   return (
     <Flex vertical gap={16}>
-      <LlmNetworkAlert />
       <div>
         <Text type="secondary">02 · Claude API</Text>
         <Typography.Title level={2} style={{ margin: "4px 0 8px" }}>

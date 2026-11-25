@@ -8,7 +8,6 @@ import ResultCard from "./result-card";
 import ScenarioInput from "./scenario-input";
 import SourceDebug from "./source-debug";
 import TasksTable from "./tasks-table";
-import LlmNetworkAlert from "@/components/LlmNetworkAlert";
 import { useLoop } from "./use-loop";
 
 const { Text, Paragraph } = Typography;
@@ -67,7 +66,6 @@ export default function ManualLoopDemoPage() {
           <Tag>session: {loop.sessionId || (loop.sessionError ? "lỗi" : "đang tạo…")}</Tag>
         </Space>
       </div>
-      <LlmNetworkAlert />
       {loop.sessionError && (
         <Alert type="error" showIcon title="Không tạo được session"
           description={`${loop.sessionError}. Chạy backend ở port 9000 (xem README) rồi tải lại trang.`} />

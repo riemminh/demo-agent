@@ -20,11 +20,8 @@ async def stream_events(
     messages: list[Turn], system: str, max_tokens: int
 ) -> AsyncIterator[dict[str, Any]]:
     """Yield event theo đúng tiến trình thực tế; event cuối luôn là run_finished."""
-    from shared.llm_preflight import preflight_llm_error
-
-    blocked = preflight_llm_error()
-    if blocked:
-        yield {"type": "error", **blocked}
+    if config.missing_llm_settings():
+        yield {"type": "error", **config_error()}
         yield {"type": "run_finished"}
         return
 

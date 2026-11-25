@@ -66,11 +66,7 @@ export default function SdkPanel({ prompt, onPromptChange, onSuggestMessages }: 
         type="warning"
         showIcon
         title="Agent SDK (Demo 08 · Claude Code CLI)"
-        description={
-          env?.prefer_messages_over_cli
-            ? "Demo 08 đang prefer_messages_over_cli — Run/Inspect không spawn CLI API (xem backend/.../transport/)."
-            : "CLI payload lớn — cần VPN/proxy hoặc bật SDK_MESSAGES_FALLBACK=true."
-        }
+        description="Run và Inspect đều qua Claude Code CLI (claude trên PATH). Cần ANTHROPIC_API_KEY và LLM_MODEL trong backend/.env."
       />
       {sdk.sessionError && <Alert type="error" showIcon title={sdk.sessionError} />}
       {sdk.error && !mockMode && <Alert type="error" showIcon title={sdk.error} />}
